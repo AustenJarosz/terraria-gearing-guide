@@ -1,0 +1,47 @@
+:root {
+  --bg: #0d0a08;
+  --panel: #1c1510;
+  --line: #5a4630;
+  --ink: #f3e6ce;
+  --gold: #e4c36a;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 900px 420px at 50% -80px, rgba(228, 195, 106, 0.14), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 20%, rgba(90, 30, 20, 0.28), transparent 55%),
+    radial-gradient(ellipse 600px 400px at 0% 70%, rgba(40, 70, 90, 0.12), transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: auto, auto, auto, 8px 8px, 8px 8px;
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid #f4e6c3;
+  outline-offset: 3px;
+}
