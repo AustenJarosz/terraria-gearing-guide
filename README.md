@@ -2,6 +2,8 @@
 
 A small React site for class loadouts across Pre-Hardmode, Hardmode, and endgame.
 
+The roadmap includes 11 stops (3 Pre-Hardmode, 8 Hardmode) and 44 class loadouts. Optional events share an Event upgrades stop; Duke Fishron and Empress share an Optional bosses stop. Expand an encounter for unlock and summon instructions, preparation advice, and rewards separate from first-clear equipment. Stop selection is navigation, not completion tracking. The late-game route is a suggested order; optional encounters may be tackled earlier according to their stated unlocks.
+
 ## Run it
 
 ```bash

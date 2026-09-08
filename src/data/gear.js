@@ -1,3 +1,5 @@
+import { sideStages, sideLoadouts, pillarStage, mainRouteDetails } from './roadmap.js'
+
 export const classes = [
   {
     "id": "melee",
@@ -32,7 +34,7 @@ export const eras = [
   }
 ]
 
-export const stages = [
+const routeStages = [
   {
     "id": "pre-boss",
     "era": "pre-hardmode",
@@ -75,13 +77,15 @@ export const stages = [
     "next": "Golem",
     "when": "Post-Plantera dungeon, jungle temple key"
   },
+  ...sideStages,
   {
     "id": "pre-lunatic",
     "era": "hardmode",
     "name": "Pre-Lunatic",
     "next": "Lunatic Cultist",
-    "when": "Golem, Martians, moons, and optional Fishron / Empress"
+    "when": "After Golem; finish whichever optional detours you want before starting the Lunar Events"
   },
+  pillarStage,
   {
     "id": "pre-moon-lord",
     "era": "hardmode",
@@ -91,7 +95,9 @@ export const stages = [
   }
 ]
 
-export const loadouts = [
+export const stages = routeStages.map(stage => ({ ...stage, ...mainRouteDetails[stage.id] }))
+
+const coreLoadouts = [
   {
     "classId": "melee",
     "stageId": "pre-boss",
@@ -211,7 +217,7 @@ export const loadouts = [
       "chlorophyteArmor"
     ],
     "weapons": [
-      "terraBlade",
+      "chlorophyteClaymore",
       "vampireKnives",
       "seedler",
       "flowerPow",
@@ -224,7 +230,7 @@ export const loadouts = [
       "masterNinja",
       "leafWings"
     ],
-    "notes": "Plantera unlocks Mothron’s Broken Hero Sword for Terra Blade and the stronger Dungeon enemies. Vampire Knives require a Crimson world’s Dungeon chest."
+    "notes": "Explore the stronger post-Plantera Dungeon before entering the Temple. Vampire Knives require a Crimson world’s Dungeon chest. A Solar Eclipse detour can upgrade your sword to Terra Blade."
   },
   {
     "classId": "melee",
@@ -375,11 +381,10 @@ export const loadouts = [
       "shroomiteArmor"
     ],
     "weapons": [
-      "tsunami",
       "venusMagnum",
       "grenadeLauncher",
       "sniperRifle",
-      "chainGun"
+      "megashark"
     ],
     "accessories": [
       "moltenQuiver",
@@ -388,7 +393,7 @@ export const loadouts = [
       "reconScope",
       "leafWings"
     ],
-    "notes": "Craft Shroomite after Plantera. Its 1.4.5.7 stealth can build while attacking and moving below maximum running speed. Fishron and Frost Moon gear are optional."
+    "notes": "Craft Shroomite after Plantera. Its 1.4.5.7 stealth can build while attacking and moving below maximum running speed. This kit does not require Fishron or Frost Moon drops."
   },
   {
     "classId": "ranged",
@@ -553,8 +558,7 @@ export const loadouts = [
       "nettleBurst",
       "waspGun",
       "magnetSphere",
-      "infernoFork",
-      "batScepter"
+      "infernoFork"
     ],
     "accessories": [
       "celestialEmblem",
@@ -724,26 +728,28 @@ export const loadouts = [
     "weapons": [
       "pygmyStaff",
       "desertTiger",
-      "morningStar",
-      "tempestStaff"
+      "morningStar"
     ],
     "accessories": [
-      "necromanticScroll",
+      "masterNinja",
       "pygmyNecklace",
       "summonerEmblem",
       "avengerEmblem",
       "leafWings",
       "twilightGrasp"
     ],
-    "notes": "Tiki armor becomes available after Plantera. Desert Tiger requires the Dungeon’s Desert Chest and key. Fishron and Pumpkin Moon are optional upgrades."
+    "notes": "Tiki armor becomes available after Plantera. Desert Tiger requires the Dungeon’s Desert Chest and key; Pygmy Staff is the accessible fallback. Save Fishron and Pumpkin Moon for later detours if desired."
   },
   {
     "classId": "summoner",
     "stageId": "pre-lunatic",
     "armor": [
+      "tikiArmor",
       "spookyArmor"
     ],
     "weapons": [
+      "pygmyStaff",
+      "morningStar",
       "ravenStaff",
       "xenoStaff",
       "deadlySphere",
@@ -758,12 +764,13 @@ export const loadouts = [
       "leafWings",
       "twilightGrasp"
     ],
-    "notes": "Spooky armor and Ravens come from Pumpkin Moon; Xeno Staff comes from Martian Saucers. Terraprisma requires all damage to Empress during daytime and is optional."
+    "notes": "Tiki armor, Pygmy Staff, and Morning Star work if you skipped the detours. Spooky armor, Ravens, and scroll accessories require Pumpkin Moon; Xeno Staff comes from Martian Saucers. Terraprisma is an optional daytime Empress reward."
   },
   {
     "classId": "summoner",
     "stageId": "pre-moon-lord",
     "armor": [
+      "tikiArmor",
       "spookyArmor"
     ],
     "weapons": [
@@ -783,4 +790,14 @@ export const loadouts = [
     ],
     "notes": "Craft Constellation and Stardust-fragment minion weapons; keep Spooky armor until Moon Lord. Constellation’s cosmic energy grows on minion hits and releases on a follow-up whip hit."
   }
+]
+
+export const loadouts = [
+  ...coreLoadouts,
+  ...sideLoadouts,
+  ...coreLoadouts.filter(loadout => loadout.stageId === 'pre-lunatic').map(loadout => ({
+    ...loadout,
+    stageId: pillarStage.id,
+    notes: 'Use your pre-Cultist gear to take the first pillar. Listed side-event rewards are optional alternatives; keep your first-clear kit if you skipped them. Craft fragment weapons after that pillar falls, then continue to the others.',
+  })),
 ]
