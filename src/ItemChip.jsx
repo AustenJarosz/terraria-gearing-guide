@@ -1,9 +1,11 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { items, wikiPage, wikiSrc } from './data/items'
+import { itemNotes } from './data/itemNotes'
 
-function ItemChip({ id }) {
+function ItemChip({ id, notes }) {
   const item = items[id]
+  const guidance = notes ?? itemNotes[id] ?? []
   const detailId = useId()
   const trigger = useRef(null)
   const panel = useRef(null)
@@ -59,6 +61,7 @@ function ItemChip({ id }) {
       <span className={`item-name rarity-${item.rarity}`}>{item.name}</span>
       <span className="item-toggle" aria-hidden="true">ⓘ</span>
     </button>
+    {guidance.length > 0 && <div className="item-guidance">{guidance.map((note, index) => <p key={index}><strong>{note.label}</strong> {note.text}</p>)}</div>}
     {createPortal(<section ref={panel} id={detailId} role="region" aria-label={`${item.name} details`} aria-hidden={!open} inert={!open}
       className={`item-popover ${open ? 'is-open' : ''}`} style={position} onPointerEnter={cancel} onPointerLeave={leave} onBlur={blur}>
       <div className="tip-heading"><img src={wikiSrc(item.file)} alt="" /><strong className={`rarity-${item.rarity}`}>{item.name}</strong><button type="button" onClick={close} aria-label="Close item details">×</button></div>
@@ -69,8 +72,8 @@ function ItemChip({ id }) {
   </div>
 }
 
-export function ItemGrid({ ids }) {
-  return <div className="item-grid">{ids.map(id => <ItemChip key={id} id={id} />)}</div>
+export function ItemGrid({ ids, notes = {} }) {
+  return <div className="item-grid">{ids.map(id => <ItemChip key={id} id={id} notes={notes[id]} />)}</div>
 }
 
 

@@ -4,6 +4,16 @@ import { items } from '../src/data/items.js'
 import { classes, stages, loadouts } from '../src/data/gear.js'
 import { sideStages, sideEncounters } from '../src/data/roadmap.js'
 import { bossArt } from '../src/data/bossArt.js'
+import { bossDrops } from '../src/data/bossDrops.js'
+for (const [stageId, drops] of Object.entries(bossDrops)) {
+ assert([...stages, ...sideEncounters].some(stage => stage.id === stageId), `Unknown loot stage: ${stageId}`)
+ assert.equal(new Set(drops.map(drop => drop.name)).size, drops.length, `Duplicate loot: ${stageId}`)
+ for (const drop of drops) {
+  assert(drop.kind && drop.source && drop.rate, `Incomplete drop: ${drop.name}`)
+  const png = fs.readFileSync(`public/items/${drop.file}`)
+  assert.equal(png.subarray(0,8).toString('hex'), '89504e470d0a1a0a', `Invalid loot sprite: ${drop.name}`)
+ }
+}
 for (const stage of stages) assert(bossArt[stage.id]?.length, `Missing boss art: ${stage.id}`)
 for (const id of new Set(Object.values(bossArt).flat())) {
  const png = fs.readFileSync(`public/bosses/${id}.png`)

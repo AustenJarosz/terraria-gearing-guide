@@ -5,6 +5,7 @@ import './App.css'
 import { ItemGrid } from './ItemChip'
 import { ClassEffects } from './ClassEffects'
 import { BossArt } from './BossArt'
+import { bossDrops, dropNotes } from './data/bossDrops'
 
 function ClassEmblem({ classId }) {
   return <div className={`class-emblem emblem-${classId}`} aria-hidden="true">
@@ -22,14 +23,19 @@ function ClassEmblem({ classId }) {
 }
 
 function EncounterPlan({ encounter }) {
+  const drops = bossDrops[encounter.id] || []
   return (
-    <section className="encounter-plan" aria-label={`${encounter.name || 'Encounter'} roadmap`}>
-      <div><h3>Available when</h3><p>{encounter.unlock}</p></div>
-      <div><h3>How to start</h3><p>{encounter.summon}</p></div>
-      <div><h3>Before you go</h3><p>{encounter.prepare}</p></div>
-      <div><h3>Why do it?</h3><p>{encounter.payoff}</p></div>
-      <a href={`https://terraria.wiki.gg/wiki/${encounter.source}`} target="_blank" rel="noreferrer">Encounter details on the Official Wiki ↗</a>
-    </section>
+    <details className="boss-loot">
+      <summary>Notable drops <span>Master Mode</span></summary>
+      <p className="gear-hint">Gear, materials & rare companions · selected loot</p>
+      {drops.length > 0 ? <ul className="drop-list">{drops.map(drop => <li key={drop.name}>
+        <img className="drop-icon" src={`/items/${drop.file}`} alt="" loading="lazy" />
+        <div><a href={`https://terraria.wiki.gg/wiki/${drop.source}`} target="_blank" rel="noreferrer">{drop.name}</a>{drop.quantity && <span className="drop-quantity"> × {drop.quantity}</span>}<p>{drop.kind}{drop.note && ` · ${drop.note}`}</p></div>
+        <strong className="drop-rate">{drop.rate}</strong>
+      </li>)}</ul> : <p className="gear-hint">Drop list coming soon.</p>}
+      {dropNotes[encounter.id] && <p className="gear-hint">{dropNotes[encounter.id]}</p>}
+      <a href={`https://terraria.wiki.gg/wiki/${encounter.source}`} target="_blank" rel="noreferrer">Full loot list on the Official Wiki ↗</a>
+    </details>
   )
 }
 
@@ -60,8 +66,8 @@ export default function App() {
         <p className="kicker">Terraria · Bigger & Boulder</p>
         <h1>Gearing Guide</h1><p className="version-note">Desktop 1.4.5.7 · Class loadouts & progression</p>
         <p className="lede">
-          Choose a class, then a boss or event along the roadmap. See how to start,
-          what to bring <em>before</em> the fight, and which rewards to chase.
+          Choose a class, then a boss or event along the roadmap. See
+          what to bring <em>before</em> the fight, which items work together, and which rewards to chase.
         </p>
         </div>
         <ClassEmblem key={classId} classId={classId} />
@@ -91,6 +97,7 @@ export default function App() {
           ))}
         </div>
       </section>
+
 
       <section className="panel plaque" aria-label="Progression">
         <div className="panel-label">
@@ -170,18 +177,18 @@ export default function App() {
           )}
 
           <h3 className="gear-section-title">{activeStage.encounters ? 'Starter gear for these encounters' : 'Bring to this fight'}</h3>
-          <p className="gear-hint">Hover for a preview; tap to keep it open. Items are alternatives—choose what fits your slots. Helmet icons represent armor sets.</p><div className="slots">
+          <p className="gear-hint">Hover for a preview; tap to keep it open. This guide is for Master Mode. Accessories are a recommendation pool, not a requirement to equip every item; choose up to 7 after using the Demon Heart extra-slot upgrade.</p><div className="slots">
             <article className="slot">
               <h3>Armor</h3>
-              <ItemGrid ids={loadout.armor} />
+              <ItemGrid ids={loadout.armor} notes={loadout.itemNotes} />
             </article>
             <article className="slot">
               <h3>Weapons</h3>
-              <ItemGrid ids={loadout.weapons} />
+              <ItemGrid ids={loadout.weapons} notes={loadout.itemNotes} />
             </article>
             <article className="slot">
               <h3>Accessories</h3>
-              <ItemGrid ids={loadout.accessories} />
+              <ItemGrid ids={loadout.accessories} notes={loadout.itemNotes} />
             </article>
           </div>
 

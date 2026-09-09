@@ -110,6 +110,22 @@
 .class-mage .stage-chip.active { box-shadow: inset 0 0 0 3px var(--surface), inset 0 0 0 4px #b89adc66, 0 0 16px #b89adc16; }
 .class-summoner .stage-chip.active { box-shadow: inset 0 -3px var(--accent), 0 5px 16px #0002; }
 .loadout { padding: 1.5rem; border-top: 3px solid var(--accent); }
+.boss-loot { margin: 1rem 0 1.5rem; padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--accent-soft); }
+.boss-loot summary { cursor: pointer; font-weight: 700; }
+.boss-loot summary span { margin-left: .6rem; font-size: .8rem; color: var(--accent); }
+.boss-loot a { color: var(--accent); }
+.drop-list { list-style: none; margin: 1rem 0; padding: 0; }
+.drop-list li { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: .75rem; padding: .65rem 0; border-bottom: 1px solid var(--line); }
+.drop-icon { width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated; }
+.drop-quantity { color: var(--ink); font-size: .85rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.drop-list a { text-decoration: none; font-weight: 600; }
+.drop-list a:hover { text-decoration: underline; }
+.drop-list li > div { min-width: 0; overflow-wrap: anywhere; }
+.drop-list p { margin: .3rem 0 0; color: var(--muted); font-size: .85rem; }
+.drop-rate { color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.item-guidance { padding: 0 .7rem .65rem; font-size: .8rem; line-height: 1.5; color: var(--muted); }
+.item-guidance p { margin: .35rem 0 0; }
+.item-guidance strong { display: block; color: var(--accent); font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; }
 .loadout-head { margin-bottom: 1.2rem; }
 .loadout-head h2 { font-family: var(--heading); font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 .3rem; }
 .loadout-when { margin: 0 0 .8rem; color: var(--muted); }
