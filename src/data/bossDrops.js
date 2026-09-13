@@ -1,5 +1,6 @@
-// Curated gear, crafting materials, pets and mounts. Omit currency, potions, keys, trophies and relics.
-// Keep guaranteed items only when they are standout build rewards.
+import { hardmodeDrops, hardmodeDropNotes } from './hardmodeDrops.js'
+// Curated gear, crafting materials, pets and mounts. Omit routine currency, potions, trophies and relics.
+// Include useful guaranteed equipment and progression rewards, not just rare drops.
 // Rates are per bag; Pet/Mount entries here are direct boss drops.
 const drop = (name, rate, kind, source, note, quantity) => ({ name, rate, kind, source, file: `${source}.png`, note, quantity })
 export const bossDrops = {
@@ -10,11 +11,14 @@ export const bossDrops = {
     drop('Crimtane Ore', '100%', 'Material', 'Crimtane_Ore', 'Crimson world only', '30–90'),
   ],
   'pre-skeletron': [
+    drop('Bone Glove', '100%', 'Accessory', 'Bone_Glove'),
     drop('Book of Skulls', '33.33%', 'Magic weapon', 'Book_of_Skulls'),
     drop('Skeletron Hand', '33.33%', 'Hook', 'Skeletron_Hand'),
     drop('Possessed Skull', '25%', 'Pet', 'Possessed_Skull'),
   ],
   'pre-wof': [
+    drop('Demon Heart', '100%', 'Permanent upgrade', 'Demon_Heart', 'Only before you have consumed one · unlocks your seventh Master Mode accessory slot'),
+    drop('Pwnhammer', '100%', 'Hammer', 'Pwnhammer', 'Breaks Demon and Crimson Altars to unlock Hardmode ores'),
     ...['Warrior', 'Ranger', 'Sorcerer', 'Summoner'].map(type => drop(`${type} Emblem`, '25%', 'Accessory', `${type}_Emblem`)),
     drop('Breaker Blade', '25%', 'Melee weapon', 'Breaker_Blade'),
     drop('Clockwork Assault Rifle', '25%', 'Ranged weapon', 'Clockwork_Assault_Rifle'),
@@ -22,12 +26,10 @@ export const bossDrops = {
     drop('Firecracker', '25%', 'Whip', 'Firecracker'),
     drop('Goat Skull', '25%', 'Mount', 'Goat_Skull'),
   ],
-  'empress-of-light': [
-    drop('Kaleidoscope', '25%', 'Whip', 'Kaleidoscope'),
-    drop('Soaring Insignia', '100%', 'Accessory', 'Soaring_Insignia'),
-  ],
+  ...hardmodeDrops,
 }
 export const dropNotes = {
+  ...hardmodeDropNotes,
   'pre-boss': 'Per Eye of Cthulhu Treasure Bag. The world’s evil determines which ore you receive; you do not receive both in a normal world.',
   'pre-skeletron': 'The bag rolls one of Book of Skulls, Skeletron Hand or the omitted vanity mask. The pet rolls separately on the boss.',
   'pre-wof': 'Each bag contains one emblem and one weapon. The mount rolls separately on the boss.',

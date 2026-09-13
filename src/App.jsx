@@ -24,13 +24,20 @@ function ClassEmblem({ classId }) {
 
 function EncounterPlan({ encounter }) {
   const drops = bossDrops[encounter.id] || []
+  const enemies = [...new Set(drops.map(drop => drop.enemy).filter(Boolean))]
+  const [selectedEnemy, setSelectedEnemy] = useState(null)
+  const activeEnemy = enemies.includes(selectedEnemy) ? selectedEnemy : enemies[0]
+  const visibleDrops = enemies.length > 1 ? drops.filter(drop => drop.enemy === activeEnemy) : drops
   return (
     <details className="boss-loot">
       <summary>Notable drops <span>Master Mode</span></summary>
       <p className="gear-hint">Gear, materials & rare companions · selected loot</p>
-      {drops.length > 0 ? <ul className="drop-list">{drops.map(drop => <li key={drop.name}>
-        <img className="drop-icon" src={`/items/${drop.file}`} alt="" loading="lazy" />
-        <div><a href={`https://terraria.wiki.gg/wiki/${drop.source}`} target="_blank" rel="noreferrer">{drop.name}</a>{drop.quantity && <span className="drop-quantity"> × {drop.quantity}</span>}<p>{drop.kind}{drop.note && ` · ${drop.note}`}</p></div>
+      {enemies.length > 1 && <div className="drop-filters" role="group" aria-label="Filter drops by boss or enemy">
+        {enemies.map(enemy => <button type="button" key={enemy} aria-pressed={activeEnemy === enemy} onClick={() => setSelectedEnemy(enemy)}>{enemy}</button>)}
+      </div>}
+      {drops.length > 0 ? <ul className="drop-list">{visibleDrops.map(drop => <li key={`${drop.enemy || ''}/${drop.name}`}>
+        <span className={`drop-image${/^Soul of (Might|Sight|Fright)$/.test(drop.name) ? ' soul-frame' : ''}`}><img className="drop-icon" src={`/items/${drop.file}`} alt="" loading="lazy" /></span>
+        <div><a href={`https://terraria.wiki.gg/wiki/${drop.source}`} target="_blank" rel="noreferrer">{drop.name}</a>{drop.quantity && <span className="drop-quantity"> × {drop.quantity}</span>}<p>{drop.kind}{drop.method && ` · ${drop.method}`}{drop.note && ` · ${drop.note}`}</p></div>
         <strong className="drop-rate">{drop.rate}</strong>
       </li>)}</ul> : <p className="gear-hint">Drop list coming soon.</p>}
       {dropNotes[encounter.id] && <p className="gear-hint">{dropNotes[encounter.id]}</p>}
@@ -61,7 +68,7 @@ export default function App() {
       <div className="world-backdrop" aria-hidden="true"><i /><i /><i /></div>
 
       <header className="hero plaque">
-        <ClassEffects key={classId} />
+        <ClassEffects key={`effects-${classId}`} />
         <div className="hero-copy">
         <p className="kicker">Terraria · Bigger & Boulder</p>
         <h1>Gearing Guide</h1><p className="version-note">Desktop 1.4.5.7 · Class loadouts & progression</p>
@@ -70,7 +77,7 @@ export default function App() {
           what to bring <em>before</em> the fight, which items work together, and which rewards to chase.
         </p>
         </div>
-        <ClassEmblem key={classId} classId={classId} />
+        <ClassEmblem key={`emblem-${classId}`} classId={classId} />
       </header>
 
       <section className="panel plaque" aria-label="Class">

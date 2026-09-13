@@ -5,9 +5,19 @@ import { classes, stages, loadouts } from '../src/data/gear.js'
 import { sideStages, sideEncounters } from '../src/data/roadmap.js'
 import { bossArt } from '../src/data/bossArt.js'
 import { bossDrops } from '../src/data/bossDrops.js'
+for (const stage of [...stages, ...sideEncounters].filter(stage => stage.era === 'hardmode' && !stage.encounters)) {
+ assert(bossDrops[stage.id]?.length, `Missing Hardmode loot: ${stage.id}`)
+ for (const drop of bossDrops[stage.id]) {
+  assert(drop.enemy && drop.method, `Missing drop origin: ${drop.name}`)
+  const rates = drop.rate.replace(/[%*]/g, '').split('–').map(Number)
+  assert(rates.every(rate => Number.isFinite(rate) && rate > 0 && rate <= 100), `Invalid drop chance: ${drop.name}`)
+  assert(rates.length === 1 || (rates.length === 2 && rates[0] <= rates[1]), `Invalid chance range: ${drop.name}`)
+  if (rates.length > 1 || drop.rate.includes('*')) assert(drop.note, `Missing drop condition: ${drop.name}`)
+ }
+}
 for (const [stageId, drops] of Object.entries(bossDrops)) {
  assert([...stages, ...sideEncounters].some(stage => stage.id === stageId), `Unknown loot stage: ${stageId}`)
- assert.equal(new Set(drops.map(drop => drop.name)).size, drops.length, `Duplicate loot: ${stageId}`)
+ assert.equal(new Set(drops.map(drop => `${drop.enemy || ''}/${drop.name}`)).size, drops.length, `Duplicate loot: ${stageId}`)
  for (const drop of drops) {
   assert(drop.kind && drop.source && drop.rate, `Incomplete drop: ${drop.name}`)
   const png = fs.readFileSync(`public/items/${drop.file}`)

@@ -117,6 +117,15 @@
 .drop-list { list-style: none; margin: 1rem 0; padding: 0; }
 .drop-list li { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: .75rem; padding: .65rem 0; border-bottom: 1px solid var(--line); }
 .drop-icon { width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated; }
+.drop-image { display: flex; width: 32px; height: 32px; justify-content: center; align-items: center; }
+/* Soul textures contain four stacked animation frames, each 28px high. */
+.drop-image.soul-frame { height: 28px; overflow: hidden; align-items: flex-start; }
+.soul-frame .drop-icon { width: 22px; height: 112px; max-height: none; flex-shrink: 0; }
+.drop-filters { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.drop-filters button { padding: .5rem .75rem; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--muted); font: inherit; font-size: .85rem; cursor: pointer; }
+.drop-filters button[aria-pressed="true"] { color: var(--ink); border-color: var(--accent); background: var(--accent-soft); }
+.drop-filters button:hover { color: var(--ink); border-color: var(--accent); }
+.drop-filters button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .drop-quantity { color: var(--ink); font-size: .85rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .drop-list a { text-decoration: none; font-weight: 600; }
 .drop-list a:hover { text-decoration: underline; }
