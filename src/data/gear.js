@@ -1,4 +1,5 @@
 import { sideStages, sideLoadouts, pillarStage, mainRouteDetails } from './roadmap.js'
+import { dungeonStages } from './dungeon.js'
 
 export const classes = [
   {
@@ -50,6 +51,9 @@ const routeStages = [
     "when": "After Eye of Cthulhu / evil boss / Queen Bee"
   },
   {
+    ...dungeonStages[0],
+  },
+  {
     "id": "pre-wof",
     "era": "pre-hardmode",
     "name": "Pre–Wall of Flesh",
@@ -69,6 +73,9 @@ const routeStages = [
     "name": "Pre-Plantera",
     "next": "Plantera",
     "when": "After all three Mechanical bosses"
+  },
+  {
+    ...dungeonStages[1],
   },
   {
     "id": "pre-golem",
@@ -794,6 +801,12 @@ const coreLoadouts = [
 
 export const loadouts = [
   ...coreLoadouts,
+  ...dungeonStages.flatMap(stage => coreLoadouts.filter(loadout => loadout.stageId === (stage.era === 'pre-hardmode' ? 'pre-skeletron' : 'pre-plantera')).map(loadout => ({
+    ...loadout, stageId: stage.id,
+    notes: stage.era === 'pre-hardmode'
+      ? 'Entry gear from your Skeletron preparation. Upgrade as you explore; the Dungeon rewards below are goals for this visit.'
+      : 'Your Plantera equipment is enough to begin the return. Keep any stronger upgrades you already own, and replace pieces as you collect Dungeon rewards.',
+  }))),
   ...sideLoadouts,
   ...coreLoadouts.filter(loadout => loadout.stageId === 'pre-lunatic').map(loadout => ({
     ...loadout,

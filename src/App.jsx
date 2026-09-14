@@ -5,7 +5,10 @@ import './App.css'
 import { ItemGrid } from './ItemChip'
 import { ClassEffects } from './ClassEffects'
 import { BossArt } from './BossArt'
+import { bossArt } from './data/bossArt'
 import { bossDrops, dropNotes } from './data/bossDrops'
+import { lootProgression } from './data/hardmodeDrops'
+import { DungeonGuide } from './DungeonGuide'
 
 function ClassEmblem({ classId }) {
   return <div className={`class-emblem emblem-${classId}`} aria-hidden="true">
@@ -28,13 +31,20 @@ function EncounterPlan({ encounter }) {
   const [selectedEnemy, setSelectedEnemy] = useState(null)
   const activeEnemy = enemies.includes(selectedEnemy) ? selectedEnemy : enemies[0]
   const visibleDrops = enemies.length > 1 ? drops.filter(drop => drop.enemy === activeEnemy) : drops
+  const progression = lootProgression[encounter.id] || {}
+  const gate = progression[activeEnemy]
   return (
     <details className="boss-loot">
       <summary>Notable drops <span>Master Mode</span></summary>
       <p className="gear-hint">Gear, materials & rare companions · selected loot</p>
       {enemies.length > 1 && <div className="drop-filters" role="group" aria-label="Filter drops by boss or enemy">
-        {enemies.map(enemy => <button type="button" key={enemy} aria-pressed={activeEnemy === enemy} onClick={() => setSelectedEnemy(enemy)}>{enemy}</button>)}
+        {enemies.map(enemy => <button type="button" key={enemy} aria-pressed={activeEnemy === enemy} onClick={() => setSelectedEnemy(enemy)}>{enemy}{progression[enemy] && <small className="drop-gate-label">{progression[enemy]}</small>}</button>)}
       </div>}
+      {gate && <p className="drop-progression"><strong>{gate}</strong><span>{gate === 'Post-Plantera'
+        ? `${activeEnemy} only appears after Plantera is defeated. All drops below require that milestone.`
+        : gate === 'After all 3 mechanical bosses'
+          ? 'Reaper only appears after defeating The Destroyer, The Twins, and Skeletron Prime. Death Sickle requires that milestone.'
+          : 'These drops have no additional boss requirement once a Solar Eclipse is running.'}</span></p>}
       {drops.length > 0 ? <ul className="drop-list">{visibleDrops.map(drop => <li key={`${drop.enemy || ''}/${drop.name}`}>
         <span className={`drop-image${/^Soul of (Might|Sight|Fright)$/.test(drop.name) ? ' soul-frame' : ''}`}><img className="drop-icon" src={`/items/${drop.file}`} alt="" loading="lazy" /></span>
         <div><a href={`https://terraria.wiki.gg/wiki/${drop.source}`} target="_blank" rel="noreferrer">{drop.name}</a>{drop.quantity && <span className="drop-quantity"> × {drop.quantity}</span>}<p>{drop.kind}{drop.method && ` · ${drop.method}`}{drop.note && ` · ${drop.note}`}</p></div>
@@ -49,11 +59,18 @@ function EncounterPlan({ encounter }) {
 export default function App() {
   const [classId, setClassId] = useState('melee')
   const [stageId, setStageId] = useState('pre-boss')
+  const isDungeon = stages.find(stage => stage.id === stageId)?.theme === 'dungeon'
 
   useEffect(() => {
     document.documentElement.dataset.class = classId
     return () => { delete document.documentElement.dataset.class }
   }, [classId])
+
+  useEffect(() => {
+    if (isDungeon) document.documentElement.dataset.environment = 'dungeon'
+    else delete document.documentElement.dataset.environment
+    return () => { delete document.documentElement.dataset.environment }
+  }, [isDungeon])
 
   const activeClass = classes.find((item) => item.id === classId)
   const activeStage = stages.find((item) => item.id === stageId)
@@ -64,11 +81,11 @@ export default function App() {
   )
 
   return (
-    <div className={`page class-${classId}`}>
+    <div className={`page class-${isDungeon ? 'dungeon' : classId}`} style={isDungeon ? { '--dungeon-art': `url("${activeStage.art}")` } : undefined}>
       <div className="world-backdrop" aria-hidden="true"><i /><i /><i /></div>
 
       <header className="hero plaque">
-        <ClassEffects key={`effects-${classId}`} />
+        {!isDungeon && <ClassEffects key={`effects-${classId}`} />}
         <div className="hero-copy">
         <p className="kicker">Terraria · Bigger & Boulder</p>
         <h1>Gearing Guide</h1><p className="version-note">Desktop 1.4.5.7 · Class loadouts & progression</p>
@@ -77,7 +94,7 @@ export default function App() {
           what to bring <em>before</em> the fight, which items work together, and which rewards to chase.
         </p>
         </div>
-        <ClassEmblem key={`emblem-${classId}`} classId={classId} />
+        {isDungeon ? <div className="dungeon-seal" aria-hidden="true">◇<span>THE DUNGEON</span></div> : <ClassEmblem key={`emblem-${classId}`} classId={classId} />}
       </header>
 
       <section className="panel plaque" aria-label="Class">
@@ -127,15 +144,23 @@ export default function App() {
                         {index > 0 && <span className="path-line" aria-hidden="true" />}
                         <button
                           type="button"
-                          className={`stage-chip ${active ? 'active' : ''}`}
+                          className={`stage-chip ${active ? 'active' : ''} ${stage.theme === 'dungeon' ? 'stage-dungeon' : ''}`}
+                          style={stage.theme === 'dungeon' ? { '--dungeon-art': `url("${stage.art}")` } : undefined}
                           aria-pressed={active}
                           onClick={() => setStageId(stage.id)}
                         >
-                          <span className="stage-index">{String(globalIndex + 1).padStart(2, '0')}</span>
+                          <span className="stage-marker">
+                            <span className={`stage-icons${bossArt[stage.id]?.length > 1 ? ' stage-icons-group' : ''}`} aria-hidden="true">
+                              {stage.theme === 'dungeon' ? <img className="dungeon-thumbnail" src={stage.art} alt="" draggable="false" /> : bossArt[stage.id]?.map(id => <img key={id} src={`/bosses/${id}.png`} alt="" draggable="false" />)}
+                            </span>
+                            <span className="stage-index">{String(globalIndex + 1).padStart(2, '0')}</span>
+                          </span>
                           <span className="stage-copy">
                             <span className="stage-name">{stage.name}</span>
                             <span className="stage-type">{stage.kind || 'Main route'}</span>
-                            <span className="stage-next">{stage.next}</span>
+                            <span className="stage-next">{stage.id === 'optional-bosses'
+                              ? <><span className="stage-boss-name">Duke Fishron &amp;</span><span className="stage-boss-name">Empress of Light</span></>
+                              : stage.next}</span>
                           </span>
                         </button>
                       </li>
@@ -151,18 +176,19 @@ export default function App() {
       {loadout && activeClass && activeStage && (
         <section className="loadout plaque" aria-live="polite">
           <div className="loadout-head">
-            <BossArt key={stageId} stageId={stageId} />
+            {!isDungeon && <BossArt key={stageId} stageId={stageId} />}
             <p className="loadout-kicker">
               {activeClass.name} · {eras.find((era) => era.id === activeStage.era)?.name}
             </p>
             <h2>{activeStage.name}</h2>
             <p className="loadout-when">{activeStage.when}</p>
             <p className="next-boss-banner">
-              Gear up for <strong>{activeStage.next}</strong>
+              {isDungeon ? 'Gear · ' : 'Gear up for '}<strong>{activeStage.next}</strong>
             </p>
           </div>
 
-          {activeStage.unlock && <EncounterPlan encounter={activeStage} />}
+          {isDungeon && <DungeonGuide stage={activeStage} onSelect={setStageId} />}
+          {activeStage.unlock && !isDungeon && <EncounterPlan encounter={activeStage} />}
           {activeStage.encounters && (
             <section className="encounter-choices" aria-label="Optional encounters">
               <p className="roadmap-hint">{activeStage.prepare}</p>
@@ -183,7 +209,7 @@ export default function App() {
             </section>
           )}
 
-          <h3 className="gear-section-title">{activeStage.encounters ? 'Starter gear for these encounters' : 'Bring to this fight'}</h3>
+          <h3 className="gear-section-title">{isDungeon ? 'Entry gear' : activeStage.encounters ? 'Starter gear for these encounters' : 'Bring to this fight'}</h3>
           <p className="gear-hint">Hover for a preview; tap to keep it open. This guide is for Master Mode. Accessories are a recommendation pool, not a requirement to equip every item; choose up to 7 after using the Demon Heart extra-slot upgrade.</p><div className="slots">
             <article className="slot">
               <h3>Armor</h3>
@@ -199,14 +225,14 @@ export default function App() {
             </article>
           </div>
 
-          <aside className="notes">
+          {!isDungeon && <aside className="notes">
             <h3>Notes</h3>
             <p>{loadout.notes}</p>
-          </aside>
+          </aside>}
           {activeStage.rewards?.[classId]?.length > 0 && (
             <section className="encounter-rewards">
               <h3 className="gear-section-title">Rewards to chase · {activeClass.name}</h3>
-              <p className="gear-hint">Earn or craft these after this encounter. They are not part of the first-clear kit above.</p>
+              <p className="gear-hint">{activeStage.rewardNote || 'Earn or craft these after this encounter. They are not part of the first-clear kit above.'}</p>
               <ItemGrid ids={activeStage.rewards[classId]} />
             </section>
           )}

@@ -10,6 +10,23 @@ const group = (enemy, method, rows) => rows.map(([name, rate, kind, quantity, no
 const bag = (enemy, rows) => group(enemy, 'Treasure Bag', rows)
 const kill = (enemy, rows) => group(enemy, 'Direct drop', rows)
 
+// Enemy spawn gates apply to every reward in that enemy's filtered list.
+// Source: https://terraria.wiki.gg/wiki/Solar_Eclipse
+export const lootProgression = {
+  'solar-eclipse': {
+    Eyezor: 'Any Solar Eclipse',
+    Vampire: 'Any Solar Eclipse',
+    'Creature from the Deep': 'Any Solar Eclipse',
+    Reaper: 'After all 3 mechanical bosses',
+    Mothron: 'Post-Plantera',
+    Butcher: 'Post-Plantera',
+    'Deadly Sphere': 'Post-Plantera',
+    'Dr. Man Fly': 'Post-Plantera',
+    Nailhead: 'Post-Plantera',
+    Psycho: 'Post-Plantera',
+  },
+}
+
 export const hardmodeDrops = {
   'pre-mechanicals': [
     ...bag('The Destroyer', [

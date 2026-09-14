@@ -49,7 +49,7 @@
 .plaque { position: relative; background: var(--panel-texture), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
 .class-melee .plaque::before, .class-melee .plaque::after { content: ''; position: absolute; width: 5px; height: 5px; border: 1px solid #8a9196; background: #2a3036; top: 9px; pointer-events: none; }
 .class-melee .plaque::before { left: 9px; } .class-melee .plaque::after { right: 9px; }
-.class-ranged .plaque { background-size: 20px 20px; border-top: 3px solid var(--accent); }
+.class-ranged .plaque { background-size: 20px 20px; border-top: 1px solid var(--line); }
 .class-mage .plaque { border-top-color: #8970b7; }
 .class-summoner .plaque { border-top-color: #608bd0; }
 .hero { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.7rem 2rem; margin-bottom: 1rem; overflow: hidden; }
@@ -97,16 +97,27 @@
 .stage-node { min-width: 0; } .path-line { display: none; }
 .stage-chip { display: flex; gap: .6rem; width: 100%; height: 100%; padding: .8rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); color: var(--ink); text-align: left; cursor: pointer; transition: background 160ms, border-color 160ms; }
 .stage-index { color: var(--muted); font: .875rem ui-monospace, monospace; padding-top: .2rem; }
+.stage-marker { display: flex; flex: 0 0 44px; flex-direction: column; align-items: center; gap: .25rem; }
+.stage-icons { display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; }
+.stage-icons img { width: 40px; height: 40px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 2px 3px #0008); }
+.stage-icons-group { display: grid; grid-template-columns: repeat(2, 22px); grid-auto-rows: 22px; align-content: center; }
+.stage-icons-group img { width: 22px; height: 22px; }
 .stage-copy { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
 .stage-name { font-size: 1rem; font-weight: 600; line-height: 1.3; }
 .stage-type, .stage-next { font-size: .875rem; line-height: 1.3; }
 .stage-type { color: var(--accent); } .stage-next { color: var(--muted); }
+.stage-boss-name { display: block; white-space: nowrap; }
 .stage-chip:hover { border-color: var(--accent); }
 .stage-chip.active { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); }
 .class-melee .stage-chip.active { border-left-width: 4px; background: linear-gradient(120deg, #ffad7524, transparent), var(--surface-deep); }
 .class-ranged .stage-chip { border-style: dashed; }
-.class-ranged .stage-chip.active { border-style: solid; background: var(--accent); color: var(--accent-ink); box-shadow: none; }
-.class-ranged .stage-chip.active :is(.stage-index, .stage-type, .stage-next) { color: #062620; }
+.class-ranged .stage-chip.active { position: relative; border-style: solid; background: linear-gradient(110deg, #5ee8cf12, transparent 70%), var(--surface-deep); color: var(--ink); box-shadow: inset 0 0 0 1px #5ee8cf35, 0 0 14px #5ee8cf18; }
+.class-ranged .stage-chip.active::before,
+.class-ranged .stage-chip.active::after { content: ''; position: absolute; width: 13px; height: 13px; border-color: var(--accent); border-style: solid; pointer-events: none; }
+.class-ranged .stage-chip.active::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+.class-ranged .stage-chip.active::after { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+.class-ranged .stage-chip.active .stage-name { color: #aefff0; }
+.class-ranged .stage-chip.active .stage-index { color: var(--accent); font-weight: 700; }
 .class-mage .stage-chip.active { box-shadow: inset 0 0 0 3px var(--surface), inset 0 0 0 4px #b89adc66, 0 0 16px #b89adc16; }
 .class-summoner .stage-chip.active { box-shadow: inset 0 -3px var(--accent), 0 5px 16px #0002; }
 .loadout { padding: 1.5rem; border-top: 3px solid var(--accent); }
@@ -126,6 +137,10 @@
 .drop-filters button[aria-pressed="true"] { color: var(--ink); border-color: var(--accent); background: var(--accent-soft); }
 .drop-filters button:hover { color: var(--ink); border-color: var(--accent); }
 .drop-filters button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.drop-gate-label { display: block; margin-top: .3rem; font-size: .7rem; color: var(--muted); }
+.drop-progression { display: flex; flex-direction: column; gap: .35rem; margin: .8rem 0; padding: .7rem .85rem; border-left: 3px solid var(--accent); background: var(--accent-soft); font-size: .85rem; }
+.drop-progression strong { color: var(--accent); }
+.drop-progression span { color: var(--muted); line-height: 1.5; }
 .drop-quantity { color: var(--ink); font-size: .85rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .drop-list a { text-decoration: none; font-weight: 600; }
 .drop-list a:hover { text-decoration: underline; }
@@ -248,6 +263,8 @@
 .encounter-portrait .boss-art { z-index: 0; position: relative; width: 100%; height: 100%; opacity: .6; justify-content: flex-start; }
 .encounter-portrait .boss-art img { width: 95px; height: 95px; }
 .encounter-portrait .boss-art-group { display: flex; }
+.enemy-art { gap: 1.5rem; }
+.enemy-portrait { display: block; flex-shrink: 0; background-repeat: no-repeat; background-position: left top; background-size: 100% auto; image-rendering: pixelated; filter: drop-shadow(0 8px 12px #0005); }
 @keyframes boss-reveal { from { opacity: 0; transform: translateX(12px) scale(.96); } to { transform: translateX(0) scale(1); } }
 @media (max-width: 640px) {
   .loadout-head { min-height: 160px; padding: 1rem 0; }
@@ -291,4 +308,37 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .class-card:hover { transform: none; }
+}
+
+/* A biome takes over the world without changing the selected equipment class. */
+:root[data-environment='dungeon'] {
+  --world: #05090c; --surface: #111a20; --surface-deep: #090f14;
+  --ink: #e6e5d9; --muted: #a9b8bc; --line: #3d535a;
+  --accent: #9ed9d0; --accent-ink: #071b1d; --accent-soft: #7ec9bf13;
+  --energy: #70a9aa; --focus: #d0fff5; --heading: 'Cinzel', Georgia, serif;
+  --radius: 3px; --shadow: 0 12px 38px #0008;
+  --panel-texture: linear-gradient(145deg, #8abdb508, transparent 65%);
+}
+.class-dungeon .world-backdrop {
+  background: linear-gradient(#03080b70, #03080ba8), var(--dungeon-art) center / cover no-repeat;
+}
+.class-dungeon .world-backdrop i { display: none; }
+.class-dungeon .plaque { background: #0b141be8; border-color: #52666a; box-shadow: 0 12px 40px #0009; }
+.class-dungeon .hero { border-top: 2px solid #9ed9d0; }
+.dungeon-seal { flex: 0 0 150px; text-align: center; color: var(--accent); font: 5rem Georgia, serif; text-shadow: 0 0 24px #9ed9d055; }
+.dungeon-seal span { display: block; font: .7rem var(--heading); letter-spacing: .2em; }
+.stage-chip.stage-dungeon { background: linear-gradient(90deg, #070e15ef, #070e15a0), var(--dungeon-art) center / cover; border: 1px solid #52716d; color: #e6e5d9; }
+.stage-chip.stage-dungeon .stage-type { color: #9ed9d0; }
+.stage-chip.stage-dungeon :is(.stage-index, .stage-next) { color: #b8cacb; }
+.stage-chip.stage-dungeon.active { border-color: #c1fff0; background: linear-gradient(90deg, #102328ed, #102328a0), var(--dungeon-art) center / cover; box-shadow: inset 3px 0 #9ed9d0, 0 0 18px #72c4b91c; }
+.stage-icons img.dungeon-thumbnail { object-fit: cover; border: 1px solid #72908b; border-radius: 3px; image-rendering: auto; }
+.dungeon-guide { margin: 1.5rem 0 2rem; }
+.dungeon-scene { min-height: 260px; display: flex; align-items: flex-end; border: 1px solid #4f6b70; background: linear-gradient(0deg, #040b10f5, #040b1020 90%), var(--dungeon-art) center 50% / cover; }
+.dungeon-visits { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 1rem 0; }
+.dungeon-visits button { padding: .8rem 1rem; border: 1px solid var(--line); background: var(--surface-deep); color: var(--muted); cursor: pointer; text-align: left; }
+.dungeon-visits button[aria-pressed='true'] { border-color: var(--accent); color: var(--ink); background: #183036; }
+.dungeon-visits small { display: block; margin-top: .25rem; color: var(--muted); }
+@media (max-width: 700px) {
+  .dungeon-seal { display: none; }
+  .dungeon-scene { min-height: 200px; }
 }

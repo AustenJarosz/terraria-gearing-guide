@@ -7,3 +7,12 @@ export const bossArt = {
   'pumpkin-moon': [10, 13], 'frost-moon': [3, 17, 6], 'martian-madness': [9],
   'duke-fishron': [4], 'empress-of-light': [37], 'old-ones-army': [34],
 }
+
+// Full NPC textures are animation strips; show only their first frame.
+export const enemyArt = {
+  'solar-eclipse': [
+    { id: 477, name: 'Mothron', width: 156, frameHeight: 120 },
+    { id: 253, name: 'Reaper', width: 34, frameHeight: 78 },
+    { id: 159, name: 'Vampire', width: 40, frameHeight: 60 },
+  ],
+}

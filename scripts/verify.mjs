@@ -3,9 +3,9 @@ import fs from 'node:fs'
 import { items } from '../src/data/items.js'
 import { classes, stages, loadouts } from '../src/data/gear.js'
 import { sideStages, sideEncounters } from '../src/data/roadmap.js'
-import { bossArt } from '../src/data/bossArt.js'
+import { bossArt, enemyArt } from '../src/data/bossArt.js'
 import { bossDrops } from '../src/data/bossDrops.js'
-for (const stage of [...stages, ...sideEncounters].filter(stage => stage.era === 'hardmode' && !stage.encounters)) {
+for (const stage of [...stages, ...sideEncounters].filter(stage => stage.era === 'hardmode' && !stage.encounters && stage.kind !== 'Dungeon')) {
  assert(bossDrops[stage.id]?.length, `Missing Hardmode loot: ${stage.id}`)
  for (const drop of bossDrops[stage.id]) {
   assert(drop.enemy && drop.method, `Missing drop origin: ${drop.name}`)
@@ -24,7 +24,19 @@ for (const [stageId, drops] of Object.entries(bossDrops)) {
   assert.equal(png.subarray(0,8).toString('hex'), '89504e470d0a1a0a', `Invalid loot sprite: ${drop.name}`)
  }
 }
-for (const stage of stages) assert(bossArt[stage.id]?.length, `Missing boss art: ${stage.id}`)
+for (const stage of stages) {
+ if (stage.kind === 'Dungeon') {
+  assert(stage.rewards && stage.rewardNote && stage.theme === 'dungeon', `Incomplete Dungeon visit: ${stage.id}`)
+  assert(stage.art && fs.existsSync(`public${stage.art}`), `Missing Dungeon illustration: ${stage.id}`)
+ } else assert(bossArt[stage.id]?.length, `Missing boss art: ${stage.id}`)
+}
+for (const stage of sideEncounters) assert(bossArt[stage.id]?.length || enemyArt[stage.id]?.length, `Missing encounter art: ${stage.id}`)
+for (const enemy of Object.values(enemyArt).flat()) {
+ const png = fs.readFileSync(`public/bosses/npc-${enemy.id}.png`)
+ assert.equal(png.subarray(0,8).toString('hex'), '89504e470d0a1a0a')
+ assert.equal(png.readUInt32BE(16), enemy.width)
+ assert.equal(png.readUInt32BE(20) % enemy.frameHeight, 0, `Invalid portrait frame: ${enemy.name}`)
+}
 for (const id of new Set(Object.values(bossArt).flat())) {
  const png = fs.readFileSync(`public/bosses/${id}.png`)
  assert.equal(png.subarray(0,8).toString('hex'), '89504e470d0a1a0a', `Invalid boss portrait: ${id}`)
