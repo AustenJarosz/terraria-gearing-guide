@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { classes, eras, loadouts, stages } from './data/gear'
+import { classes, eras, loadouts, stages as allStages } from './data/gear'
+import { BossChecklist } from './BossChecklist'
+const stages = allStages.filter(stage => stage.id !== 'pre-hardmode-optional')
 import { ClassIcon } from './icons'
 import './App.css'
 import { ItemGrid } from './ItemChip'
@@ -25,18 +27,19 @@ function ClassEmblem({ classId }) {
   </div>
 }
 
-function EncounterPlan({ encounter }) {
-  const drops = bossDrops[encounter.id] || []
+function EncounterPlan({ encounter, inline = false }) {
+  const drops = encounter.enemy ? (bossDrops[encounter.stageId] || []).filter(drop => drop.enemy === encounter.enemy) : bossDrops[encounter.id] || []
   const enemies = [...new Set(drops.map(drop => drop.enemy).filter(Boolean))]
   const [selectedEnemy, setSelectedEnemy] = useState(null)
   const activeEnemy = enemies.includes(selectedEnemy) ? selectedEnemy : enemies[0]
   const visibleDrops = enemies.length > 1 ? drops.filter(drop => drop.enemy === activeEnemy) : drops
   const progression = lootProgression[encounter.id] || {}
   const gate = progression[activeEnemy]
+  const Container = inline ? 'div' : 'details'
   return (
-    <details className="boss-loot">
-      <summary>Notable drops <span>Master Mode</span></summary>
-      <p className="gear-hint">Gear, materials & rare companions · selected loot</p>
+    <Container className="boss-loot">
+      {!inline && <summary>Notable drops <span>Master Mode</span></summary>}
+      <p className="gear-hint">Master Mode loot · gear, materials & rare companions</p>
       {enemies.length > 1 && <div className="drop-filters" role="group" aria-label="Filter drops by boss or enemy">
         {enemies.map(enemy => <button type="button" key={enemy} aria-pressed={activeEnemy === enemy} onClick={() => setSelectedEnemy(enemy)}>{enemy}{progression[enemy] && <small className="drop-gate-label">{progression[enemy]}</small>}</button>)}
       </div>}
@@ -52,14 +55,15 @@ function EncounterPlan({ encounter }) {
       </li>)}</ul> : <p className="gear-hint">Drop list coming soon.</p>}
       {dropNotes[encounter.id] && <p className="gear-hint">{dropNotes[encounter.id]}</p>}
       <a href={`https://terraria.wiki.gg/wiki/${encounter.source}`} target="_blank" rel="noreferrer">Full loot list on the Official Wiki ↗</a>
-    </details>
+    </Container>
   )
 }
 
 export default function App() {
   const [classId, setClassId] = useState('melee')
   const [stageId, setStageId] = useState('pre-boss')
-  const isDungeon = stages.find(stage => stage.id === stageId)?.theme === 'dungeon'
+  const [view, setView] = useState('gear')
+  const isDungeon = view === 'gear' && stages.find(stage => stage.id === stageId)?.theme === 'dungeon'
 
   useEffect(() => {
     document.documentElement.dataset.class = classId
@@ -123,7 +127,12 @@ export default function App() {
       </section>
 
 
-      <section className="panel plaque" aria-label="Progression">
+      <nav className="guide-views" aria-label="Guide view">
+        <button aria-pressed={view === 'gear'} onClick={() => setView('gear')}><strong>Gearing roadmap</strong><span>What to equip next</span></button>
+        <button aria-pressed={view === 'checklist'} onClick={() => setView('checklist')}><strong>Boss checklist & loot</strong><span>Track kills · browse rewards</span></button>
+      </nav>
+      {view === 'checklist' && <BossChecklist renderLoot={encounter => <EncounterPlan encounter={encounter} inline />} onGear={id => { setStageId(id); setView('gear') }} />}
+      {view === 'gear' && <section className="panel plaque" aria-label="Progression">
         <div className="panel-label">
           <span>02</span>
           <h2>Boss & event roadmap</h2>
@@ -171,9 +180,9 @@ export default function App() {
             )
           })}
         </div>
-      </section>
+      </section>}
 
-      {loadout && activeClass && activeStage && (
+      {view === 'gear' && loadout && activeClass && activeStage && (
         <section className="loadout plaque" aria-live="polite">
           <div className="loadout-head">
             {!isDungeon && <BossArt key={stageId} stageId={stageId} />}
@@ -238,7 +247,7 @@ export default function App() {
           )}
           <nav className="roadmap-nav" aria-label="Move through roadmap">
             <button type="button" disabled={stageIndex === 0} onClick={() => setStageId(stages[stageIndex - 1].id)}>← Previous stop</button>
-            {activeStage.optional && <button type="button" onClick={() => setStageId('pre-lunatic')}>Skip to Lunatic Cultist</button>}
+            {activeStage.optional && activeStage.era === 'hardmode' && <button type="button" onClick={() => setStageId('pre-lunatic')}>Skip to Lunatic Cultist</button>}
             <button type="button" disabled={stageIndex === stages.length - 1} onClick={() => setStageId(stages[stageIndex + 1].id)}>{stageIndex < stages.length - 1 ? `Next: ${stages[stageIndex + 1].name} →` : 'End of roadmap'}</button>
           </nav>
         </section>

@@ -1,4 +1,5 @@
 import { dungeonStages } from './data/dungeon'
+import { DungeonLoot } from './DungeonLoot'
 
 export function DungeonGuide({ stage, onSelect }) {
   return <section className="dungeon-guide" aria-label="Dungeon gear progression">
@@ -8,5 +9,6 @@ export function DungeonGuide({ stage, onSelect }) {
         {visit.id === 'dungeon-pre-plantera' ? 'Pre-Plantera' : 'Post-Plantera'}<small>{visit.id === 'dungeon-pre-plantera' ? 'First visit after Skeletron' : 'Return after Plantera'}</small>
       </button>)}
     </div>
+    <DungeonLoot key={stage.id} stage={stage} />
   </section>
 }

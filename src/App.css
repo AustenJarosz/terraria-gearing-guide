@@ -32,6 +32,36 @@
   --shadow: 0 12px 38px #020a2066; --focus: #c5ddff;
 }
 .page { position: relative; isolation: isolate; max-width: 1200px; margin: auto; padding: 2rem 1.5rem 3rem; }
+.guide-views { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 1.5rem 0 1rem; }
+.guide-views button { padding: 1rem 1.25rem; text-align: left; border: 1px solid var(--line); background: var(--surface-deep); color: var(--muted); cursor: pointer; border-radius: 6px; }
+.guide-views button strong, .guide-views button span { display: block; }
+.guide-views button span { font-size: .85rem; margin-top: .25rem; }
+.guide-views button[aria-pressed='true'] { border-color: var(--accent); color: var(--ink); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface-deep); box-shadow: inset 0 -2px var(--accent); }
+.checklist-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.checklist-heading h2 { margin: 0; font-family: var(--heading); font-size: clamp(1.25rem, 3vw, 2rem); }
+.checklist-count { text-align: right; color: var(--accent); flex-shrink: 0; }
+.checklist-count strong { font-size: 2rem; }
+.checklist-count small, .checklist-count span { font-size: .85rem; color: var(--muted); }
+.checklist-count span { display: block; }
+.checklist-progress { width: 100%; height: 5px; accent-color: var(--accent); margin: .75rem 0 1.25rem; }
+.checklist-era { margin-top: 1.75rem; }
+.checklist-era h3 { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; color: var(--accent); }
+.checklist-era h3 small { font: .85rem 'Source Sans 3', sans-serif; color: var(--muted); }
+.checklist-row { display: flex; align-items: flex-start; border-top: 1px solid var(--line); background: #0002; }
+.checklist-row > input { flex-shrink: 0; width: 20px; height: 20px; margin: 1.35rem .9rem; accent-color: var(--accent); cursor: pointer; }
+.checklist-row details { flex: 1; min-width: 0; }
+.checklist-row summary { display: flex; align-items: center; gap: .8rem; padding: .75rem .8rem .75rem 0; min-height: 64px; cursor: pointer; list-style: none; }
+.checklist-row summary::-webkit-details-marker { display: none; }
+.checklist-portrait { width: 45px; min-width: 45px; display: flex; align-items: center; justify-content: center; }
+.checklist-portrait:empty::before { content: '◇'; color: var(--muted); font-size: 1.75rem; }
+.checklist-portrait img { width: 36px; height: 36px; object-fit: contain; image-rendering: pixelated; }
+.checklist-portrait img:not(:only-child) { width: 22px; }
+.checklist-name { flex: 1; font-weight: 600; }
+.checklist-name small { display: block; color: var(--muted); font-size: .75rem; font-weight: 400; }
+.checklist-loot-label { color: var(--accent); font-size: .8rem; white-space: nowrap; }
+.checklist-row.is-defeated summary .checklist-name { color: var(--muted); }
+.checklist-details { padding: 0 1rem 1rem 0; }
+.checklist-gear { border: 1px solid var(--line); background: var(--surface-deep); color: var(--accent); padding: .5rem .8rem; cursor: pointer; border-radius: 4px; }
 .world-backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--world); }
 .class-melee .world-backdrop { background: radial-gradient(ellipse at 0 15%, #a142192b, transparent 45%), repeating-linear-gradient(120deg, transparent 0 150px, #ffffff03 150px 152px), var(--world); }
 .class-melee .world-backdrop i { position: absolute; width: 2px; height: 55vh; right: 9%; bottom: 0; background: linear-gradient(transparent, #ffae6355, transparent); transform: rotate(28deg); }
@@ -314,29 +344,36 @@
 :root[data-environment='dungeon'] {
   --world: #05090c; --surface: #111a20; --surface-deep: #090f14;
   --ink: #e6e5d9; --muted: #a9b8bc; --line: #3d535a;
-  --accent: #9ed9d0; --accent-ink: #071b1d; --accent-soft: #7ec9bf13;
-  --energy: #70a9aa; --focus: #d0fff5; --heading: 'Cinzel', Georgia, serif;
+  --heading: 'Cinzel', Georgia, serif;
   --radius: 3px; --shadow: 0 12px 38px #0008;
   --panel-texture: linear-gradient(145deg, #8abdb508, transparent 65%);
 }
 .class-dungeon .world-backdrop {
-  background: linear-gradient(#03080b70, #03080ba8), var(--dungeon-art) center / cover no-repeat;
+  background: radial-gradient(ellipse at 15% 20%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 65%), linear-gradient(#03080b70, #03080ba8), var(--dungeon-art) center / cover no-repeat;
 }
 .class-dungeon .world-backdrop i { display: none; }
 .class-dungeon .plaque { background: #0b141be8; border-color: #52666a; box-shadow: 0 12px 40px #0009; }
-.class-dungeon .hero { border-top: 2px solid #9ed9d0; }
-.dungeon-seal { flex: 0 0 150px; text-align: center; color: var(--accent); font: 5rem Georgia, serif; text-shadow: 0 0 24px #9ed9d055; }
+.class-dungeon .hero { border-top: 2px solid var(--accent); }
+.class-dungeon .loadout { border-top-color: var(--accent); }
+.dungeon-seal { flex: 0 0 150px; text-align: center; color: var(--accent); font: 5rem Georgia, serif; text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 33%, transparent); }
 .dungeon-seal span { display: block; font: .7rem var(--heading); letter-spacing: .2em; }
 .stage-chip.stage-dungeon { background: linear-gradient(90deg, #070e15ef, #070e15a0), var(--dungeon-art) center / cover; border: 1px solid #52716d; color: #e6e5d9; }
 .stage-chip.stage-dungeon .stage-type { color: #9ed9d0; }
 .stage-chip.stage-dungeon :is(.stage-index, .stage-next) { color: #b8cacb; }
-.stage-chip.stage-dungeon.active { border-color: #c1fff0; background: linear-gradient(90deg, #102328ed, #102328a0), var(--dungeon-art) center / cover; box-shadow: inset 3px 0 #9ed9d0, 0 0 18px #72c4b91c; }
+.stage-chip.stage-dungeon.active { border-color: var(--accent); background: linear-gradient(90deg, #102328ed, #102328a0), var(--dungeon-art) center / cover; box-shadow: inset 3px 0 var(--accent), 0 0 18px var(--accent-soft); }
+.stage-chip.stage-dungeon.active .stage-type { color: var(--accent); }
 .stage-icons img.dungeon-thumbnail { object-fit: cover; border: 1px solid #72908b; border-radius: 3px; image-rendering: auto; }
 .dungeon-guide { margin: 1.5rem 0 2rem; }
+.dungeon-loot { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.dungeon-loot .panel-label h3 { margin: 0; }
+.dungeon-loot-group { margin: 1rem 0 .5rem; color: var(--muted); font-size: .875rem; }
+.dungeon-loot-enemy { margin: 1.25rem 0 .5rem; color: var(--accent); font-size: 1.1rem; }
+.dungeon-loot a { color: var(--accent); text-underline-offset: 3px; }
+.dungeon-loot .drop-list a { color: var(--ink); }
 .dungeon-scene { min-height: 260px; display: flex; align-items: flex-end; border: 1px solid #4f6b70; background: linear-gradient(0deg, #040b10f5, #040b1020 90%), var(--dungeon-art) center 50% / cover; }
 .dungeon-visits { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 1rem 0; }
 .dungeon-visits button { padding: .8rem 1rem; border: 1px solid var(--line); background: var(--surface-deep); color: var(--muted); cursor: pointer; text-align: left; }
-.dungeon-visits button[aria-pressed='true'] { border-color: var(--accent); color: var(--ink); background: #183036; }
+.dungeon-visits button[aria-pressed='true'] { border-color: var(--accent); color: var(--ink); background: color-mix(in srgb, var(--accent) 12%, #090f14); }
 .dungeon-visits small { display: block; margin-top: .25rem; color: var(--muted); }
 @media (max-width: 700px) {
   .dungeon-seal { display: none; }

@@ -1,5 +1,8 @@
 // NPC_Head_Boss texture IDs; local portraits, not loot or progression requirements.
 export const bossArt = {
+  'evil-boss': [2, 23], 'queen-slime': [38],
+  destroyer: [25], twins: [15, 20], prime: [18],
+  'pre-hardmode-optional': [7, 14, 39], 'king-slime': [7], 'queen-bee': [14], deerclops: [39],
   'pre-boss': [0], 'pre-skeletron': [19], 'pre-wof': [22],
   'pre-mechanicals': [15, 20, 18, 25], 'pre-plantera': [11], 'pre-golem': [5],
   'event-upgrades': [13, 6, 9, 34], 'optional-bosses': [4, 37],

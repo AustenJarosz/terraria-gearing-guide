@@ -5,6 +5,36 @@ import { classes, stages, loadouts } from '../src/data/gear.js'
 import { sideStages, sideEncounters } from '../src/data/roadmap.js'
 import { bossArt, enemyArt } from '../src/data/bossArt.js'
 import { bossDrops } from '../src/data/bossDrops.js'
+assert.deepEqual([...new Set(bossDrops['evil-boss'].map(drop => drop.enemy))], ['Eater of Worlds', 'Brain of Cthulhu'])
+assert.equal(bossDrops['queen-slime'].length, 8)
+assert(!bossDrops['pre-mechanicals'].some(drop => drop.enemy === 'Queen Slime'))
+const spriteManifest = JSON.parse(fs.readFileSync('scripts/sprite-manifest.json'))
+assert.equal(spriteManifest['Laser_Rifle.png'], 514, 'Laser Rifle must not use Clockwork Assault Rifle sprite')
+assert.deepEqual(bossArt.twins, [15, 20], 'Twins must show Retinazer and Spazmatism')
+assert.deepEqual(bossArt.prime, [18], 'Skeletron Prime portrait')
+assert.deepEqual(bossArt['evil-boss'], [2, 23], 'Both world-evil boss portraits')
+assert.deepEqual(bossArt['queen-slime'], [38], 'Queen Slime portrait')
+import { dungeonDrops } from '../src/data/dungeonDrops.js'
+for (const [stageId, groups] of Object.entries(dungeonDrops)) {
+ const enemies = groups.flatMap(group => group.enemies)
+ assert.equal(new Set(enemies.map(enemy => enemy.name)).size, enemies.length, `Duplicate Dungeon enemy: ${stageId}`)
+ for (const enemy of enemies) {
+  assert(enemy.source && enemy.drops.length, `Missing Dungeon loot: ${enemy.name}`)
+  assert.equal(new Set(enemy.drops.map(drop => drop.name)).size, enemy.drops.length)
+  for (const drop of enemy.drops) {
+   const rate = Number(drop.rate.replace('%', ''))
+   assert(rate > 0 && rate <= 100, `Invalid Dungeon rate: ${drop.name}`)
+   const png = fs.readFileSync(`public/items/${drop.file}`)
+   assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `Invalid Dungeon sprite: ${drop.name}`)
+  }
+ }
+}
+const firstDungeon = dungeonDrops['dungeon-pre-plantera'].flatMap(group => group.enemies)
+const lateDungeon = dungeonDrops['dungeon-post-plantera'][0].enemies
+assert(!firstDungeon.some(enemy => enemy.drops.some(drop => drop.name === 'Ectoplasm')), 'Ectoplasm requires Plantera')
+assert.equal(lateDungeon.find(enemy => enemy.name === 'Dungeon Spirit').drops[0].quantity, '1–2')
+assert(!lateDungeon.some(enemy => enemy.drops.some(drop => drop.name === 'Tally Counter')), 'Tally Counter belongs to early enemies')
+assert.equal(dungeonDrops['dungeon-post-plantera'][1].enemies, dungeonDrops['dungeon-pre-plantera'][0].enemies, 'Returning enemies retain their loot')
 for (const stage of [...stages, ...sideEncounters].filter(stage => stage.era === 'hardmode' && !stage.encounters && stage.kind !== 'Dungeon')) {
  assert(bossDrops[stage.id]?.length, `Missing Hardmode loot: ${stage.id}`)
  for (const drop of bossDrops[stage.id]) {
@@ -16,7 +46,7 @@ for (const stage of [...stages, ...sideEncounters].filter(stage => stage.era ===
  }
 }
 for (const [stageId, drops] of Object.entries(bossDrops)) {
- assert([...stages, ...sideEncounters].some(stage => stage.id === stageId), `Unknown loot stage: ${stageId}`)
+ assert(['evil-boss', 'queen-slime'].includes(stageId) || [...stages, ...sideEncounters].some(stage => stage.id === stageId), `Unknown loot stage: ${stageId}`)
  assert.equal(new Set(drops.map(drop => `${drop.enemy || ''}/${drop.name}`)).size, drops.length, `Duplicate loot: ${stageId}`)
  for (const drop of drops) {
   assert(drop.kind && drop.source && drop.rate, `Incomplete drop: ${drop.name}`)

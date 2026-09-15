@@ -1,5 +1,6 @@
 // A suggested route, not a claim that optional encounters must be cleared in order.
-export const sideEncounters = [
+import { earlyEncounters, earlyOptionalStage } from './prehardmodeOptional.js'
+const hardmodeEncounters = [
   {
     id: 'solar-eclipse', name: 'Solar Eclipse', next: 'Mothron & eclipse enemies',
     when: 'Post-Plantera rewards; suggested here after Golem', kind: 'Optional event',
@@ -68,18 +69,20 @@ export const sideEncounters = [
   },
 ].map(stage => ({ ...stage, era: 'hardmode', optional: true }))
 
+export const sideEncounters = [...earlyEncounters, ...hardmodeEncounters]
 export const sideStages = [
+  earlyOptionalStage,
   {
     id: 'event-upgrades', name: 'Event upgrades', next: 'Eclipse, moons, Martians & Betsy',
     when: 'Optional detours around Golem', kind: 'Optional events', era: 'hardmode', optional: true,
     prepare: 'Pick an event for the rewards you want. You do not need to clear all five, and you can return after other upgrades. The shared starter kit below assumes Golem is defeated.',
-    encounters: sideEncounters.filter(encounter => encounter.kind === 'Optional event'),
+    encounters: hardmodeEncounters.filter(encounter => encounter.kind === 'Optional event'),
   },
   {
     id: 'optional-bosses', name: 'Optional bosses', next: 'Duke Fishron & Empress of Light',
     when: 'Two optional challenges before the Lunar Events', kind: 'Optional bosses', era: 'hardmode', optional: true,
     prepare: 'Try either boss when you feel ready, in whichever order you prefer. Both unlock earlier than this suggested stop; the shared starter kit below is for a post-Golem attempt.',
-    encounters: sideEncounters.filter(encounter => encounter.kind === 'Optional boss'),
+    encounters: hardmodeEncounters.filter(encounter => encounter.kind === 'Optional boss'),
   },
 ]
 
@@ -153,7 +156,7 @@ const kits = {
   summoner: { armor: ['tikiArmor'], weapons: ['pygmyStaff', 'desertTiger', 'morningStar'], accessories: ['pygmyNecklace', 'summonerEmblem', 'avengerEmblem', 'masterNinja', 'leafWings', 'twilightGrasp'] },
 }
 
-export const sideLoadouts = sideStages.flatMap(stage => Object.entries(kits).map(([classId, kit]) => ({
+export const sideLoadouts = sideStages.filter(stage => stage.era === 'hardmode').flatMap(stage => Object.entries(kits).map(([classId, kit]) => ({
   ...kit, classId, stageId: stage.id,
   notes: 'First-clear kit for the suggested post-Golem route; no optional boss or event drops required. Keep any stronger rewards you have already earned.' + (classId === 'summoner' ? ' Desert Tiger needs a Desert Key; use Pygmy Staff if you do not have one.' : ''),
 })))

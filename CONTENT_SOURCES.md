@@ -1,5 +1,11 @@
 # Content and image sources
 
+## Checklist loot additions — September 15, 2026
+
+- [Treasure Bags](https://terraria.wiki.gg/wiki/Treasure_Bag): Eater of Worlds and Brain of Cthulhu Master bag material ranges, accessories and 5% pets. Extra segment/Creeper materials are excluded from bag quantities.
+- [Eater of Worlds](https://terraria.wiki.gg/wiki/Eater_of_Worlds), [Brain of Cthulhu](https://terraria.wiki.gg/wiki/Brain_of_Cthulhu) and [Queen Slime](https://terraria.wiki.gg/wiki/Queen_Slime): Master pet chances and Queen Slime equipment. Two distinct Crystal Assassin pieces per bag (2/3 each).
+- Added item sprites exported from the installed game using its ItemID constants. Evil boss loot is filtered by boss; Queen Slime remains separate from mechanical bosses.
+
 Target: Terraria Desktop **1.4.5.7**, normal progression, no mods or special seeds.
 Reviewed 2026-09-05. This is a selection of practical alternatives, not an exhaustive item list or DPS ranking. Accessories are alternatives, not a claim that every listed accessory fits simultaneously. Expert/Master drops remain explicitly identified.
 
@@ -92,3 +98,23 @@ Post-Plantera variant: `public/images/dungeon-awakened.png`, made with the built
 Saved asset: `public/images/dungeon-depths.png`. Created with the built-in imagegen tool; original illustration, not an extracted Terraria screenshot. Final prompt:
 
 > Use case: stylized-concept. Asset type: wide background illustration for a Terraria dungeon guide website. Create a dark scary underground dungeon interior inspired by Terraria: ancient blue-gray brick corridors, deep arched doorway descending into darkness, rusty iron bars, hanging chains, scattered old bones, sparse cold cyan candlelight, faint ectoplasmic mist. Rich atmospheric pixel-art-inspired game concept painting with readable blocky stone textures, not a screenshot or UI. Wide landscape composition, ominous doorway centered, interesting masonry and candles near outer edges, spacious dark center so website panels can overlay it. Moody near-black slate, desaturated teal, aged ivory; restrained lighting, no bright spotlight, no people, no text, no logos, no watermark. Make this feel like a special dangerous place to explore.
+# Dungeon enemy loot (September 2026)
+
+Edit `src/data/dungeonDrops.js` to change enemy filters, Master Mode rates, quantities, or item notes. `src/DungeonLoot.jsx` renders the lists for both visits. Pre-Plantera enemies retain their original loot in the post-Plantera returning-enemy group. Identical cosmetic/combat variants share a filter. No chest loot, generic biome-wide drops, coins, food, banners, or decoration-only items are included in these enemy tables. Dungeon Guardian is outside these post-Skeletron visits.
+
+Rates checked against the current Desktop Official Wiki enemy/item tables (Expert rates also apply in Master), rounded as displayed there; base rates exclude player luck. Ectoplasm's 100% is per Dungeon Spirit, not per preceding kill. Sprite IDs verified from the installed game's ItemID constants and exported using `scripts/export-sprites.mjs`.
+
+- [Angry Bones](https://terraria.wiki.gg/wiki/Angry_Bones), [Dark Caster](https://terraria.wiki.gg/wiki/Dark_Caster), [Librarian Skeleton](https://terraria.wiki.gg/wiki/Librarian_Skeleton), [Cursed Skull](https://terraria.wiki.gg/wiki/Cursed_Skull), [Dungeon Slime](https://terraria.wiki.gg/wiki/Dungeon_Slime), [Water Bolt Mimic](https://terraria.wiki.gg/wiki/Water_Bolt_Mimic).
+- [Blue Armored Bones](https://terraria.wiki.gg/wiki/Blue_Armored_Bones), [Rusty Armored Bones](https://terraria.wiki.gg/wiki/Rusty_Armored_Bones), [Hell Armored Bones](https://terraria.wiki.gg/wiki/Hell_Armored_Bones), [Wisp in a Bottle](https://terraria.wiki.gg/wiki/Wisp_in_a_Bottle), [Bone Feather](https://terraria.wiki.gg/wiki/Bone_Feather).
+- [Paladin](https://terraria.wiki.gg/wiki/Paladin), [Tabi](https://terraria.wiki.gg/wiki/Tabi), [Black Belt](https://terraria.wiki.gg/wiki/Black_Belt), [Skeleton Sniper](https://terraria.wiki.gg/wiki/Skeleton_Sniper), [Tactical Skeleton](https://terraria.wiki.gg/wiki/Tactical_Skeleton), [Skeleton Commando](https://terraria.wiki.gg/wiki/Skeleton_Commando).
+- [Shadowbeam Staff](https://terraria.wiki.gg/wiki/Shadowbeam_Staff), [Ragged Caster](https://terraria.wiki.gg/wiki/Ragged_Caster), [Inferno Fork](https://terraria.wiki.gg/wiki/Inferno_Fork), [Giant Cursed Skull](https://terraria.wiki.gg/wiki/Giant_Cursed_Skull), [Dungeon Spirit](https://terraria.wiki.gg/wiki/Dungeon_Spirit).
+# Pre-Hardmode optional bosses
+
+`src/data/prehardmodeOptional.js` defines King Slime, Queen Bee and Deerclops, their grouped roadmap stop and curated Master loot. One stop appears before Skeletron; King Slime can be attempted earlier. Shared equipment excludes Queen Bee rewards. Hardmode groups retain their own encounters and equipment.
+
+Sources: [King Slime](https://terraria.wiki.gg/wiki/King_Slime), [Treasure Bags](https://terraria.wiki.gg/wiki/Treasure_Bag), [Queen Bee](https://terraria.wiki.gg/wiki/Queen_Bee), [Deerclops](https://terraria.wiki.gg/wiki/Deerclops). Rates are per bag except explicitly marked direct Master pet drops. Queen Bee gives one weapon, Beenades ×10–29 and Bee Wax ×17–29 per bag. King Slime's 1.4.5 Slime Staff drop is included. Decoration-only and vanity items (including Dizzy's Rare Gecko Chester) are omitted. Local sprites are exported from the installed game.
+# Checklist sprite audit
+
+Compared the sprite manifest to the installed game's `Terraria.ID.ItemID` constants, including review of internal-name aliases. Laser Rifle incorrectly used Clockwork Assault Rifle ID 434; corrected to 514 and re-exported. Constellation remains 5479 (`ConstellationWhip`), not the unrelated internal constant `Constellation` at 5238.
+
+Checked boss-head mapping against [NPC Head IDs](https://terraria.wiki.gg/zh/wiki/NPC_Head_IDs?variant=zh-mo). Checklist now uses Eater of Worlds 2, Brain of Cthulhu 23, Queen Slime 38, Retinazer 15 + Spazmatism 20 for Twins, and Skeletron Prime 18. Shared `bossArt` entries drive the corrected checklist images and export/verification scripts. Laser Rifle also verified against the [Official Wiki weapon table](https://terraria.wiki.gg/wiki/List_of_magic_weapons).

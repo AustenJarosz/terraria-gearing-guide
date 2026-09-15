@@ -44,6 +44,9 @@ const routeStages = [
     "when": "World spawn until your first boss"
   },
   {
+    ...sideStages.find(stage => stage.era === 'pre-hardmode'),
+  },
+  {
     "id": "pre-skeletron",
     "era": "pre-hardmode",
     "name": "Pre-Skeletron",
@@ -84,7 +87,7 @@ const routeStages = [
     "next": "Golem",
     "when": "Post-Plantera dungeon, jungle temple key"
   },
-  ...sideStages,
+  ...sideStages.filter(stage => stage.era === 'hardmode'),
   {
     "id": "pre-lunatic",
     "era": "hardmode",
@@ -801,6 +804,12 @@ const coreLoadouts = [
 
 export const loadouts = [
   ...coreLoadouts,
+  ...coreLoadouts.filter(loadout => loadout.stageId === 'pre-skeletron').map(loadout => ({
+    ...loadout, stageId: 'pre-hardmode-optional',
+    armor: loadout.armor.filter(id => id !== 'beeArmor'),
+    weapons: loadout.weapons.filter(id => !['beeKeeper', 'hiveFive', 'beesKnees', 'beeGun', 'hornetStaff'].includes(id)),
+    notes: 'Shared kit after the evil biome boss for Queen Bee and Deerclops. King Slime can be tackled earlier with your Pre-Boss gear. Meteor armor pairs with Space Gun; summoners should pair Snapthorn with a minion.',
+  })),
   ...dungeonStages.flatMap(stage => coreLoadouts.filter(loadout => loadout.stageId === (stage.era === 'pre-hardmode' ? 'pre-skeletron' : 'pre-plantera')).map(loadout => ({
     ...loadout, stageId: stage.id,
     notes: stage.era === 'pre-hardmode'
