@@ -12,6 +12,19 @@ import { bossDrops, dropNotes } from './data/bossDrops'
 import { lootProgression } from './data/hardmodeDrops'
 import { DungeonGuide } from './DungeonGuide'
 
+function useSavedSelection(key, fallback, allowed) {
+  const [value, setValue] = useState(() => {
+    try {
+      const saved = localStorage.getItem(key)
+      return allowed.includes(saved) ? saved : fallback
+    } catch { return fallback }
+  })
+  useEffect(() => {
+    try { localStorage.setItem(key, value) } catch { /* Continue normally if storage is unavailable. */ }
+  }, [key, value])
+  return [value, setValue]
+}
+
 function ClassEmblem({ classId }) {
   return <div className={`class-emblem emblem-${classId}`} aria-hidden="true">
     <div className="energy-core" />
@@ -28,13 +41,15 @@ function ClassEmblem({ classId }) {
 }
 
 function EncounterPlan({ encounter, inline = false }) {
-  const drops = encounter.enemy ? (bossDrops[encounter.stageId] || []).filter(drop => drop.enemy === encounter.enemy) : bossDrops[encounter.id] || []
+  const allDrops = bossDrops[encounter.id] || encounter.drops || bossDrops[encounter.stageId] || []
+  const drops = encounter.enemy ? allDrops.filter(drop => drop.enemy === encounter.enemy) : allDrops
   const enemies = [...new Set(drops.map(drop => drop.enemy).filter(Boolean))]
   const [selectedEnemy, setSelectedEnemy] = useState(null)
   const activeEnemy = enemies.includes(selectedEnemy) ? selectedEnemy : enemies[0]
   const visibleDrops = enemies.length > 1 ? drops.filter(drop => drop.enemy === activeEnemy) : drops
   const progression = lootProgression[encounter.id] || {}
   const gate = progression[activeEnemy]
+  const note = dropNotes[encounter.id] || encounter.note
   const Container = inline ? 'div' : 'details'
   return (
     <Container className="boss-loot">
@@ -53,17 +68,25 @@ function EncounterPlan({ encounter, inline = false }) {
         <div><a href={`https://terraria.wiki.gg/wiki/${drop.source}`} target="_blank" rel="noreferrer">{drop.name}</a>{drop.quantity && <span className="drop-quantity"> × {drop.quantity}</span>}<p>{drop.kind}{drop.method && ` · ${drop.method}`}{drop.note && ` · ${drop.note}`}</p></div>
         <strong className="drop-rate">{drop.rate}</strong>
       </li>)}</ul> : <p className="gear-hint">Drop list coming soon.</p>}
-      {dropNotes[encounter.id] && <p className="gear-hint">{dropNotes[encounter.id]}</p>}
+      {note && <p className="gear-hint">{note}</p>}
       <a href={`https://terraria.wiki.gg/wiki/${encounter.source}`} target="_blank" rel="noreferrer">Full loot list on the Official Wiki ↗</a>
     </Container>
   )
 }
 
 export default function App() {
-  const [classId, setClassId] = useState('melee')
-  const [stageId, setStageId] = useState('pre-boss')
-  const [view, setView] = useState('gear')
+  const [classId, setClassId] = useSavedSelection('terraria-guide-class', 'melee', classes.map(item => item.id))
+  const [stageId, setStageId] = useSavedSelection('terraria-guide-stage', 'pre-boss', stages.map(item => item.id))
+  const [view, setView] = useSavedSelection('terraria-guide-view', 'gear', ['gear', 'checklist'])
   const isDungeon = view === 'gear' && stages.find(stage => stage.id === stageId)?.theme === 'dungeon'
+  const isEyeForest = view === 'gear' && stageId === 'pre-boss'
+  const isDungeonEntrance = view === 'gear' && stageId === 'pre-skeletron'
+  const isUnderworld = view === 'gear' && stageId === 'pre-wof'
+  const isMechanicalNight = view === 'gear' && stageId === 'pre-mechanicals'
+  const isJungle = view === 'gear' && stageId === 'pre-plantera'
+  const isTemple = view === 'gear' && stageId === 'pre-golem'
+  const isEventNight = view === 'gear' && stageId === 'event-upgrades'
+  const isOptionalDay = view === 'gear' && stageId === 'optional-bosses'
 
   useEffect(() => {
     document.documentElement.dataset.class = classId
@@ -72,9 +95,17 @@ export default function App() {
 
   useEffect(() => {
     if (isDungeon) document.documentElement.dataset.environment = 'dungeon'
+    else if (isEyeForest) document.documentElement.dataset.environment = 'eye-forest'
+    else if (isDungeonEntrance) document.documentElement.dataset.environment = 'dungeon-entrance'
+    else if (isUnderworld) document.documentElement.dataset.environment = 'underworld'
+    else if (isMechanicalNight) document.documentElement.dataset.environment = 'mechanical-night'
+    else if (isJungle) document.documentElement.dataset.environment = 'jungle'
+    else if (isTemple) document.documentElement.dataset.environment = 'temple'
+    else if (isEventNight) document.documentElement.dataset.environment = 'event-night'
+    else if (isOptionalDay) document.documentElement.dataset.environment = 'optional-day'
     else delete document.documentElement.dataset.environment
     return () => { delete document.documentElement.dataset.environment }
-  }, [isDungeon])
+  }, [isDungeon, isEyeForest, isDungeonEntrance, isUnderworld, isMechanicalNight, isJungle, isTemple, isEventNight, isOptionalDay])
 
   const activeClass = classes.find((item) => item.id === classId)
   const activeStage = stages.find((item) => item.id === stageId)
@@ -85,11 +116,11 @@ export default function App() {
   )
 
   return (
-    <div className={`page class-${isDungeon ? 'dungeon' : classId}`} style={isDungeon ? { '--dungeon-art': `url("${activeStage.art}")` } : undefined}>
-      <div className="world-backdrop" aria-hidden="true"><i /><i /><i /></div>
+    <div className={`page class-${isDungeon ? 'dungeon' : classId}${isEyeForest ? ' environment-eye' : ''}${isDungeonEntrance ? ' environment-entrance' : ''}${isUnderworld ? ' environment-underworld' : ''}${isMechanicalNight ? ' environment-mechanical' : ''}${isJungle ? ' environment-jungle' : ''}${isTemple ? ' environment-temple' : ''}${isEventNight ? ' environment-events' : ''}${isOptionalDay ? ' environment-optional' : ''}`} style={isDungeon ? { '--dungeon-art': `url("${activeStage.art}")` } : undefined}>
+      <div className="world-backdrop" aria-hidden="true"><i /><i /><i />{isEyeForest && <div className="eye-forest-scene"><img src="/bosses/0.png" alt="" draggable="false" /></div>}</div>
 
       <header className="hero plaque">
-        {!isDungeon && <ClassEffects key={`effects-${classId}`} />}
+        {!isDungeon && !isEyeForest && !isDungeonEntrance && !isUnderworld && !isMechanicalNight && !isJungle && !isTemple && !isEventNight && !isOptionalDay && <ClassEffects key={`effects-${classId}`} />}
         <div className="hero-copy">
         <p className="kicker">Terraria · Bigger & Boulder</p>
         <h1>Gearing Guide</h1><p className="version-note">Desktop 1.4.5.7 · Class loadouts & progression</p>
@@ -98,7 +129,7 @@ export default function App() {
           what to bring <em>before</em> the fight, which items work together, and which rewards to chase.
         </p>
         </div>
-        {isDungeon ? <div className="dungeon-seal" aria-hidden="true">◇<span>THE DUNGEON</span></div> : <ClassEmblem key={`emblem-${classId}`} classId={classId} />}
+        <ClassEmblem key={`emblem-${classId}`} classId={classId} />
       </header>
 
       <section className="panel plaque" aria-label="Class">
@@ -129,7 +160,7 @@ export default function App() {
 
       <nav className="guide-views" aria-label="Guide view">
         <button aria-pressed={view === 'gear'} onClick={() => setView('gear')}><strong>Gearing roadmap</strong><span>What to equip next</span></button>
-        <button aria-pressed={view === 'checklist'} onClick={() => setView('checklist')}><strong>Boss checklist & loot</strong><span>Track kills · browse rewards</span></button>
+        <button aria-pressed={view === 'checklist'} onClick={() => setView('checklist')}><strong>Boss & event checklist</strong><span>Track encounters · browse rewards</span></button>
       </nav>
       {view === 'checklist' && <BossChecklist renderLoot={encounter => <EncounterPlan encounter={encounter} inline />} onGear={id => { setStageId(id); setView('gear') }} />}
       {view === 'gear' && <section className="panel plaque" aria-label="Progression">
@@ -153,14 +184,13 @@ export default function App() {
                         {index > 0 && <span className="path-line" aria-hidden="true" />}
                         <button
                           type="button"
-                          className={`stage-chip ${active ? 'active' : ''} ${stage.theme === 'dungeon' ? 'stage-dungeon' : ''}`}
-                          style={stage.theme === 'dungeon' ? { '--dungeon-art': `url("${stage.art}")` } : undefined}
+                          className={`stage-chip ${active ? 'active' : ''}`}
                           aria-pressed={active}
                           onClick={() => setStageId(stage.id)}
                         >
                           <span className="stage-marker">
                             <span className={`stage-icons${bossArt[stage.id]?.length > 1 ? ' stage-icons-group' : ''}`} aria-hidden="true">
-                              {stage.theme === 'dungeon' ? <img className="dungeon-thumbnail" src={stage.art} alt="" draggable="false" /> : bossArt[stage.id]?.map(id => <img key={id} src={`/bosses/${id}.png`} alt="" draggable="false" />)}
+                              {stage.theme === 'dungeon' ? <img src={`/items/${stage.id === 'dungeon-pre-plantera' ? 'Bone' : 'Ectoplasm'}.png`} alt="" draggable="false" /> : bossArt[stage.id]?.map(id => <img key={id} src={`/bosses/${id}.png`} alt="" draggable="false" />)}
                             </span>
                             <span className="stage-index">{String(globalIndex + 1).padStart(2, '0')}</span>
                           </span>

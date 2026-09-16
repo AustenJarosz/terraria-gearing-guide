@@ -1,5 +1,11 @@
 # Content and image sources
 
+## Event checklist expansion
+
+The checklist includes regular-world combat events, separate early/Hardmode Blood Moons and Goblin Armies, all three Old One’s Army tiers, and optional weather, peaceful and seasonal experiences. Special-seed-only rain variants are outside this guide’s normal-world scope. Existing detailed event loot is reused; newly listed events use concise reward summaries and direct wiki links, without unverified drop percentages.
+
+Sources: [Events](https://terraria.wiki.gg/wiki/Events), [Blood Moon](https://terraria.wiki.gg/wiki/Blood_Moon), [Goblin Army](https://terraria.wiki.gg/wiki/Goblin_Army), [Old One’s Army](https://terraria.wiki.gg/wiki/Old_One%27s_Army), [Frost Moon](https://terraria.wiki.gg/wiki/Frost_Moon), [Christmas](https://terraria.wiki.gg/wiki/Christmas). Reviewed September 15, 2026.
+
 ## Checklist loot additions — September 15, 2026
 
 - [Treasure Bags](https://terraria.wiki.gg/wiki/Treasure_Bag): Eater of Worlds and Brain of Cthulhu Master bag material ranges, accessories and 5% pets. Extra segment/Creeper materials are excluded from bag quantities.
@@ -114,6 +120,14 @@ Rates checked against the current Desktop Official Wiki enemy/item tables (Exper
 
 Sources: [King Slime](https://terraria.wiki.gg/wiki/King_Slime), [Treasure Bags](https://terraria.wiki.gg/wiki/Treasure_Bag), [Queen Bee](https://terraria.wiki.gg/wiki/Queen_Bee), [Deerclops](https://terraria.wiki.gg/wiki/Deerclops). Rates are per bag except explicitly marked direct Master pet drops. Queen Bee gives one weapon, Beenades ×10–29 and Bee Wax ×17–29 per bag. King Slime's 1.4.5 Slime Staff drop is included. Decoration-only and vanity items (including Dizzy's Rare Gecko Chester) are omitted. Local sprites are exported from the installed game.
 # Checklist sprite audit
+
+## Blood Moon and Old One's Army loot review — 2026-09-15
+
+`src/data/eventLoot.js` contains curated Master Mode Blood Moon loot, grouped by enemy, and the tier 1 Dark Mage / tier 2 Ogre rewards. Hardmode retains the early Blood Moon groups. The checklist's tier 3 entry filters the shared Army loot to Betsy; the gearing roadmap retains all tier 3 enemies. Vanity, banners, trophies and relics remain excluded; useful guaranteed drops such as War Table and Sanguine Staff remain included. Rates apply to regular worlds and naturally spawned enemies.
+
+Sources: [Blood Zombie](https://terraria.wiki.gg/wiki/Blood_Zombie), [Drippler](https://terraria.wiki.gg/wiki/Drippler), [Bloody Tear](https://terraria.wiki.gg/wiki/Bloody_Tear), [Clown](https://terraria.wiki.gg/wiki/Clown), [Trifold Map](https://terraria.wiki.gg/wiki/Trifold_Map), [Zombie Merman](https://terraria.wiki.gg/wiki/Zombie_Merman), [Hemogoblin Shark](https://terraria.wiki.gg/wiki/Hemogoblin_Shark), [Blood Eel](https://terraria.wiki.gg/wiki/Blood_Eel), [Dreadnautilus](https://terraria.wiki.gg/wiki/Dreadnautilus), [Chum Bucket](https://terraria.wiki.gg/wiki/Chum_Bucket), [Dark Mage](https://terraria.wiki.gg/wiki/Dark_Mage), [Ogre](https://terraria.wiki.gg/wiki/Ogre), [Old One's Army](https://terraria.wiki.gg/wiki/Old_One%27s_Army).
+
+Corrected Dark Mage's Tome to a mount, added missing Ogre weapons and sentry accessories, and excluded Ogre's Club from tier 2 (it is tier 3 only). Corrected the roadmap's tier 3 Dark Mage sentry accessory rates to 8.33%. New sprites use installed game Item IDs.
 
 Compared the sprite manifest to the installed game's `Terraria.ID.ItemID` constants, including review of internal-name aliases. Laser Rifle incorrectly used Clockwork Assault Rifle ID 434; corrected to 514 and re-exported. Constellation remains 5479 (`ConstellationWhip`), not the unrelated internal constant `Constellation` at 5238.
 

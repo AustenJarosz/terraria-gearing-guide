@@ -112,8 +112,8 @@ export const hardmodeDrops = {
   ],
   'old-ones-army': [
     ...kill('Dark Mage · tier 3', [
-      ["Squire's Shield", '50%', 'Accessory'],
-      ["Apprentice's Scarf", '50%', 'Accessory'],
+      ["Squire's Shield", '8.33%', 'Accessory'],
+      ["Apprentice's Scarf", '8.33%', 'Accessory'],
       ['War Table', '25%', 'Buff station'],
       ['Dragon Egg', '8.33%', 'Pet'],
       ['Gato Egg', '8.33%', 'Pet'],

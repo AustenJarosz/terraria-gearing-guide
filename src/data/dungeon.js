@@ -1,7 +1,7 @@
 // Dungeon visits are exploration stops, with rewards kept separate from entry gear.
 export const dungeonStages = [
   {
-    art: '/images/dungeon-depths.png',
+    art: '/images/dungeon-pixel-depths-2k.png',
     id: 'dungeon-pre-plantera', name: 'Dungeon · first descent', next: 'Pre-Plantera',
     era: 'pre-hardmode', kind: 'Dungeon', theme: 'dungeon',
     when: 'After Skeletron · return any time before Plantera',
@@ -14,7 +14,7 @@ export const dungeonStages = [
     rewardNote: 'A mix of finds and crafted upgrades: Phoenix Blaster uses the Handgun, Necro armor uses Bones, and Spinal Tap is crafted from Bones and Cobwebs. Check each card for its source.',
   },
   {
-    art: '/images/dungeon-awakened-guard.png',
+    art: '/images/dungeon-pixel-awakened-2k.png',
     id: 'dungeon-post-plantera', name: 'Dungeon · awakened', next: 'Post-Plantera',
     era: 'hardmode', kind: 'Dungeon', theme: 'dungeon',
     when: 'After Plantera · before the Jungle Temple',

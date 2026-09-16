@@ -5,6 +5,25 @@ import { classes, stages, loadouts } from '../src/data/gear.js'
 import { sideStages, sideEncounters } from '../src/data/roadmap.js'
 import { bossArt, enemyArt } from '../src/data/bossArt.js'
 import { bossDrops } from '../src/data/bossDrops.js'
+import { checklistEvents } from '../src/data/checklistEvents.js'
+import { checklistArt } from '../src/data/checklistArt.js'
+const earlyBlood = checklistEvents.bloodEarly.drops
+const hardBlood = checklistEvents.bloodHard.drops
+assert(earlyBlood.some(drop => drop.name === 'Money Trough' && drop.enemy === 'Blood Zombie & Drippler' && drop.rate === '1%'))
+assert(earlyBlood.some(drop => drop.name === 'Shark Tooth Necklace' && drop.rate === '1.33%'))
+assert(!earlyBlood.some(drop => drop.enemy === 'Clown'), 'Clowns require Hardmode')
+assert(hardBlood.some(drop => drop.name === 'Bananarang' && drop.enemy === 'Clown'))
+assert(earlyBlood.every(drop => hardBlood.includes(drop)), 'Earlier Blood Moon rewards remain in Hardmode')
+assert.equal(checklistEvents.armyOne.drops.find(drop => drop.name === "Dark Mage's Tome").kind, 'Mount')
+assert.equal(checklistEvents.armyTwo.drops.filter(drop => drop.rate === '20%').length, 5, 'Tier 2 Ogre has five weapon rewards')
+assert(!checklistEvents.armyTwo.drops.some(drop => drop.name === "Ogre's Club"), 'Ogre pet is tier 3 only')
+for (const event of Object.values(checklistEvents)) {
+ assert(checklistArt[event.id], `Missing event icon: ${event.name}`)
+ for (const file of [checklistArt[event.id], ...event.drops.map(drop => drop.file)]) {
+  const png = fs.readFileSync(`public/items/${file}`)
+  assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `Invalid checklist sprite: ${file}`)
+ }
+}
 assert.deepEqual([...new Set(bossDrops['evil-boss'].map(drop => drop.enemy))], ['Eater of Worlds', 'Brain of Cthulhu'])
 assert.equal(bossDrops['queen-slime'].length, 8)
 assert(!bossDrops['pre-mechanicals'].some(drop => drop.enemy === 'Queen Slime'))
