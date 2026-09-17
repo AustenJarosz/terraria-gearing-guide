@@ -1,0 +1,36 @@
+const altar = ['Demon Altar', 'Crimson Altar']
+const anvil = ['Mythril Anvil', 'Orichalcum Anvil']
+const recipe = (ingredients, stations = altar) => ({ recipes: [{ ingredients, stations }] })
+const drop = (enemy, rate, note) => ({ enemy, rate, note })
+export const summonAcquisition = {
+  'Bloody Tear': { drops: [drop('Blood Zombie', '1%', 'During a Blood Moon'), drop('Drippler', '1%', 'During a Blood Moon'), drop('Wandering Eye Fish', '4%', 'During a Blood Moon'), drop('Zombie Merman', '4%', 'During a Blood Moon'), drop('Blood Eel', '4%', 'During a Blood Moon'), drop('Hemogoblin Shark', '4%', 'During a Blood Moon'), drop('Clown', '10%', 'During a Blood Moon'), drop('The Bride', '20%'), drop('The Groom', '20%'), drop('Dreadnautilus', '100%')], note: 'The Bride and Groom can also drop it outside a Blood Moon. Statue-spawned enemies do not count.' },
+  'Slime Crown': recipe([['Gel', 20], [['Gold Crown', 'Platinum Crown'], 1]]),
+  'Suspicious Looking Eye': { ...recipe([['Lens', 6]]), note: 'Also found in underground chests.' },
+  'Worm Food': recipe([['Vile Powder', 30], ['Rotten Chunk', 15]]),
+  'Bloody Spine': recipe([['Vicious Powder', 30], ['Vertebra', 15]]),
+  'Goblin Battle Standard': { ...recipe([['Tattered Cloth', 10], ['Wood', 5]], ['Loom']), note: 'Goblin Scouts drop Tattered Cloth. Any type of wood works.' },
+  'Eternia Crystal': { vendor: 'Tavernkeep', note: 'Find him after defeating Eater of Worlds or Brain of Cthulhu. Price increases with the event tier.' },
+  'Eternia Crystal Stand': { vendor: 'Tavernkeep', note: 'Place on solid ground with enough clear space for the event.' },
+  'Abeemination': recipe([['Honey Block', 5], ['Hive', 5], ['Stinger', 1], ['Bottled Honey', 1]], ['By Hand']),
+  'Deer Thing': recipe([['Flinx Fur', 3], ['Lens', 1], [['Demonite Ore', 'Crimtane Ore'], 5]]),
+  'Clothier Voodoo Doll': { drops: [drop('Angry Bones', '0.33%'), drop('Dark Caster', '0.33%'), drop('Librarian Skeleton', '0.33%')], note: 'Dungeon enemies. Equip the doll to damage the Clothier.' },
+  'Guide Voodoo Doll': { drops: [drop('Voodoo Demon', '100%')], note: 'Underworld. Dropping the doll in lava sacrifices the living Guide and starts the fight.' },
+  'Pirate Map': { note: '1% drop from eligible enemies killed in the surface Ocean during Hardmode.' },
+  'Gelatin Crystal': { note: 'Mine the color-changing crystal growing among Crystal Shards on Pearlstone or Pink Ice in the Underground Hallow.' },
+  'Mechanical Worm': { ...recipe([[['Rotten Chunk', 'Vertebra'], 6], [['Iron Bar', 'Lead Bar'], 5], ['Soul of Night', 6]], anvil), note: 'Also a 0.04% drop from eligible Hardmode enemies before The Destroyer is defeated.' },
+  'Mechanical Eye': { ...recipe([['Lens', 3], [['Iron Bar', 'Lead Bar'], 5], ['Soul of Light', 6]], anvil), note: 'Also a 0.04% drop from eligible Hardmode enemies before The Twins are defeated.' },
+  'Mechanical Skull': { ...recipe([['Bone', 30], [['Iron Bar', 'Lead Bar'], 5], ['Soul of Light', 3], ['Soul of Night', 3]], anvil), note: 'Also a 0.04% drop from eligible Hardmode enemies before Skeletron Prime is defeated.' },
+  'Solar Tablet': { ...recipe([['Solar Tablet Fragment', 8]], anvil), note: 'Tablets and fragments are also found in Jungle Temple chests; Temple enemies drop fragments.' },
+  'Pumpkin Moon Medallion': recipe([['Pumpkin', 30], ['Ectoplasm', 5], ['Hallowed Bar', 10]], anvil),
+  'Naughty Present': recipe([['Silk', 20], ['Ectoplasm', 5], ['Soul of Fright', 5]], anvil),
+  'Lihzahrd Power Cell': { drops: [drop('Lihzahrd', '2%'), drop('Flying Snake', '2%')], note: 'Also guaranteed in each Lihzahrd Chest in the Jungle Temple.' },
+  'Truffle Worm': { note: 'Catch with a Bug Net in an underground Glowing Mushroom biome during Hardmode. It burrows away when approached.' },
+  'Prismatic Lacewing': { note: 'Catch with a Bug Net in the surface Hallow, 7:30 PM–midnight after Plantera. Release it in the Hallow.' },
+  'Celestial Sigil': recipe([['Solar Fragment', 12], ['Vortex Fragment', 12], ['Nebula Fragment', 12], ['Stardust Fragment', 12]], ['Ancient Manipulator']),
+  'Plantera’s Bulb': { note: 'Grows on Underground Jungle grass after all three mechanical bosses. Break it to summon Plantera; it cannot be carried as an item.' },
+  'Shadow Orb': { note: 'Found in underground Corruption chasms. Break with a hammer or explosives.' },
+  'Crimson Heart': { note: 'Found in underground Crimson chambers. Break with a hammer or explosives.' },
+  'Larva': { note: 'Found inside Underground Jungle Bee Hives. Breaking it immediately summons Queen Bee.' },
+  'Lihzahrd Altar': { note: 'Found in the final chamber of the Jungle Temple. Activate with a Lihzahrd Power Cell after Plantera.' },
+  'Martian Probe': { note: 'Appears in the outer thirds of the world after Golem, most often in Space. Let it detect you and escape.' },
+}

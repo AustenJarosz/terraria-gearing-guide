@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { classes, eras, loadouts, stages as allStages } from './data/gear'
 import { BossChecklist } from './BossChecklist'
+import { NpcGuide } from './NpcGuide'
+import { FishingGuide } from './FishingGuide'
 const stages = allStages.filter(stage => stage.id !== 'pre-hardmode-optional')
 import { ClassIcon } from './icons'
 import './App.css'
-import { ItemGrid } from './ItemChip'
+import { AccessoryGrid, ItemGrid } from './ItemChip'
+import { items } from './data/items'
 import { ClassEffects } from './ClassEffects'
 import { BossArt } from './BossArt'
 import { bossArt } from './data/bossArt'
@@ -75,9 +78,11 @@ function EncounterPlan({ encounter, inline = false }) {
 }
 
 export default function App() {
+  const [artworkOnly, setArtworkOnly] = useState(false)
+  const [artworkDim, setArtworkDim] = useSavedSelection('terraria-guide-artwork-dim', '0', Array.from({ length: 86 }, (_, index) => String(index)))
   const [classId, setClassId] = useSavedSelection('terraria-guide-class', 'melee', classes.map(item => item.id))
   const [stageId, setStageId] = useSavedSelection('terraria-guide-stage', 'pre-boss', stages.map(item => item.id))
-  const [view, setView] = useSavedSelection('terraria-guide-view', 'gear', ['gear', 'checklist'])
+  const [view, setView] = useSavedSelection('terraria-guide-view', 'gear', ['gear', 'checklist', 'npcs', 'fishing'])
   const isDungeon = view === 'gear' && stages.find(stage => stage.id === stageId)?.theme === 'dungeon'
   const isEyeForest = view === 'gear' && stageId === 'pre-boss'
   const isDungeonEntrance = view === 'gear' && stageId === 'pre-skeletron'
@@ -87,6 +92,31 @@ export default function App() {
   const isTemple = view === 'gear' && stageId === 'pre-golem'
   const isEventNight = view === 'gear' && stageId === 'event-upgrades'
   const isOptionalDay = view === 'gear' && stageId === 'optional-bosses'
+  const isCultRitual = view === 'gear' && stageId === 'pre-lunatic'
+  const isCelestial = view === 'gear' && stageId === 'celestial-pillars'
+  const isMoonLord = view === 'gear' && stageId === 'pre-moon-lord'
+  const isTown = view === 'npcs'
+  const isSnowFishing = view === 'fishing'
+  const hasArtwork = isDungeon || isEyeForest || isDungeonEntrance || isUnderworld || isMechanicalNight || isJungle || isTemple || isEventNight || isOptionalDay || isCultRitual || isCelestial || isMoonLord || isTown || isSnowFishing
+
+  useEffect(() => {
+    if (!artworkOnly) return
+    const mobileViewport = window.matchMedia('(max-width: 980px)')
+    const restoreGuideOnMobile = () => {
+      if (mobileViewport.matches) setArtworkOnly(false)
+    }
+    restoreGuideOnMobile()
+    mobileViewport.addEventListener('change', restoreGuideOnMobile)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const handleKey = event => { if (event.key === 'Escape') setArtworkOnly(false) }
+    window.addEventListener('keydown', handleKey)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKey)
+      mobileViewport.removeEventListener('change', restoreGuideOnMobile)
+    }
+  }, [artworkOnly])
 
   useEffect(() => {
     document.documentElement.dataset.class = classId
@@ -103,9 +133,14 @@ export default function App() {
     else if (isTemple) document.documentElement.dataset.environment = 'temple'
     else if (isEventNight) document.documentElement.dataset.environment = 'event-night'
     else if (isOptionalDay) document.documentElement.dataset.environment = 'optional-day'
+    else if (isCultRitual) document.documentElement.dataset.environment = 'cult-ritual'
+    else if (isCelestial) document.documentElement.dataset.environment = 'celestial'
+    else if (isMoonLord) document.documentElement.dataset.environment = 'moon-lord'
+    else if (isTown) document.documentElement.dataset.environment = 'town'
+    else if (isSnowFishing) document.documentElement.dataset.environment = 'snow-fishing'
     else delete document.documentElement.dataset.environment
     return () => { delete document.documentElement.dataset.environment }
-  }, [isDungeon, isEyeForest, isDungeonEntrance, isUnderworld, isMechanicalNight, isJungle, isTemple, isEventNight, isOptionalDay])
+  }, [isDungeon, isEyeForest, isDungeonEntrance, isUnderworld, isMechanicalNight, isJungle, isTemple, isEventNight, isOptionalDay, isCultRitual, isCelestial, isMoonLord, isTown, isSnowFishing])
 
   const activeClass = classes.find((item) => item.id === classId)
   const activeStage = stages.find((item) => item.id === stageId)
@@ -116,11 +151,19 @@ export default function App() {
   )
 
   return (
-    <div className={`page class-${isDungeon ? 'dungeon' : classId}${isEyeForest ? ' environment-eye' : ''}${isDungeonEntrance ? ' environment-entrance' : ''}${isUnderworld ? ' environment-underworld' : ''}${isMechanicalNight ? ' environment-mechanical' : ''}${isJungle ? ' environment-jungle' : ''}${isTemple ? ' environment-temple' : ''}${isEventNight ? ' environment-events' : ''}${isOptionalDay ? ' environment-optional' : ''}`} style={isDungeon ? { '--dungeon-art': `url("${activeStage.art}")` } : undefined}>
-      <div className="world-backdrop" aria-hidden="true"><i /><i /><i />{isEyeForest && <div className="eye-forest-scene"><img src="/bosses/0.png" alt="" draggable="false" /></div>}</div>
+    <div className={`page class-${isDungeon ? 'dungeon' : classId}${isEyeForest ? ' environment-eye' : ''}${isDungeonEntrance ? ' environment-entrance' : ''}${isUnderworld ? ' environment-underworld' : ''}${isMechanicalNight ? ' environment-mechanical' : ''}${isJungle ? ' environment-jungle' : ''}${isTemple ? ' environment-temple' : ''}${isEventNight ? ' environment-events' : ''}${isOptionalDay ? ' environment-optional' : ''}${isCultRitual ? ' environment-cult' : ''}${isCelestial ? ' environment-celestial' : ''}${isMoonLord ? ' environment-moon-lord' : ''}`} style={isDungeon ? { '--dungeon-art': `url("${activeStage.art}")` } : undefined}>
+      <div className="world-backdrop" aria-hidden="true"><i /><i /><i /><div className="artwork-dimmer" style={{ opacity: Number(artworkDim) / 100 }} /></div>
 
+      <div className="artwork-controls">
+        {!artworkOnly && <label className="artwork-dim-control" htmlFor="artwork-dim">
+          <span>Dim artwork <output htmlFor="artwork-dim">{artworkDim}%</output></span>
+          <input id="artwork-dim" type="range" min="0" max="85" step="1" value={artworkDim} aria-valuetext={`${artworkDim}% darker`} onChange={event => setArtworkDim(event.target.value)} />
+        </label>}
+        {hasArtwork && <button className="artwork-toggle" type="button" aria-pressed={artworkOnly} onClick={() => setArtworkOnly(value => !value)} title={artworkOnly ? 'Return to guide (Escape)' : 'Hide the guide to view the artwork'}>{artworkOnly ? '← Back to guide' : '◈ View artwork'}</button>}
+      </div>
+      <div className={`guide-content${artworkOnly ? ' is-hidden' : ''}`} inert={artworkOnly} aria-hidden={artworkOnly || undefined}>
       <header className="hero plaque">
-        {!isDungeon && !isEyeForest && !isDungeonEntrance && !isUnderworld && !isMechanicalNight && !isJungle && !isTemple && !isEventNight && !isOptionalDay && <ClassEffects key={`effects-${classId}`} />}
+        {!hasArtwork && <ClassEffects key={`effects-${classId}`} />}
         <div className="hero-copy">
         <p className="kicker">Terraria · Bigger & Boulder</p>
         <h1>Gearing Guide</h1><p className="version-note">Desktop 1.4.5.7 · Class loadouts & progression</p>
@@ -161,8 +204,12 @@ export default function App() {
       <nav className="guide-views" aria-label="Guide view">
         <button aria-pressed={view === 'gear'} onClick={() => setView('gear')}><strong>Gearing roadmap</strong><span>What to equip next</span></button>
         <button aria-pressed={view === 'checklist'} onClick={() => setView('checklist')}><strong>Boss & event checklist</strong><span>Track encounters · browse rewards</span></button>
+        <button aria-pressed={view === 'npcs'} onClick={() => setView('npcs')}><strong>NPC guide</strong><span>Find residents · explore shop unlocks</span></button>
+        <button aria-pressed={view === 'fishing'} onClick={() => setView('fishing')}><strong>Fishing guide</strong><span>Quest milestones · useful rewards</span></button>
       </nav>
       {view === 'checklist' && <BossChecklist renderLoot={encounter => <EncounterPlan encounter={encounter} inline />} onGear={id => { setStageId(id); setView('gear') }} />}
+      {view === 'npcs' && <NpcGuide />}
+      {view === 'fishing' && <FishingGuide />}
       {view === 'gear' && <section className="panel plaque" aria-label="Progression">
         <div className="panel-label">
           <span>02</span>
@@ -226,7 +273,7 @@ export default function App() {
             </p>
           </div>
 
-          {isDungeon && <DungeonGuide stage={activeStage} onSelect={setStageId} />}
+          {isDungeon && <DungeonGuide stage={activeStage} />}
           {activeStage.unlock && !isDungeon && <EncounterPlan encounter={activeStage} />}
           {activeStage.encounters && (
             <section className="encounter-choices" aria-label="Optional encounters">
@@ -249,7 +296,7 @@ export default function App() {
           )}
 
           <h3 className="gear-section-title">{isDungeon ? 'Entry gear' : activeStage.encounters ? 'Starter gear for these encounters' : 'Bring to this fight'}</h3>
-          <p className="gear-hint">Hover for a preview; tap to keep it open. This guide is for Master Mode. Accessories are a recommendation pool, not a requirement to equip every item; choose up to 7 after using the Demon Heart extra-slot upgrade.</p><div className="slots">
+          <p className="gear-hint">Hover for a preview; tap to keep it open. Choose an armor set and a weapon setup. Accessories below fill all {activeStage.era === 'hardmode' ? '7 Master Mode slots after consuming the Wall of Flesh’s Demon Heart' : '6 Master Mode slots'}; situational swaps are listed separately.</p><div className="slots">
             <article className="slot">
               <h3>Armor</h3>
               <ItemGrid ids={loadout.armor} notes={loadout.itemNotes} />
@@ -259,15 +306,28 @@ export default function App() {
               <ItemGrid ids={loadout.weapons} notes={loadout.itemNotes} />
             </article>
             <article className="slot">
-              <h3>Accessories</h3>
-              <ItemGrid ids={loadout.accessories} notes={loadout.itemNotes} />
+              <h3>Accessories <span className="slot-count">{loadout.accessories.length} / {activeStage.era === 'hardmode' ? 7 : 6} slots</span></h3>
+              <p className="accessory-choice-hint">Pick one item from each “choose one” group. Each group fills a single slot.</p>
+              <AccessoryGrid ids={loadout.accessories} notes={loadout.itemNotes} choices={loadout.accessoryChoices} />
             </article>
           </div>
 
-          {!isDungeon && <aside className="notes">
-            <h3>Notes</h3>
+          {loadout.accessorySwaps?.length > 0 && <details className="loadout-swaps">
+            <summary>Accessory swaps <span>{loadout.accessorySwaps.length} {loadout.accessorySwaps.length === 1 ? 'alternative' : 'alternatives'}</span></summary>
+            <p className="gear-hint">Replace the named accessory; these are alternatives, not extra slots. Choose swaps to match your weapon, world, and available drops.</p>
+            <div className="loadout-swap-grid">
+              {loadout.accessorySwaps.map(swap => {
+                const worldChoice = ['wormScarf', 'brainConfusion'].includes(swap.id)
+                return <AccessoryGrid key={`${swap.id}-${swap.replaces}`} ids={[swap.id]}
+                  choices={worldChoice ? { [swap.id]: { label: 'World evil · choose one', ids: ['wormScarf', 'brainConfusion'], text: `Replace ${items[swap.replaces].name}. Worm Scarf is the Corruption option; Brain of Confusion is the Crimson option. Use either for this slot.` } } : {}}
+                  notes={worldChoice ? {} : { [swap.id]: [{ label: `Replace ${items[swap.replaces].name}`, text: swap.text }] }} />
+              })}
+            </div>
+          </details>}
+          <aside className="notes">
+            <h3>Build notes</h3>
             <p>{loadout.notes}</p>
-          </aside>}
+          </aside>
           {activeStage.rewards?.[classId]?.length > 0 && (
             <section className="encounter-rewards">
               <h3 className="gear-section-title">Rewards to chase · {activeClass.name}</h3>
@@ -284,8 +344,9 @@ export default function App() {
       )}
 
       <footer className="foot">
-        Practical loadouts for Desktop 1.4.5.7. Expert / Master items are optional. Terraria sprites © Re-Logic.<br /><a href="https://store.steampowered.com/news/posts/?appids=105600&amp;feed=steam_community_announcements" target="_blank" rel="noreferrer">1.4.5.7 release notes</a> · <a href="https://terraria.wiki.gg/wiki/Guide:Class_setups" target="_blank" rel="noreferrer">Official Wiki class guide</a>
+        Master Mode loadouts for Desktop 1.4.5.7. Six accessory slots before the Demon Heart; seven afterward. Terraria sprites © Re-Logic.<br /><a href="https://store.steampowered.com/news/posts/?appids=105600&amp;feed=steam_community_announcements" target="_blank" rel="noreferrer">1.4.5.7 release notes</a> · <a href="https://terraria.wiki.gg/wiki/Guide:Class_setups" target="_blank" rel="noreferrer">Official Wiki class guide</a>
       </footer>
+      </div>
     </div>
   )
 }

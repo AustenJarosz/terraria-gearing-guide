@@ -2,6 +2,8 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { items, wikiPage, wikiSrc } from './data/items'
 import { itemNotes } from './data/itemNotes'
+import { gearAcquisition } from './data/gearAcquisition'
+import { Acquisition } from './Acquisition'
 
 function ItemChip({ id, notes }) {
   const item = items[id]
@@ -66,7 +68,7 @@ function ItemChip({ id, notes }) {
       className={`item-popover ${open ? 'is-open' : ''}`} style={position} onPointerEnter={cancel} onPointerLeave={leave} onBlur={blur}>
       <div className="tip-heading"><img src={wikiSrc(item.file)} alt="" /><strong className={`rarity-${item.rarity}`}>{item.name}</strong><button type="button" onClick={close} aria-label="Close item details">×</button></div>
       <p className="tip-stats">{item.stats}</p><p>{item.info}</p>
-      <p className="tip-obtain"><strong>HOW TO GET IT</strong><br />{item.obtain}</p>
+      <div className="tip-obtain"><strong>HOW TO GET IT</strong><Acquisition data={gearAcquisition[id]} name={item.name} /></div>
       <a href={wikiPage(item.wiki || item.name)} target="_blank" rel="noreferrer">Terraria Wiki ↗</a>
     </section>, document.body)}
   </div>
@@ -74,6 +76,17 @@ function ItemChip({ id, notes }) {
 
 export function ItemGrid({ ids, notes = {} }) {
   return <div className="item-grid">{ids.map(id => <ItemChip key={id} id={id} notes={notes[id]} />)}</div>
+}
+
+export function AccessoryGrid({ ids, notes = {}, choices = {} }) {
+  return <div className="item-grid">{ids.map(id => {
+    const choice = choices[id]
+    return choice ? <div className="accessory-choice" key={id} role="group" aria-label={choice.label}>
+      <div className="accessory-choice-heading"><strong>{choice.label}</strong><span>1 slot</span></div>
+      {choice.ids.map(option => <ItemChip key={option} id={option} notes={notes[option]} />)}
+      <p>{choice.text}</p>
+    </div> : <ItemChip key={id} id={id} notes={notes[id]} />
+  })}</div>
 }
 
 

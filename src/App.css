@@ -65,6 +65,54 @@
 .checklist-loot-label { color: var(--accent); font-size: .8rem; white-space: nowrap; }
 .checklist-row.is-defeated summary .checklist-name { color: var(--muted); }
 .checklist-details { padding: 0 1rem 1rem 0; }
+.checklist-spawn { margin: .5rem 0 1.25rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: color-mix(in srgb, var(--surface-deep) 80%, transparent); }
+.checklist-spawn h4 { margin: 0 0 .8rem; color: var(--ink); font-size: 1rem; }
+.checklist-spawn h5 { margin: 0 0 .6rem; color: var(--accent); font-size: .875rem; }
+.checklist-spawn-method + .checklist-spawn-method { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.checklist-spawn dl { margin: 0; font-size: .875rem; line-height: 1.6; }
+.checklist-spawn dl > div { display: grid; grid-template-columns: 105px minmax(0, 1fr); gap: .75rem; margin: .4rem 0; }
+.checklist-spawn dt { color: var(--muted); font-weight: 600; }
+.checklist-spawn dd { margin: 0; color: var(--ink); }
+.checklist-spawn dd img { width: 24px; height: 24px; object-fit: contain; image-rendering: pixelated; vertical-align: middle; margin-right: .5rem; }
+.checklist-spawn-source { display: inline-block; margin-top: .5rem; color: var(--muted); font-size: .75rem; text-underline-offset: 3px; }
+.summon-item > a { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.summon-item > a:hover { text-decoration-style: solid; }
+.summon-info { display: inline; padding: .1rem .25rem; border: 0; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
+.summon-info:hover, .summon-info[aria-expanded='true'] { color: var(--accent); }
+.summon-item a:focus-visible, .summon-info:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.summon-preview { position: fixed; z-index: 1300; width: 320px; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow: auto; box-sizing: border-box; padding: 1rem; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface-deep); color: var(--ink); box-shadow: 0 8px 30px #0009; font-size: .875rem; line-height: 1.6; }
+.summon-preview > strong { display: block; color: var(--accent); }
+.summon-preview-label { display: block; margin-top: .65rem; color: var(--muted); font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.summon-preview p { margin: .25rem 0 .75rem; }
+.summon-preview a { color: var(--accent); text-underline-offset: 3px; }
+.summon-preview { width: 570px; }
+.acquisition { margin-top: .75rem; font-size: .8rem; }
+.acquisition h4 { margin: .8rem 0 .5rem; font-size: .85rem; color: var(--ink); }
+.acquisition-recipe { display: grid; grid-template-columns: minmax(85px, .8fr) minmax(130px, 1.4fr) minmax(90px, 1fr); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.acquisition-recipe + .acquisition-recipe { margin-top: .6rem; }
+.acquisition-recipe > div { padding: .6rem; background: color-mix(in srgb, var(--surface-deep) 50%, transparent); }
+.acquisition-recipe > div + div { border-left: 1px solid var(--line); }
+.acquisition-label { display: block; font-size: .68rem; font-weight: 700; color: var(--muted); margin-bottom: .55rem; }
+.acquisition-material { display: inline-flex; align-items: center; gap: .35rem; vertical-align: middle; line-height: 1.35; }
+.acquisition-material img { width: 26px; height: 26px; object-fit: contain; image-rendering: pixelated; flex-shrink: 0; }
+.acquisition ul { list-style: none; padding: 0; margin: 0; }
+.acquisition li { display: flex; align-items: center; justify-content: space-between; gap: .4rem; margin: 0 0 .55rem; }
+.acquisition li:last-child { margin-bottom: 0; }
+.acquisition li > strong { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.acquisition-or { display: block; color: var(--muted); margin: .25rem 0; font-size: .7rem; }
+.acquisition-drops { width: 100%; border-collapse: collapse; text-align: left; font-variant-numeric: tabular-nums; }
+.acquisition-drops th, .acquisition-drops td { padding: .45rem .6rem; border-bottom: 1px solid var(--line); }
+.acquisition-drops th { color: var(--muted); font-size: .7rem; }
+.acquisition-drops td:last-child, .acquisition-drops th:last-child { text-align: right; white-space: nowrap; }
+.acquisition-drops small { display: block; color: var(--muted); font-size: .7rem; }
+.acquisition-note { color: var(--muted); }
+@media (max-width: 480px) {
+  .acquisition-recipe { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); }
+  .acquisition-recipe .acquisition-station { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 600px) {
+  .checklist-spawn dl > div { grid-template-columns: 1fr; gap: .1rem; margin: .65rem 0; }
+}
 .checklist-gear { border: 1px solid var(--line); background: var(--surface-deep); color: var(--accent); padding: .5rem .8rem; cursor: pointer; border-radius: 4px; }
 .world-backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--world); }
 .class-melee .world-backdrop { background: radial-gradient(ellipse at 0 15%, #a142192b, transparent 45%), repeating-linear-gradient(120deg, transparent 0 150px, #ffffff03 150px 152px), var(--world); }
@@ -81,8 +129,6 @@
 .class-summoner .world-backdrop i:nth-child(2) { top: 25%; left: -450px; transform: rotate(-30deg); }
 .class-summoner .world-backdrop i:nth-child(3) { width: 590px; height: 840px; }
 .plaque { position: relative; background: var(--panel-texture), var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-.class-melee .plaque::before, .class-melee .plaque::after { content: ''; position: absolute; width: 5px; height: 5px; border: 1px solid #8a9196; background: #2a3036; top: 9px; pointer-events: none; }
-.class-melee .plaque::before { left: 9px; } .class-melee .plaque::after { right: 9px; }
 .class-ranged .plaque { background-size: 20px 20px; border-top: 1px solid var(--line); }
 .class-mage .plaque { border-top-color: #8970b7; }
 .class-summoner .plaque { border-top-color: #608bd0; }
@@ -193,6 +239,13 @@
 .gear-hint { color: var(--muted); font-size: .875rem; margin: 0 0 1rem; }
 .gear-section-title { margin: 0 0 .5rem; color: var(--accent); font-size: 1rem; }
 .slots { display: grid; grid-template-columns: 1fr 1.15fr 1.15fr; gap: .85rem; }
+.slot-count { display: inline-block; color: var(--muted); font-size: .7rem; letter-spacing: 0; white-space: nowrap; }
+.loadout-swaps { margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
+.loadout-swaps > summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+.loadout-swaps > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.loadout-swaps > summary span { margin-left: .6rem; color: var(--muted); font-size: .8rem; font-weight: 400; }
+.loadout-swaps[open] > summary { margin-bottom: 1rem; }
+.loadout-swap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 1rem; align-items: start; }
 .slot { padding: 1rem; min-width: 0; background: var(--surface-deep); border: 1px solid var(--line); border-radius: var(--radius); }
 .slot h3, .notes h3 { color: var(--accent); font-size: .875rem; text-transform: uppercase; letter-spacing: .12em; margin: 0 0 .75rem; }
 .notes { margin-top: 1rem; padding: 1rem; background: var(--accent-soft); border-left: 2px solid var(--accent); border-radius: var(--radius); }
@@ -212,7 +265,7 @@
 .rarity-blue { color: #b7b7ff; } .rarity-green { color: #80ec90; } .rarity-orange { color: #ffbc80; }
 .rarity-light-red { color: #ff9696; } .rarity-pink { color: #ff9be8; } .rarity-lime { color: #bbf178; }
 .rarity-yellow { color: #fff08a; } .rarity-red { color: #ff8585; } .rarity-expert { color: #94ede4; } .rarity-cyan { color: #8eeeff; }
-.item-popover { position: fixed; z-index: 1000; width: min(340px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; padding: 1rem; background: var(--panel-texture), var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); box-shadow: 0 14px 45px #0007; color: var(--ink); font-size: 1rem; line-height: 1.5; opacity: 0; visibility: hidden; transform: translateY(5px); transition: opacity 160ms, transform 160ms, visibility 160ms; pointer-events: none; }
+.item-popover { position: fixed; z-index: 1000; width: min(570px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; padding: 1rem; background: var(--panel-texture), var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); box-shadow: 0 14px 45px #0007; color: var(--ink); font-size: 1rem; line-height: 1.5; opacity: 0; visibility: hidden; transform: translateY(5px); transition: opacity 160ms, transform 160ms, visibility 160ms; pointer-events: none; }
 .item-popover.is-open { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
 .item-popover p { margin: .65rem 0; }
 .tip-heading { display: flex; align-items: center; gap: .6rem; }
@@ -222,7 +275,7 @@
 .tip-heading button { color: var(--muted); background: none; border: 0; cursor: pointer; padding: .2rem .5rem; font-size: 1.4rem; }
 .tip-stats { color: var(--accent); }
 .tip-obtain { padding-top: .7rem; border-top: 1px solid var(--line); }
-.tip-obtain strong { font-size: .875rem; letter-spacing: .1em; color: var(--muted); }
+.tip-obtain > strong { font-size: .875rem; letter-spacing: .1em; color: var(--muted); }
 .item-popover a, .encounter-plan a { color: var(--accent); text-underline-offset: 3px; }
 .encounter-plan { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.5rem; margin: 0 0 1.5rem; padding: 1rem; background: var(--surface-deep); border: 1px solid var(--line); border-radius: var(--radius); }
 .encounter-plan h3 { margin: 0 0 .4rem; color: var(--accent); font-size: 1rem; }
@@ -345,17 +398,76 @@
 }
 
 /* A biome takes over the world without changing the selected equipment class. */
+.guide-content { display: contents; }
+.artwork-controls { position: fixed; right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); z-index: 1100; display: flex; align-items: flex-end; gap: .5rem; max-width: calc(100vw - 24px); }
+@media (max-width: 980px) {
+  .artwork-controls { display: none; }
+}
+.artwork-dimmer { position: absolute; inset: 0; background: #02050b; pointer-events: none; }
+.artwork-dim-control { width: 140px; min-width: 0; padding: .5rem .7rem; border: 1px solid #b6c9dc44; border-radius: 6px; background: #0b1424d9; color: #d9e3ee; font-size: .7rem; }
+.artwork-dim-control > span { display: flex; justify-content: space-between; gap: .5rem; }
+.artwork-dim-control input { display: block; width: 100%; margin: .4rem 0 0; accent-color: var(--accent); cursor: pointer; }
+.artwork-dim-control input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.guide-content.is-hidden, .guide-content.is-hidden * { visibility: hidden !important; }
+.artwork-toggle { padding: .5rem .7rem; border: 1px solid #b6c9dc44; border-radius: 6px; background: #0b1424b3; color: #d9e3ee; font: inherit; font-size: .75rem; cursor: pointer; opacity: .65; }
+.artwork-toggle:hover, .artwork-toggle:focus-visible, .artwork-toggle[aria-pressed='true'] { opacity: 1; }
+.artwork-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+:root[data-environment='cult-ritual'] {
+  --world: #080e1b; --surface: #141c30; --surface-deep: #0b1222;
+  --ink: #e9edf6; --muted: #b6c1d4; --line: #3c5069;
+}
+:root[data-environment='celestial'] {
+  --world: #0c1020; --surface: #191e34; --surface-deep: #101629;
+  --ink: #edf0fb; --muted: #bfc7df; --line: #484f73;
+}
+:root[data-environment='moon-lord'] {
+  --world: #080e18; --surface: #14232b; --surface-deep: #0c1721;
+  --ink: #eaf5f4; --muted: #b4c9cc; --line: #405862;
+}
+.environment-moon-lord .world-backdrop {
+  background: linear-gradient(#060d1610, #060d1625), url('/images/moon-lord-night.png') center bottom / cover no-repeat;
+}
+.environment-moon-lord .world-backdrop i { display: none; }
+.environment-moon-lord .plaque { background: #0c1721e8; box-shadow: 0 12px 40px #0008; }
+.environment-celestial .world-backdrop {
+  background: linear-gradient(#080d1e15, #080d1e30), url('/images/celestial-pillars.png') center bottom / cover no-repeat;
+}
+.environment-celestial .world-backdrop i { display: none; }
+.environment-celestial .plaque { background: #101629e8; box-shadow: 0 12px 40px #0008; }
+.environment-cult .world-backdrop {
+  background: linear-gradient(#070d1810, #070d1825), url('/images/lunatic-cult-ritual-v2.png') center bottom / cover no-repeat;
+}
+@media (min-width: 1700px) {
+  .environment-cult .world-backdrop { transform: scale(1.035); transform-origin: left bottom; }
+}
+.environment-cult .world-backdrop i { display: none; }
+.environment-cult .plaque { background: #0c1424e8; box-shadow: 0 12px 40px #0008; }
+.environment-cult .hero {
+  background: linear-gradient(90deg, #0c1424ed, #101b2c88), url('/images/lunatic-cult-ritual-v2.png') right 48% / cover;
+  border-color: #3c5069;
+}
+@media (min-width: 981px) {
+  /* A lightly tinted window onto the actual world, without a second copy of the scene. */
+  .environment-cult .hero {
+    background: linear-gradient(90deg, #080f207a, #080f204d);
+    border-color: #a3c6e655;
+    box-shadow: inset 0 1px 0 #d8eaff15, 0 12px 40px #0004;
+  }
+  .environment-cult .hero-copy {
+    text-shadow: 0 2px 5px #030711, 0 0 18px #030711aa;
+  }
+}
 :root[data-environment='optional-day'] {
   --world: #15293b; --surface: #1d3043; --surface-deep: #122334;
   --ink: #f1f5fc; --muted: #c3d3e2; --line: #506b83;
 }
 .environment-optional .world-backdrop {
-  background: linear-gradient(#132c4010, #14223725), url('/images/fishron-empress-cinematic.png') center center / cover no-repeat;
+  background: linear-gradient(#132c4010, #14223725), url('/images/fishron-empress-day-v3.png') center center / cover no-repeat;
 }
 .environment-optional .world-backdrop i { display: none; }
 .environment-optional .plaque { background: #122537e8; box-shadow: 0 12px 40px #07132166; }
 .environment-optional .hero {
-  background: linear-gradient(90deg, #102b40e8, #25203b88), url('/images/fishron-empress-cinematic.png') center 45% / cover;
+  background: linear-gradient(90deg, #102b40e8, #25203b88), url('/images/fishron-empress-day-v3.png') center 45% / cover;
   border-color: #506b83;
 }
 :root[data-environment='event-night'] {
@@ -394,7 +506,7 @@
 .environment-jungle .world-backdrop i { display: none; }
 .environment-jungle .plaque { background: #102016e8; box-shadow: 0 12px 40px #0007; }
 .environment-jungle .hero {
-  background: linear-gradient(90deg, #102016ed, #10201666), url('/images/plantera-underground-jungle.png') right 55% / cover;
+  background: linear-gradient(90deg, #10201680, #1020164d);
   border-color: #425e44;
 }
 :root[data-environment='underworld'] {
@@ -415,7 +527,7 @@
   --ink: #e8edf3; --muted: #aebccb; --line: #384b60;
 }
 .environment-eye .world-backdrop {
-  background: linear-gradient(#050a1633, #050a1655), url('/images/eye-night-forest-2k.png') center bottom / cover no-repeat;
+  background: linear-gradient(#050a1633, #050a1655), url('/images/eye-night-forest-lowered.png') center bottom / cover no-repeat;
 }
 .environment-eye .world-backdrop i { display: none; }
 .environment-mechanical .world-backdrop {
@@ -439,25 +551,8 @@
 .environment-eye .plaque { background: #0b1421e8; box-shadow: 0 12px 40px #0008; }
 .environment-eye .hero {
   overflow: hidden;
-  background: linear-gradient(0deg, #0a1422 0%, #0a1422ed 34%, #0a142200 75%), url('/images/eye-night-forest-2k.png') center 62% / cover;
+  background: linear-gradient(0deg, #0a1422 0%, #0a1422ed 34%, #0a142200 75%), url('/images/eye-night-forest-lowered.png') center 62% / cover;
   border-color: #40566b;
-}
-.eye-forest-scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.eye-forest-scene img {
-  position: absolute; right: -45px; top: 18vh; width: clamp(150px, 18vw, 220px);
-  image-rendering: pixelated; opacity: .85;
-  filter: brightness(.7) saturate(.65) drop-shadow(0 10px 25px #050813);
-  transform: rotate(-24deg); animation: eye-forest-hover 10s ease-in-out infinite;
-}
-@keyframes eye-forest-hover {
-  0%, 100% { transform: translate(12px, 0) rotate(-24deg); }
-  50% { transform: translate(-12px, 12px) rotate(-18deg); }
-}
-@media (max-width: 600px) {
-  .eye-forest-scene img { width: 145px; top: 12vh; right: -55px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .eye-forest-scene img { animation: none; }
 }
 :root[data-environment='dungeon'] {
   --world: #05090c; --surface: #111a20; --surface-deep: #090f14;
@@ -483,11 +578,185 @@
 .dungeon-loot-enemy { margin: 1.25rem 0 .5rem; color: var(--accent); font-size: 1.1rem; }
 .dungeon-loot a { color: var(--accent); text-underline-offset: 3px; }
 .dungeon-loot .drop-list a { color: var(--ink); }
-.dungeon-scene { min-height: 260px; display: flex; align-items: flex-end; border: 1px solid #4f6b70; background: linear-gradient(0deg, #040b10f5, #040b1020 90%), var(--dungeon-art) center 50% / cover; }
-.dungeon-visits { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 1rem 0; }
-.dungeon-visits button { padding: .8rem 1rem; border: 1px solid var(--line); background: var(--surface-deep); color: var(--muted); cursor: pointer; text-align: left; }
-.dungeon-visits button[aria-pressed='true'] { border-color: var(--accent); color: var(--ink); background: color-mix(in srgb, var(--accent) 12%, #090f14); }
-.dungeon-visits small { display: block; margin-top: .25rem; color: var(--muted); }
-@media (max-width: 700px) {
-  .dungeon-scene { min-height: 200px; }
+
+:root[data-environment='town'] {
+  --world: #14241f; --surface: #1b2c29; --surface-deep: #101f1d;
+  --ink: #edf4ef; --muted: #bdcec7; --line: #4b655c;
 }
+:root[data-environment='town'] .world-backdrop {
+  background: linear-gradient(#081a171a, #081a1733), url('/images/npc-forest-town.png') center bottom / cover no-repeat;
+}
+:root[data-environment='town'] .world-backdrop i { display: none; }
+:root[data-environment='town'] .plaque { background: #101f1deb; box-shadow: 0 12px 40px #0005; }
+@media (max-width: 680px) {
+  /* Keep the furnished house in the portrait crop. */
+  :root[data-environment='town'] .world-backdrop { background-position: right bottom; }
+}
+
+:root[data-environment='snow-fishing'] {
+  --world: #0a1427; --surface: #17263d; --surface-deep: #0d1a2d;
+  --ink: #edf3fc; --muted: #b9c9df; --line: #425974;
+}
+:root[data-environment='snow-fishing'] .world-backdrop {
+  background: linear-gradient(#07102208, #07102218), url('/images/fishing-snow-night-costume-fix.png') center bottom / cover no-repeat;
+}
+:root[data-environment='snow-fishing'] .world-backdrop i { display: none; }
+:root[data-environment='snow-fishing'] .plaque { background: #0d1a2deb; box-shadow: 0 12px 40px #0005; }
+@media (max-width: 680px) {
+  /* Keep the angler, lantern, and snowy bank in the portrait crop. */
+  :root[data-environment='snow-fishing'] .world-backdrop { background-position: right bottom; }
+}
+
+/* Shared window header for illustrated guide screens. */
+:root[data-environment] .page .hero {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--surface-deep) 50%, transparent), color-mix(in srgb, var(--surface-deep) 30%, transparent));
+  box-shadow: inset 0 1px 0 #d8eaff15, 0 12px 40px #0004;
+}
+:root[data-environment] .page .hero-copy {
+  text-shadow: 0 2px 5px #030711, 0 0 18px #030711aa;
+}
+
+/* NPC guide: shared panels, with compact shops sorted by progression. */
+.guide-views { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.npc-guide > h2 { margin: .2rem 0 .7rem; }
+.npc-toolbar { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1.5rem 0 1rem; }
+.npc-toolbar label { display: grid; gap: .4rem; font-size: .8rem; color: var(--muted); }
+.npc-toolbar input { width: 100%; min-width: 0; padding: .8rem; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); background: var(--surface-deep); font: inherit; }
+.npc-toolbar input:focus-visible, .npc-card summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.npc-recruitment-filter > span { font-size: .8rem; color: var(--muted); }
+.npc-recruitment-filter .drop-filters { margin: .5rem 0 0; }
+.npc-world-note { font-size: .78rem; color: var(--muted); line-height: 1.6; }
+.npc-world-note a, .npc-source { color: var(--accent); }
+.npc-result-count { font-size: .8rem; color: var(--muted); margin-top: 1.25rem; }
+.npc-era { margin-top: 1.7rem; }
+.npc-era > h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1rem; margin: 0 0 .75rem; font-size: 1rem; }
+.npc-era > h3 span { font-family: inherit; font-size: .75rem; font-weight: 400; color: var(--muted); }
+.npc-card { border: 1px solid var(--line); background: var(--surface-deep); border-radius: 5px; margin-bottom: .6rem; overflow: hidden; }
+.npc-card[open] { border-color: color-mix(in srgb, var(--accent) 65%, var(--line)); }
+.npc-card summary { list-style: none; display: grid; grid-template-columns: 44px minmax(130px, .7fr) minmax(0, 1.6fr) 20px; gap: .8rem; align-items: center; padding: 1rem; cursor: pointer; }
+.npc-card summary::-webkit-details-marker { display: none; }
+.npc-card summary:hover { background: var(--accent-soft); }
+.npc-portrait { display: grid; place-items: center; width: 44px; height: 44px; background: var(--accent-soft); border-radius: 5px; }
+.npc-portrait img { max-width: 36px; max-height: 36px; image-rendering: pixelated; }
+.npc-title { display: grid; gap: .25rem; }
+.npc-title > span { color: var(--accent); font-size: .75rem; }
+.npc-summary-condition { font-size: .8rem; line-height: 1.55; color: var(--muted); }
+.npc-expand { color: var(--accent); transition: transform .15s; }
+.npc-card[open] .npc-expand { transform: rotate(180deg); }
+.npc-body { padding: 0 1.2rem 1.2rem; border-top: 1px solid var(--line); }
+.npc-recruit { margin: 1rem 0; padding: .75rem 1rem; border-left: 2px solid var(--accent); background: var(--accent-soft); }
+.npc-recruit > span { color: var(--accent); font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; }
+.npc-recruit p { margin: .35rem 0 0; font-size: .85rem; line-height: 1.6; }
+.npc-service { font-size: .85rem; line-height: 1.6; color: var(--muted); }
+.npc-shop-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1rem; margin: 1.4rem 0 1rem; }
+.npc-shop-heading h4 { margin: 0; }
+.npc-shop-heading > span { color: var(--muted); font-size: .75rem; }
+.npc-stock-group { margin-bottom: 1rem; }
+.npc-stock-group h5 { margin: 0; padding: .6rem .75rem; color: var(--accent); background: var(--accent-soft); font-size: .75rem; letter-spacing: .04em; }
+.npc-stock-group ul { padding: 0; margin: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.npc-stock-group li { display: flex; align-items: center; gap: .7rem; padding: .75rem; border-bottom: 1px solid var(--line); min-width: 0; }
+.npc-stock-group li > div { min-width: 0; }
+.npc-stock-group a { color: var(--ink); font-weight: 600; font-size: .85rem; overflow-wrap: anywhere; }
+.npc-stock-group a:hover { color: var(--accent); }
+.npc-stock-group li p { margin: .3rem 0 0; color: var(--muted); font-size: .75rem; line-height: 1.45; }
+.npc-item-art { width: 34px; height: 36px; display: grid; place-items: center; flex-shrink: 0; }
+.npc-item-art img { max-width: 32px; max-height: 32px; image-rendering: pixelated; }
+.npc-item-match { background: var(--accent-soft); }
+.npc-source { display: inline-block; margin-top: .5rem; font-size: .8rem; }
+.npc-empty { padding: 2rem; text-align: center; color: var(--muted); }
+@media (max-width: 680px) {
+  .guide-views { grid-template-columns: 1fr; gap: .5rem; }
+  .guide-views button { padding: .8rem 1rem; }
+  .npc-toolbar { grid-template-columns: 1fr; }
+  .npc-card summary { grid-template-columns: 40px 1fr 18px; padding: .8rem; gap: .6rem; }
+  .npc-summary-condition { grid-column: 2; grid-row: 2; }
+  .npc-expand { grid-column: 3; grid-row: 1; }
+  .npc-body { padding: 0 .8rem 1rem; }
+  .npc-stock-group ul { grid-template-columns: 1fr; }
+}
+
+/* Fishing: milestone cards and compact reward reference. */
+.guide-views { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fishing-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.fishing-heading h2 { margin: .25rem 0 .7rem; }
+.fishing-heading > img { image-rendering: pixelated; object-fit: contain; margin-right: .5rem; }
+.fishing-start { border-left: 2px solid var(--accent); padding: .9rem 1rem; margin: 1.25rem 0; background: var(--accent-soft); }
+.fishing-start p, .fishing-tips p { color: var(--muted); line-height: 1.65; font-size: .85rem; margin: .5rem 0; }
+.fishing-guide a { color: var(--accent); }
+.fishing-start > a, .fishing-tips section > a { font-size: .8rem; }
+.fishing-tracker { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; padding: 1.2rem; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-deep); }
+.fishing-tracker label { font-weight: 700; }
+.fishing-tracker > div > p { font-size: .75rem; color: var(--muted); margin: .4rem 0 0; }
+.fishing-counter { display: flex; align-items: stretch; gap: .45rem; }
+.fishing-counter input { width: 5rem; appearance: textfield; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); background: transparent; text-align: center; font: inherit; font-size: 1.15rem; font-weight: 700; padding: .5rem; }
+.fishing-counter input::-webkit-inner-spin-button, .fishing-counter input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.fishing-counter button { min-width: 42px; padding: .65rem .8rem; font: inherit; font-weight: 600; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--ink); cursor: pointer; }
+.fishing-counter .fishing-add { border-color: var(--accent); background: var(--accent-soft); }
+.fishing-counter button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.fishing-counter button:disabled { opacity: .4; cursor: default; }
+.fishing-counter :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.fishing-next { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1rem; border-top: 1px solid var(--line); padding-top: .8rem; margin: 0; font-size: .85rem; }
+.fishing-next strong { color: var(--accent); }
+.fishing-next span { color: var(--muted); }
+.fishing-save-warning { grid-column: 1 / -1; margin: 0; font-size: .8rem; color: var(--accent); }
+.fishing-section-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1rem; margin: 2rem 0 .9rem; }
+.fishing-section-title h3 { margin: 0; font-size: 1.15rem; }
+.fishing-section-title > span { font-size: .75rem; color: var(--muted); }
+.fishing-milestones { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.fishing-milestones > li { padding: 1rem; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-deep); }
+.fishing-milestones > li.is-reached { border-color: var(--accent); background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface-deep); }
+.fishing-milestone-top { display: flex; justify-content: space-between; gap: .5rem; align-items: baseline; margin-bottom: 1rem; font-size: .75rem; color: var(--muted); }
+.fishing-milestone-top strong { color: var(--accent); font-size: 1.5rem; margin-left: .2rem; }
+.fishing-milestone-top > span:last-child { color: var(--accent); font-size: .7rem; }
+.fishing-guide .fishing-item { display: inline-flex; align-items: center; gap: .6rem; color: var(--ink); font-size: .9rem; font-weight: 600; }
+.fishing-item img { width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated; flex-shrink: 0; }
+.fishing-guide .fishing-item:hover { color: var(--accent); }
+.fishing-milestones p, .fishing-reward-group li > p, .fishing-combines p { color: var(--muted); font-size: .8rem; line-height: 1.6; margin: .6rem 0 0; }
+.fishing-source { font-size: .75rem; line-height: 1.6; color: var(--muted); }
+.fishing-reward-groups, .fishing-combines, .fishing-tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.fishing-reward-group, .fishing-combines > section, .fishing-tips > section { border: 1px solid var(--line); border-radius: 6px; background: var(--surface-deep); padding: 1rem; }
+.fishing-reward-group h4, .fishing-tips h4 { color: var(--accent); margin: 0 0 .8rem; font-size: .85rem; }
+.fishing-reward-group ul, .fishing-combines ul { list-style: none; padding: 0; margin: 0; }
+.fishing-reward-group li { padding: .9rem 0; border-bottom: 1px solid var(--line); }
+.fishing-reward-group li:last-child { border-bottom: 0; padding-bottom: 0; }
+.fishing-reward-group li:first-child { padding-top: 0; }
+.fishing-unlock { display: inline-block; font-size: .7rem; color: var(--accent); margin-top: .45rem; }
+.fishing-combines ul { border-top: 1px solid var(--line); margin-top: .9rem; padding-top: .5rem; }
+.fishing-combines li { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .4rem 0; }
+.fishing-combines li > span { color: var(--muted); font-size: .8rem; white-space: nowrap; }
+.fishing-combines li .fishing-item { font-size: .8rem; font-weight: 400; }
+.fishing-tips .fishing-item { font-size: inherit; font-weight: 400; display: inline; color: var(--accent); }
+.fishing-tips .fishing-item img { display: none; }
+@media (max-width: 1000px) {
+  .guide-views { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fishing-milestones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .guide-views { grid-template-columns: 1fr; }
+  .fishing-tracker, .fishing-milestones, .fishing-reward-groups, .fishing-combines, .fishing-tips { grid-template-columns: 1fr; }
+  .fishing-counter { justify-content: flex-start; }
+  .fishing-heading > img { width: 36px; height: 36px; }
+}
+
+.fishing-reward-top { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+.fishing-reward-top .fishing-item { min-width: 0; }
+.fishing-rate { display: grid; gap: .15rem; text-align: right; flex-shrink: 0; }
+.fishing-rate strong { color: var(--accent); font-size: .95rem; font-variant-numeric: tabular-nums; }
+.fishing-rate small { color: var(--muted); font-size: .65rem; }
+.fishing-odds-help { margin-top: 1rem; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-deep); }
+.fishing-odds-help summary { padding: .9rem 1rem; color: var(--accent); font-size: .85rem; font-weight: 600; cursor: pointer; }
+.fishing-odds-help summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.fishing-odds-help > div { padding: 0 1rem 1rem; font-size: .8rem; line-height: 1.65; color: var(--muted); }
+.fishing-odds-help p { margin: .7rem 0; }
+.fishing-odds-help strong { color: var(--ink); }
+@media (max-width: 420px) {
+  .fishing-reward-top { flex-wrap: wrap; gap: .4rem; }
+  .fishing-reward-top .fishing-rate { display: flex; align-items: baseline; gap: .4rem; text-align: left; }
+}
+
+/* Alternatives occupy one equipment slot, even when several items are shown. */
+.accessory-choice { min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: rgba(0,0,0,.12); display: grid; gap: 7px; }
+.accessory-choice-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .76rem; }
+.accessory-choice-heading span { white-space: nowrap; opacity: .65; }
+.accessory-choice > p, .accessory-choice-hint { margin: 0; font-size: .76rem; line-height: 1.5; color: var(--muted); }
+.accessory-choice-hint { margin-bottom: 12px; }

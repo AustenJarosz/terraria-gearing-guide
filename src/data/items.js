@@ -1,5 +1,7 @@
 // Practical summaries for Desktop 1.4.5.7; see CONTENT_SOURCES.md.
+import { loadoutItems } from './loadoutItems.js'
 export const items = {
+  ...loadoutItems,
   "platinumArmor": {
     "name": "Platinum armor",
     "file": "Platinum_Helmet.png",

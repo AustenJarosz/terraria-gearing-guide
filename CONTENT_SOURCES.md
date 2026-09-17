@@ -1,5 +1,7 @@
 # Content and image sources
 
+Latest gear audit: [Master Mode loadout content and editing guide](docs/LOADOUT_CONTENT.md), September 17, 2026. All classes and roadmap stops have complete equipped accessory builds, with weapon-specific replacements listed separately.
+
 ## Event checklist expansion
 
 The checklist includes regular-world combat events, separate early/Hardmode Blood Moons and Goblin Armies, all three Old One’s Army tiers, and optional weather, peaceful and seasonal experiences. Special-seed-only rain variants are outside this guide’s normal-world scope. Existing detailed event loot is reused; newly listed events use concise reward summaries and direct wiki links, without unverified drop percentages.
@@ -13,7 +15,7 @@ Sources: [Events](https://terraria.wiki.gg/wiki/Events), [Blood Moon](https://te
 - Added item sprites exported from the installed game using its ItemID constants. Evil boss loot is filtered by boss; Queen Slime remains separate from mechanical bosses.
 
 Target: Terraria Desktop **1.4.5.7**, normal progression, no mods or special seeds.
-Reviewed 2026-09-05. This is a selection of practical alternatives, not an exhaustive item list or DPS ranking. Accessories are alternatives, not a claim that every listed accessory fits simultaneously. Expert/Master drops remain explicitly identified.
+Reviewed 2026-09-05. This is a selection of practical alternatives, not an exhaustive item list or DPS ranking. The September 17 Master Mode audit replaces the old accessory pools with complete six/seven-slot builds and separate swaps; see docs/LOADOUT_CONTENT.md.
 
 ## Sources
 
@@ -45,7 +47,7 @@ Crafting materials are included even when guaranteed. Optional `quantity` (the s
 
 Loot presentation now uses one local sprite, item name, kind, and chance per row. The `drop(name, rate, kind, source, note)` helper in `bossDrops.js` derives the sprite filename from the wiki page name. Optional `dropNotes` entries explain shared rolls once beneath the list. Routine guaranteed rewards are omitted; standout build accessories may remain. Skeletron's Book of Skulls and Hand use the bag's one-in-three roll; its Possessed Skull pet has a separate 25% boss roll. References: [Skeletron bag contents](https://terraria.wiki.gg/wiki/Treasure_Bag_%28Wall_of_Flesh%29), [Book of Skulls](https://terraria.wiki.gg/wiki/Book_of_Skulls), and [Possessed Skull](https://terraria.wiki.gg/wiki/Possessed_Skull). New loot sprites are exported from the installed game with the same manifest workflow as the other items.
 
-`src/data/itemNotes.js` stores visible conditions beneath item cards. Add an item ID with an array of `{ label, text }` notes. Use “Requires” for a genuine requirement, “Use with” for a pairing, and “Keep in mind” for a limitation. A particular loadout in `gear.js` or `roadmap.js` can override the defaults with `itemNotes: { magicQuiver: [{ label: 'Use with', text: 'Your advice here.' }] }`. An empty array hides the default note for that loadout. Notes appear without requiring hover or a click.
+`src/data/itemNotes.js` stores visible conditions beneath item cards. Add an item ID with an array of `{ label, text }` notes. Use “Requires” for a genuine requirement, “Use with” for a pairing, and “Keep in mind” for a limitation. A particular loadout in `loadouts.js` can override the defaults with `itemNotes: { magicQuiver: [{ label: 'Use with', text: 'Your advice here.' }] }`. An empty array hides the default note for that loadout. Notes appear without requiring hover or a click.
 
 `src/data/bossDrops.js` stores the expandable Master Mode loot panels, keyed by stage ID or individual optional encounter ID. Each row has `name`, `rate`, `context`, and an Official Wiki `source` page. State whether the rate is per Treasure Bag or a direct drop, and include conditions. These are selected rewards, not complete loot tables; unreviewed encounters link to their source without invented percentages. Event wave-dependent rates must retain their conditions.
 
@@ -55,7 +57,7 @@ The guide is data-driven. Most boss and event text can be changed without touchi
 
 - Edit `src/data/roadmap.js` → `mainRouteDetails` for the main route (`pre-boss` through `pre-moon-lord`). Each entry contains `unlock`, `summon`, `prepare`, `payoff`, and `source`.
 - Edit `src/data/roadmap.js` → `sideEncounters` for individual optional bosses and events. The `rewards` object controls the class-specific reward cards shown when an encounter is expanded.
-- Edit `src/data/gear.js` → `coreLoadouts` for the four class kits at each main-route stop. `src/data/roadmap.js` → `kits` and `sideLoadouts` control the shared first-clear kits for optional stops.
+- Edit `src/data/loadouts.js` for every class kit, weapon pairing, and accessory swap. See `docs/LOADOUT_CONTENT.md` for the schema, first-clear rules, and validation commands.
 - Edit `src/data/gear.js` → `routeStages`, plus `sideStages` and `pillarStage` in `roadmap.js`, to change the visible stop order and grouping.
 - Edit `src/data/bossArt.js` only when changing which portrait is shown; it does not change progression or recommendations.
 

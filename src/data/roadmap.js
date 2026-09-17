@@ -18,7 +18,7 @@ const hardmodeEncounters = [
     summon: 'Craft a Pumpkin Moon Medallion and use it at night. Start at dusk to give yourself more time.',
     prepare: 'Build for crowds and flying bosses. Repeat the event for materials and drops; a perfect wave clear is not needed to move on.',
     payoff: 'Especially useful for summoners: Spooky Wood armor, scroll accessories, and Raven Staff. Other classes also get weapon options.',
-    rewards: { ranged: ['candyCorn'], mage: ['batScepter'], summoner: ['spookyArmor', 'necromanticScroll', 'papyrusScarab', 'ravenStaff'] },
+    rewards: { ranged: ['candyCorn'], mage: ['batScepter'], summoner: ['spookyArmor', 'necromanticScroll', 'papyrusScarab', 'ravenStaff', 'darkHarvest'] },
     source: 'Pumpkin_Moon',
   },
   {
@@ -28,7 +28,7 @@ const hardmodeEncounters = [
     summon: 'Craft a Naughty Present and use it at night, ideally at dusk. This is separate from the Frost Legion.',
     prepare: 'Bring piercing or area damage for early waves and a mobile setup for Ice Queen. You can return later for higher waves.',
     payoff: 'A weapon-farming stop rather than a progression gate. Ranged players can hunt Santa-NK1 for the Chain Gun.',
-    rewards: { ranged: ['chainGun'] }, source: 'Frost_Moon',
+    rewards: { ranged: ['chainGun'], mage: ['razorpine'] }, source: 'Frost_Moon',
   },
   {
     id: 'martian-madness', name: 'Martian Madness', next: 'Martian Saucer',
@@ -56,7 +56,7 @@ const hardmodeEncounters = [
     summon: 'Kill a Prismatic Lacewing in the Hallow. For a first clear, summon her at night and finish before dawn.',
     prepare: 'Leave plenty of open air to learn the attack patterns. Daytime is a separate challenge: Terraprisma requires all damage to be dealt during daytime.',
     payoff: 'Kaleidoscope is a major whip upgrade; Nightglow is a magic option. Expert/Master also awards Soaring Insignia, which still needs wings or rocket boots.',
-    rewards: { mage: ['nightglow'], summoner: ['kaleidoscope'] }, source: 'Empress_of_Light',
+    rewards: { ranged: ['eventide'], mage: ['nightglow'], summoner: ['kaleidoscope'] }, source: 'Empress_of_Light',
   },
   {
     id: 'old-ones-army', name: 'Old One’s Army III', next: 'Betsy · wave 7',
@@ -147,16 +147,3 @@ export const mainRouteDetails = {
     payoff: 'Moon Lord drops Luminite and endgame weapons. After your first win, craft lunar armor and return to any skipped bosses or events.', source: 'Moon_Lord',
   },
 }
-
-// First-clear kits use Golem and Dungeon gear, without assuming any side boss/event loot.
-const kits = {
-  melee: { armor: ['beetleArmor'], weapons: ['possessedHatchet', 'seedler', 'paladinsHammer'], accessories: ['fireGauntlet', 'avengerEmblem', 'frozenShield', 'masterNinja', 'leafWings'] },
-  ranged: { armor: ['shroomiteArmor'], weapons: ['stynger', 'venusMagnum', 'megashark'], accessories: ['rangerEmblem', 'destroyerEmblem', 'reconScope', 'masterNinja', 'leafWings'] },
-  mage: { armor: ['spectreArmor'], weapons: ['magnetSphere', 'infernoFork', 'waspGun'], accessories: ['celestialEmblem', 'manaCloak', 'sorcererEmblem', 'masterNinja', 'leafWings', 'manaRegenBand'] },
-  summoner: { armor: ['tikiArmor'], weapons: ['pygmyStaff', 'desertTiger', 'morningStar'], accessories: ['pygmyNecklace', 'summonerEmblem', 'avengerEmblem', 'masterNinja', 'leafWings', 'twilightGrasp'] },
-}
-
-export const sideLoadouts = sideStages.filter(stage => stage.era === 'hardmode').flatMap(stage => Object.entries(kits).map(([classId, kit]) => ({
-  ...kit, classId, stageId: stage.id,
-  notes: 'First-clear kit for the suggested post-Golem route; no optional boss or event drops required. Keep any stronger rewards you have already earned.' + (classId === 'summoner' ? ' Desert Tiger needs a Desert Key; use Pygmy Staff if you do not have one.' : ''),
-})))
