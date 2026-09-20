@@ -2,6 +2,11 @@
 const item = (name, file, rarity, stats, info, obtain, page = name.replaceAll(' ', '_')) => ({ name, file: `${file}.png`, rarity, stats, info, obtain, source: `https://terraria.wiki.gg/wiki/${page}` })
 
 export const loadoutItems = {
+  trimarang: item('Trimarang', 'Trimarang', 'blue', 'Melee · boomerang', 'Allows up to three boomerangs in flight at once.', 'Combine Enchanted Boomerang, Shroomerang, and Ice Boomerang at a Work Bench.'),
+  pyroclasticStone: item('Pyroclastic Stone', 'Pyroclastic_Stone', 'orange', 'Accessory · melee / ranged damage', 'Adds Hellfire to melee hits and periodically empowers melee and ranged hits with explosive slashes.', "Combine Snapping Stone and Magma Stone at a Tinkerer's Workshop."),
+  whiteString: item('White String', 'White_String', 'white', 'Accessory · yoyos', 'Increases yoyo range and spin duration. Dyed Strings have the same functional bonuses.', 'Craft 30 Cobwebs at a Loom.', 'Strings'),
+  frostburnArrow: item('Frostburn Arrow', 'Frostburn_Arrow', 'white', 'Ammunition · arrows', 'Early bow ammunition that can inflict Frostburn.', 'Craft 10 Wooden Arrows and 1 Ice Torch by hand to make 10 Frostburn Arrows.'),
+  musketBall: item('Musket Ball', 'Musket_Ball', 'white', 'Ammunition · bullets', 'Basic ammunition for bullet-firing guns. A readily available starting supply.', 'Always sold by the Arms Dealer.'),
   mysticBloom: item('Mystic Bloom', 'Mystic_Bloom', 'green', 'Magic · homing petals', 'Fires three slowly homing petals. A useful pre-boss Jungle craft.', 'Craft Nature’s Gift, 2 Moonglow, 3 Vines, and 7 Rich Mahogany at an anvil.'),
   horseshoeBalloons: item('Bundle of Horseshoe Balloons', 'Bundle_of_Horseshoe_Balloons', 'yellow', 'Accessory · multiple jumps', 'Grants three extra jumps, increases jump height, and prevents fall damage.', "Combine Bundle of Balloons and Lucky Horseshoe at a Tinkerer's Workshop."),
   magnetFlower: item('Magnet Flower', 'Magnet_Flower', 'light-red', 'Accessory · mana potions / pickup range', 'Automatically drinks carried mana potions, reduces mana use by 8%, and extends mana-star pickup range.', "Combine Mana Flower and Celestial Magnet at a Tinkerer's Workshop."),

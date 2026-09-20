@@ -573,7 +573,12 @@
 .class-dungeon .loadout { border-top-color: var(--accent); }
 .dungeon-guide { margin: 1.5rem 0 2rem; }
 .dungeon-loot { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-.dungeon-loot .panel-label h3 { margin: 0; }
+.dungeon-chests { margin-top: 1.25rem; }
+.dungeon-chests .panel-label h3, .dungeon-loot .panel-label h3 { margin: 0; }
+.dungeon-chests .panel-label { flex-wrap: wrap; }
+.dungeon-chests a { color: var(--accent); text-underline-offset: 3px; }
+.dungeon-chests .drop-list > li > div > a { color: var(--ink); }
+.dungeon-world-tag { display: inline-block; margin-left: .5rem; padding: .1rem .4rem; border: 1px solid var(--line); border-radius: 3px; color: var(--muted); font-size: .7rem; }
 .dungeon-loot-group { margin: 1rem 0 .5rem; color: var(--muted); font-size: .875rem; }
 .dungeon-loot-enemy { margin: 1.25rem 0 .5rem; color: var(--accent); font-size: 1.1rem; }
 .dungeon-loot a { color: var(--accent); text-underline-offset: 3px; }
@@ -760,3 +765,41 @@
 .accessory-choice-heading span { white-space: nowrap; opacity: .65; }
 .accessory-choice > p, .accessory-choice-hint { margin: 0; font-size: .76rem; line-height: 1.5; color: var(--muted); }
 .accessory-choice-hint { margin-bottom: 12px; }
+
+/* Compatibility labels have their own colors; item names retain rarity colors. */
+.item-title { min-width: 0; flex: 1; }
+.equipment-links { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .3rem; }
+.equipment-link { display: inline-flex; align-items: center; gap: .3rem; padding: .1rem .4rem; border: 1px solid color-mix(in srgb, var(--link-color) 45%, transparent); border-radius: 4px; background: color-mix(in srgb, var(--link-color) 9%, transparent); color: var(--link-color); font-size: .68rem; font-weight: 600; line-height: 1.4; }
+.equipment-link > span { font-size: .5rem; }
+.equipment-link-swords { --link-color: #9cc9ff; }
+.equipment-link-boomerangs { --link-color: #a6df9a; }
+.equipment-link-yoyo { --link-color: #d5b3ff; }
+.equipment-link-bows { --link-color: #f1cf83; }
+.equipment-link-guns { --link-color: #8ce2ce; }
+.loadout-ammo { margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
+.loadout-ammo h3 { margin: 0 0 .75rem; color: var(--accent); font-size: .9rem; }
+.loadout-ammo .item-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+
+.preparation { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.preparation-heading { margin-bottom: 1rem; }
+.preparation-heading h3 { margin: 0 0 .35rem; color: var(--ink); font-size: 1.2rem; }
+.preparation-heading p, .preparation-help, .preparation-flasks > p { margin: 0 0 .8rem; color: var(--muted); font-size: .85rem; line-height: 1.55; }
+.preparation-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; align-items: start; }
+.preparation-column { min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
+.preparation h4 { margin: 0 0 .8rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
+.preparation h5 { margin: 1rem 0 .65rem; font-size: .85rem; color: var(--ink); }
+.preparation-column > h4 + h5 { margin-top: 0; }
+.preparation .item-summary { margin: -.1rem 0 0; padding: 0 .7rem .65rem; color: var(--ink); font-size: .8rem; line-height: 1.5; }
+.preparation .item-guidance { font-size: .77rem; }
+.preparation .item-guidance p { margin-top: 0; }
+.preparation .item-guidance strong { font-size: .68rem; }
+.preparation-flasks { margin-top: 1rem; padding-top: .1rem; border-top: 1px solid var(--line); }
+.preparation-extras { margin-top: .85rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
+.preparation-extras .item-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); align-items: start; }
+@media (max-width: 900px) {
+  .preparation-columns { grid-template-columns: 1fr; }
+  .preparation-column > .item-grid, .preparation-flasks .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+@media (max-width: 540px) {
+  .preparation-column > .item-grid, .preparation-flasks .item-grid { grid-template-columns: 1fr; }
+}

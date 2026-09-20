@@ -15,7 +15,7 @@ for (const [name, data] of [...Object.entries(gearAcquisition), ...Object.entrie
       assert(Number.isInteger(amount) && amount > 0, `Invalid quantity: ${name}`)
       for (const option of Array.isArray(ingredient) ? ingredient : [ingredient]) assert(acquisitionIcons[option], `Missing ingredient icon: ${option}`)
     }
-    for (const station of recipe.stations) assert(station === 'By Hand' || acquisitionIcons[station], `Missing station icon: ${station}`)
+    for (const station of recipe.stations) assert(['By Hand', 'Shimmer'].includes(station) || acquisitionIcons[station], `Missing station icon: ${station}`)
   }
   for (const row of data.drops || []) assert(row.enemy && row.rate.includes('%'), `Incomplete drop: ${name}`)
 }

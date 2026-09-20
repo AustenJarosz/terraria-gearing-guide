@@ -107,4 +107,8 @@ const routeStages = [
 
 export const stages = routeStages.map(stage => ({ ...stage, ...mainRouteDetails[stage.id] }))
 
+// Keep historical loadout data, but Dungeon exploration now lives in the checklist.
+export const roadmapStages = stages.filter(stage => stage.kind !== 'Dungeon' && stage.id !== 'pre-hardmode-optional')
+export const retiredStageFallbacks = { 'dungeon-pre-plantera': 'pre-wof', 'dungeon-post-plantera': 'pre-golem' }
+
 export { loadouts } from "./loadouts.js"

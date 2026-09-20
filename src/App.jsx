@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { classes, eras, loadouts, stages as allStages } from './data/gear'
+import { classes, eras, loadouts, roadmapStages as stages, retiredStageFallbacks } from './data/gear'
 import { BossChecklist } from './BossChecklist'
 import { NpcGuide } from './NpcGuide'
 import { FishingGuide } from './FishingGuide'
-const stages = allStages.filter(stage => stage.id !== 'pre-hardmode-optional')
 import { ClassIcon } from './icons'
 import './App.css'
-import { AccessoryGrid, ItemGrid } from './ItemChip'
-import { items } from './data/items'
+import { ItemGrid } from './ItemChip'
+import { EquipmentGuide } from './EquipmentGuide'
 import { ClassEffects } from './ClassEffects'
 import { BossArt } from './BossArt'
 import { bossArt } from './data/bossArt'
@@ -15,10 +14,11 @@ import { bossDrops, dropNotes } from './data/bossDrops'
 import { lootProgression } from './data/hardmodeDrops'
 import { DungeonGuide } from './DungeonGuide'
 
-function useSavedSelection(key, fallback, allowed) {
+function useSavedSelection(key, fallback, allowed, replacements = {}) {
   const [value, setValue] = useState(() => {
     try {
-      const saved = localStorage.getItem(key)
+      const stored = localStorage.getItem(key)
+      const saved = replacements[stored] || stored
       return allowed.includes(saved) ? saved : fallback
     } catch { return fallback }
   })
@@ -81,7 +81,7 @@ export default function App() {
   const [artworkOnly, setArtworkOnly] = useState(false)
   const [artworkDim, setArtworkDim] = useSavedSelection('terraria-guide-artwork-dim', '0', Array.from({ length: 86 }, (_, index) => String(index)))
   const [classId, setClassId] = useSavedSelection('terraria-guide-class', 'melee', classes.map(item => item.id))
-  const [stageId, setStageId] = useSavedSelection('terraria-guide-stage', 'pre-boss', stages.map(item => item.id))
+  const [stageId, setStageId] = useSavedSelection('terraria-guide-stage', 'pre-boss', stages.map(item => item.id), retiredStageFallbacks)
   const [view, setView] = useSavedSelection('terraria-guide-view', 'gear', ['gear', 'checklist', 'npcs', 'fishing'])
   const isDungeon = view === 'gear' && stages.find(stage => stage.id === stageId)?.theme === 'dungeon'
   const isEyeForest = view === 'gear' && stageId === 'pre-boss'
@@ -207,7 +207,7 @@ export default function App() {
         <button aria-pressed={view === 'npcs'} onClick={() => setView('npcs')}><strong>NPC guide</strong><span>Find residents · explore shop unlocks</span></button>
         <button aria-pressed={view === 'fishing'} onClick={() => setView('fishing')}><strong>Fishing guide</strong><span>Quest milestones · useful rewards</span></button>
       </nav>
-      {view === 'checklist' && <BossChecklist renderLoot={encounter => <EncounterPlan encounter={encounter} inline />} onGear={id => { setStageId(id); setView('gear') }} />}
+      {view === 'checklist' && <BossChecklist renderLoot={encounter => encounter.kind === 'Dungeon' ? <DungeonGuide stage={encounter} /> : <EncounterPlan encounter={encounter} inline />} onGear={id => { setStageId(id); setView('gear') }} />}
       {view === 'npcs' && <NpcGuide />}
       {view === 'fishing' && <FishingGuide />}
       {view === 'gear' && <section className="panel plaque" aria-label="Progression">
@@ -296,38 +296,7 @@ export default function App() {
           )}
 
           <h3 className="gear-section-title">{isDungeon ? 'Entry gear' : activeStage.encounters ? 'Starter gear for these encounters' : 'Bring to this fight'}</h3>
-          <p className="gear-hint">Hover for a preview; tap to keep it open. Choose an armor set and a weapon setup. Accessories below fill all {activeStage.era === 'hardmode' ? '7 Master Mode slots after consuming the Wall of Flesh’s Demon Heart' : '6 Master Mode slots'}; situational swaps are listed separately.</p><div className="slots">
-            <article className="slot">
-              <h3>Armor</h3>
-              <ItemGrid ids={loadout.armor} notes={loadout.itemNotes} />
-            </article>
-            <article className="slot">
-              <h3>Weapons</h3>
-              <ItemGrid ids={loadout.weapons} notes={loadout.itemNotes} />
-            </article>
-            <article className="slot">
-              <h3>Accessories <span className="slot-count">{loadout.accessories.length} / {activeStage.era === 'hardmode' ? 7 : 6} slots</span></h3>
-              <p className="accessory-choice-hint">Pick one item from each “choose one” group. Each group fills a single slot.</p>
-              <AccessoryGrid ids={loadout.accessories} notes={loadout.itemNotes} choices={loadout.accessoryChoices} />
-            </article>
-          </div>
-
-          {loadout.accessorySwaps?.length > 0 && <details className="loadout-swaps">
-            <summary>Accessory swaps <span>{loadout.accessorySwaps.length} {loadout.accessorySwaps.length === 1 ? 'alternative' : 'alternatives'}</span></summary>
-            <p className="gear-hint">Replace the named accessory; these are alternatives, not extra slots. Choose swaps to match your weapon, world, and available drops.</p>
-            <div className="loadout-swap-grid">
-              {loadout.accessorySwaps.map(swap => {
-                const worldChoice = ['wormScarf', 'brainConfusion'].includes(swap.id)
-                return <AccessoryGrid key={`${swap.id}-${swap.replaces}`} ids={[swap.id]}
-                  choices={worldChoice ? { [swap.id]: { label: 'World evil · choose one', ids: ['wormScarf', 'brainConfusion'], text: `Replace ${items[swap.replaces].name}. Worm Scarf is the Corruption option; Brain of Confusion is the Crimson option. Use either for this slot.` } } : {}}
-                  notes={worldChoice ? {} : { [swap.id]: [{ label: `Replace ${items[swap.replaces].name}`, text: swap.text }] }} />
-              })}
-            </div>
-          </details>}
-          <aside className="notes">
-            <h3>Build notes</h3>
-            <p>{loadout.notes}</p>
-          </aside>
+          <EquipmentGuide key={`${stageId}/${classId}`} base={loadout} stage={activeStage} />
           {activeStage.rewards?.[classId]?.length > 0 && (
             <section className="encounter-rewards">
               <h3 className="gear-section-title">Rewards to chase · {activeClass.name}</h3>

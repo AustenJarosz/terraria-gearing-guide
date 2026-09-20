@@ -1,4 +1,5 @@
 // Master Mode, Desktop 1.4.5.7. Edit these stage/class entries to tune the guide.
+import { linkedEquipment } from './equipmentLinks.js'
 // accessories = one complete equipped build (6 slots, or 7 after the Demon Heart).
 // accessorySwaps = alternatives, with the exact equipped item they replace.
 // Weapons and armor are choices, not a shopping list. The first weapon is the default.
@@ -18,14 +19,15 @@ const earlySwaps = replaces => [
 const grounded = 'Use Hermes, Flurry, Sailfish, or Dunerider Boots for the running slot. Armor sets and weapons shown are alternatives; choose what you can obtain.'
 const evilRoute = 'This shared kit assumes Eye of Cthulhu and the evil-biome boss are defeated, but does not require Queen Bee or Deerclops loot. For an earlier King Slime, use the Pre-Boss kit.'
 const preBoss = {
-  melee: build('platinumArmor goldArmor', 'starfury enchantedSword amazon', 'hermesBoots cloudBottle shinyBalloon regenBand sharkTooth feralClaws',
-    `${grounded} Use Starfury or Enchanted Sword to keep some distance; Amazon is the craftable yoyo alternative.`, earlySwaps('regenBand'), {
+  melee: build('platinumArmor goldArmor', 'bladeOfGrass starfury trimarang thornChakram amazon enchantedSword', 'hermesBoots cloudBottle shinyBalloon regenBand sharkTooth feralClaws',
+    `${grounded} Weapons are ordered by recommendation, with Blade of Grass as the top target. Use the strongest option you have; you do not need to collect them all.`, [], {
+      bladeOfGrass: note('Top pick', 'The best-case target for this pre-boss melee list. Crafted from Underground Jungle materials.'),
+      pyroclasticStone: note('Optional · difficult early', 'Possible to obtain pre-boss, but hard to get and unnecessary for this fight. Keep Shark Tooth Necklace if you do not already have it.'),
       starfury: note('Use with', 'Open sky so the falling star reaches the Eye. Change weapons when terrain blocks it.'),
-      amazon: note('Alternative', 'Craftable in the Jungle if you cannot find a good sword. Keep the yoyo on the target.'),
     }),
   ranged: build('fossilArmor platinumArmor goldArmor', 'goldBow boomstick musket undertaker', 'hermesBoots cloudBottle shinyBalloon regenBand sharkTooth magiluminescence',
     `${grounded} Fossil armor is the damage option; ore armor trades damage for defense. A Platinum or Gold Bow with Frostburn Arrows is a practical first-boss weapon.`, [swap('shackle', 'magiluminescence', 'Easy temporary defense if you have not mined evil ore.')], {
-      goldBow: note('Ammo', 'Frostburn Arrows. A Gold Bow is the equivalent choice in a gold world.'),
+      goldBow: note('World alternative', 'Use a Gold Bow in a gold world.'),
       musket: note('Corruption option', 'From a Shadow Orb. Use Silver or Tungsten Bullets when available.'),
       undertaker: note('Crimson option', 'From a Crimson Heart; an alternative to the Corruption-only Musket.'),
     }),
@@ -411,12 +413,18 @@ const headpieces = {
   chlorophyteArmor: { melee: 'Mask', ranged: 'Helmet', mage: 'Headgear' },
 }
 export const loadouts = Object.entries(byStage).flatMap(([stageId, builds]) =>
-  Object.entries(builds).map(([classId, kit]) => ({
-    classId, stageId, ...kit,
-    ...withAccessoryChoices(kit),
-    itemNotes: {
-      ...Object.fromEntries(kit.armor.filter(id => headpieces[id]?.[classId]).map(id => [id, note('Headpiece', `Use the ${headpieces[id][classId]} for this class.`)])),
-      ...kit.itemNotes,
-    },
-  })),
+  Object.entries(builds).map(([classId, kit]) => {
+    const choices = withAccessoryChoices(kit)
+    const linked = linkedEquipment[stageId]?.[classId] || {}
+    return {
+      classId, stageId, ...kit, ...choices,
+      itemLinks: linked.itemLinks || {},
+      ammo: linked.ammo || [],
+      accessoryChoices: { ...choices.accessoryChoices, ...linked.accessoryChoices },
+      itemNotes: {
+        ...Object.fromEntries(kit.armor.filter(id => headpieces[id]?.[classId]).map(id => [id, note('Headpiece', `Use the ${headpieces[id][classId]} for this class.`)])),
+        ...kit.itemNotes,
+      },
+    }
+  }),
 )

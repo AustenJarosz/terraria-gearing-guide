@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { classes, stages, loadouts } from '../src/data/gear.js'
 import { items } from '../src/data/items.js'
 import { gearAcquisition } from '../src/data/gearAcquisition.js'
+import { equipmentLinkTypes } from '../src/data/equipmentLinks.js'
 
 // First-entry progression gates. Some optional bosses can be fought sooner than
 // the suggested route; their gear still cannot be required to beat themselves.
@@ -42,10 +43,10 @@ for (const stage of stages) for (const cls of classes) {
   assert.equal(kit.accessories.length, stage.era === 'hardmode' ? 7 : 6, `Unfilled Master slots: ${key}`)
   assert(kit.armor.length && kit.weapons.length && kit.notes, `Incomplete build: ${key}`)
   validateEquipped(kit.accessories, key)
-  const listed = [...kit.armor, ...kit.weapons, ...kit.accessories]
+  const listed = [...kit.armor, ...kit.weapons, ...kit.accessories, ...kit.ammo]
   for (const [slot, choice] of Object.entries(kit.accessoryChoices)) {
     assert(kit.accessories.includes(slot), 'Choice must replace an equipped slot: ' + key)
-    assert(choice.ids.includes(slot) && choice.ids.length > 1 && choice.text, 'Incomplete choice: ' + key)
+    assert(choice.ids.includes(slot) && choice.ids.length > 1 && choice.label, 'Incomplete choice: ' + key)
     assert.equal(new Set(choice.ids).size, choice.ids.length)
     for (const id of choice.ids) {
       validateEquipped(kit.accessories.map(base => base === slot ? id : base), key + ' choice ' + id)
@@ -58,6 +59,15 @@ for (const stage of stages) for (const cls of classes) {
     assert(alternative.text, `Unexplained swap: ${key}/${alternative.id}`)
     validateEquipped(kit.accessories.map(id => id === alternative.replaces ? alternative.id : id), `${key} swap ${alternative.id}`)
     listed.push(alternative.id)
+  }
+  for (const [id, links] of Object.entries(kit.itemLinks)) {
+    assert(listed.includes(id), 'Badge on unlisted item: ' + key + '/' + id)
+    assert(links.every(link => equipmentLinkTypes[link]), 'Unknown equipment label: ' + key)
+  }
+  for (const link of new Set(Object.values(kit.itemLinks).flat())) {
+    assert(kit.weapons.some(id => kit.itemLinks[id]?.includes(link)), 'Pairing label needs a weapon: ' + key)
+    assert([...kit.accessories, ...kit.ammo, ...Object.values(kit.accessoryChoices).flatMap(choice => choice.ids)]
+      .some(id => kit.itemLinks[id]?.includes(link)), 'Pairing label needs matching equipment: ' + key)
   }
   for (const id of listed) {
     assert(items[id] && gearAcquisition[id], `Unknown item or acquisition: ${key}/${id}`)
@@ -81,6 +91,6 @@ const forbiddenAtEntry = {
   'event-upgrades': ['terraBlade', 'eyeYoyo', 'spookyArmor', 'papyrusScarab', 'necromanticScroll', 'xenoStaff', 'razorpine', 'influxWaver', 'flyingDragon'],
 }
 for (const kit of loadouts) for (const id of forbiddenAtEntry[kit.stageId] || []) {
-  assert(![...kit.armor, ...kit.weapons, ...kit.accessories, ...kit.accessorySwaps.map(swap => swap.id)].includes(id), `Entry kit needs its own rewards: ${kit.stageId}/${kit.classId}/${id}`)
+  assert(![...kit.armor, ...kit.weapons, ...kit.accessories, ...kit.accessorySwaps.map(swap => swap.id), ...kit.ammo, ...Object.values(kit.accessoryChoices).flatMap(choice => choice.ids)].includes(id), `Entry kit needs its own rewards: ${kit.stageId}/${kit.classId}/${id}`)
 }
 console.log(`Verified ${loadouts.length} complete Master Mode builds, swaps, pairings, and first-entry progression gates.`)

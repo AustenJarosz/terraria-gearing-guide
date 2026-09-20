@@ -1,12 +1,20 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { execFileSync } from 'node:child_process'
 import { unpackToFiles } from 'xnb'
 import { loadoutItems } from '../src/data/loadoutItems.js'
+import { preparationItems, preparationSpriteIds } from '../src/data/preparationItems.js'
+import { dungeonChestSpriteIds } from '../src/data/dungeonChests.js'
 import { acquisitionIcons } from '../src/data/acquisitionIcons.js'
 import { gearAcquisition } from '../src/data/gearAcquisition.js'
 
 // ItemID constants from the installed Terraria build, not guessed wiki image URLs.
 const additions = {
+  ...preparationSpriteIds,
+  ...dungeonChestSpriteIds,
+  'Trimarang.png': 5298, 'Pyroclastic_Stone.png': 6178, 'Snapping_Stone.png': 6167,
+  'Magma_Stone.png': 1322, 'Shroomerang.png': 4764, 'Ice_Boomerang.png': 670,
+  'White_String.png': 3306, 'Frostburn_Arrow.png': 988, 'Musket_Ball.png': 97, 'Ice_Torch.png': 974,
   'Mystic_Bloom.png': 6154, 'Bundle_of_Horseshoe_Balloons.png': 5331, 'Magnet_Flower.png': 4000,
   'Bundle_of_Balloons.png': 1164, 'Lucky_Horseshoe.png': 158, 'Moonglow.png': 314,
   'Restoration_Shield.png': 6188, 'Mystic_Arts_Sash.png': 6189, 'Silver_Shield.png': 6183,
@@ -40,9 +48,27 @@ for (const [file, id] of Object.entries(additions)) {
   }
   manifest[file] = id
 }
+// Food textures contain inventory / held / plated sprites; Fallen Star animates.
+// Export only their first inventory frame instead of a misleading sprite strip.
+for (const [file, frameHeight] of [['Ale.png', 20], ['Seafood_Dinner.png', 22], ['Fallen_Star.png', 26]]) {
+  const outputPath = path.resolve('public/items', file)
+  if (fs.readFileSync(outputPath).readUInt32BE(20) === frameHeight) continue
+  const literal = outputPath.replaceAll("'", "''")
+  execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', `
+    $ErrorActionPreference = 'Stop'
+    Add-Type -AssemblyName System.Drawing
+    $spriteImage = [System.Drawing.Bitmap]::FromFile('${literal}')
+    try { $spriteFrame = $spriteImage.Clone([System.Drawing.Rectangle]::new(0, 0, $spriteImage.Width, ${frameHeight}), $spriteImage.PixelFormat) }
+    finally { $spriteImage.Dispose() }
+    try { $spriteFrame.Save('${literal}', [System.Drawing.Imaging.ImageFormat]::Png) }
+    finally { $spriteFrame.Dispose() }
+  `])
+}
 const icons = { ...acquisitionIcons }
+icons['Placed Bottle'] = 'Bottle.png'
 for (const [file] of Object.entries(additions)) icons[file.slice(0, -4).replaceAll('_', ' ')] = file
 for (const item of Object.values(loadoutItems)) icons[item.name] = item.file
+for (const item of Object.values(preparationItems)) icons[item.name] = item.file
 // Ingredients that were previously only equipment cards also need recipe icons.
 icons['Cloud in a Bottle'] = 'Cloud_in_a_Bottle.png'
 icons['Shark Tooth Necklace'] = 'Shark_Tooth_Necklace.png'

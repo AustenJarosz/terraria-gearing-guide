@@ -4,8 +4,9 @@ import { items, wikiPage, wikiSrc } from './data/items'
 import { itemNotes } from './data/itemNotes'
 import { gearAcquisition } from './data/gearAcquisition'
 import { Acquisition } from './Acquisition'
+import { equipmentLinkTypes } from './data/equipmentLinks'
 
-function ItemChip({ id, notes }) {
+function ItemChip({ id, notes, links = [], showStats = false }) {
   const item = items[id]
   const guidance = notes ?? itemNotes[id] ?? []
   const detailId = useId()
@@ -60,9 +61,13 @@ function ItemChip({ id, notes }) {
       onPointerLeave={leave} onKeyDown={event => { if (event.key === 'ArrowDown') { event.preventDefault(); pinned.current = true; show(); requestAnimationFrame(() => panel.current?.querySelector('a')?.focus()) } }} onFocus={event => { if (skipFocus.current) { skipFocus.current = false; return } if (event.currentTarget.matches(':focus-visible')) show() }} onBlur={blur}
       onClick={() => { if (pinned.current) close(); else { pinned.current = true; show() } }}>
       <span className="item-icon"><img src={wikiSrc(item.file)} alt="" loading="lazy" /></span>
-      <span className={`item-name rarity-${item.rarity}`}>{item.name}</span>
+      <span className="item-title">
+        <span className={`item-name rarity-${item.rarity}`}>{item.name}</span>
+        {links.length > 0 && <span className="equipment-links">{links.map(link => <span key={link} className={`equipment-link equipment-link-${link}`}><span aria-hidden="true">◆</span> {equipmentLinkTypes[link].label}</span>)}</span>}
+      </span>
       <span className="item-toggle" aria-hidden="true">ⓘ</span>
     </button>
+    {showStats && <p className="item-summary">{item.stats}</p>}
     {guidance.length > 0 && <div className="item-guidance">{guidance.map((note, index) => <p key={index}><strong>{note.label}</strong> {note.text}</p>)}</div>}
     {createPortal(<section ref={panel} id={detailId} role="region" aria-label={`${item.name} details`} aria-hidden={!open} inert={!open}
       className={`item-popover ${open ? 'is-open' : ''}`} style={position} onPointerEnter={cancel} onPointerLeave={leave} onBlur={blur}>
@@ -74,18 +79,18 @@ function ItemChip({ id, notes }) {
   </div>
 }
 
-export function ItemGrid({ ids, notes = {} }) {
-  return <div className="item-grid">{ids.map(id => <ItemChip key={id} id={id} notes={notes[id]} />)}</div>
+export function ItemGrid({ ids, notes = {}, links = {}, showStats = false }) {
+  return <div className="item-grid">{ids.map(id => <ItemChip key={id} id={id} notes={notes[id]} links={links[id]} showStats={showStats} />)}</div>
 }
 
-export function AccessoryGrid({ ids, notes = {}, choices = {} }) {
+export function AccessoryGrid({ ids, notes = {}, choices = {}, links = {} }) {
   return <div className="item-grid">{ids.map(id => {
     const choice = choices[id]
     return choice ? <div className="accessory-choice" key={id} role="group" aria-label={choice.label}>
       <div className="accessory-choice-heading"><strong>{choice.label}</strong><span>1 slot</span></div>
-      {choice.ids.map(option => <ItemChip key={option} id={option} notes={notes[option]} />)}
-      <p>{choice.text}</p>
-    </div> : <ItemChip key={id} id={id} notes={notes[id]} />
+      {choice.ids.map(option => <ItemChip key={option} id={option} notes={notes[option]} links={links[option]} />)}
+      {choice.text && <p>{choice.text}</p>}
+    </div> : <ItemChip key={id} id={id} notes={notes[id]} links={links[id]} />
   })}</div>
 }
 

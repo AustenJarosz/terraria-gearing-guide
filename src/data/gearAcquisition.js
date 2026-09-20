@@ -2,6 +2,7 @@ import { items } from './items.js'
 import { bossDrops } from './bossDrops.js'
 import { dungeonDrops } from './dungeonDrops.js'
 import { checklistEvents } from './checklistEvents.js'
+import { preparationAcquisition } from './preparationItems.js'
 
 const anvil = ['Iron Anvil', 'Lead Anvil']
 const hardAnvil = ['Mythril Anvil', 'Orichalcum Anvil']
@@ -14,6 +15,12 @@ const combine = (...ingredients) => craft(ingredients.map(name => [name, 1]), wo
 const drops = (...rows) => ({ drops: rows.map(([enemy, rate, note]) => ({ enemy, rate, note })) })
 
 export const gearAcquisition = {
+  ...preparationAcquisition,
+  trimarang: craft([['Enchanted Boomerang', 1], ['Shroomerang', 1], ['Ice Boomerang', 1]], ['Work Bench']),
+  pyroclasticStone: { ...combine('Snapping Stone', 'Magma Stone'), note: 'Possible before any boss, but requires the Goblin Tinkerer’s workshop and difficult early materials. An optional upgrade, not required for the Eye.' },
+  whiteString: craft([['Cobweb', 30]], ['Loom']),
+  frostburnArrow: { recipes: [{ ingredients: [['Wooden Arrow', 10], ['Ice Torch', 1]], stations: ['By Hand'], quantity: 10 }] },
+  musketBall: { vendor: 'Arms Dealer', note: 'Always available once the Arms Dealer moves in.' },
   mysticBloom: craft([["Nature's Gift", 1], ['Moonglow', 2], ['Vine', 3], ['Rich Mahogany', 7]]),
   horseshoeBalloons: { ...combine('Bundle of Balloons', 'Lucky Horseshoe'), note: 'Bundle of Balloons combines Cloud in a Balloon, Blizzard in a Balloon, and Sandstorm in a Balloon at the same workshop.' },
   magnetFlower: combine('Mana Flower', 'Celestial Magnet'),

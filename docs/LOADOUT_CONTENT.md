@@ -4,6 +4,7 @@ Reviewed September 17, 2026 for Desktop **1.4.5.7**, ordinary worlds, solo-frien
 
 ## Where to edit
 
+- `src/data/preparation.js`: curated potions, healing upgrades, flasks, and buff stations for each stage/class. Item effects and recipes live in `src/data/preparationItems.js`; see `docs/PREPARATION_CONTENT.md` for the progression rules and sources.
 - `src/data/loadouts.js`: every stage/class recommendation, including Dungeon entry builds and the grouped optional encounters. Each named section contains four classes; the final `byStage` map assigns them to the roadmap. The existing optional pre-Hardmode data is maintained, even though that extra stop is currently hidden from the roadmap UI.
 - `src/data/items.js` and `src/data/loadoutItems.js`: item names, images, summaries, and wiki links. New audit items are in the latter and merged into the main catalog.
 - `src/data/gearAcquisition.js`: structured recipe ingredients/stations, drop percentages, and shop conditions used by item previews. Existing checklist and Dungeon loot is reused where names match.
@@ -53,3 +54,12 @@ This pass adds Mystic Bloom and Glacier Fang to pre-boss mage, upgrades balloon 
 - https://terraria.wiki.gg/wiki/Bundle_of_Horseshoe_Balloons
 - https://terraria.wiki.gg/wiki/Magnet_Flower
 - https://terraria.wiki.gg/wiki/Celestial_Cuffs
+
+
+## Equipment labels
+
+All recommended weapons remain visible. Edit src/data/equipmentLinks.js to give matching weapons and accessories the same named, colored badge for a stage/class. Labels always include text; item-name colors continue to indicate Terraria rarity.
+
+Accessories stay in the Accessories column. The pre-boss melee weapon-support slot groups Feral Claws (Swords) and White String (Yoyo) as a one-slot choice. Ranged ammunition has its own section with matching Bows/Guns badges. No setup selection or nested accessory cards are used.
+
+References: [Strings](https://terraria.wiki.gg/wiki/Strings), [Frostburn Arrow](https://terraria.wiki.gg/wiki/Frostburn_Arrow), [Arms Dealer](https://terraria.wiki.gg/wiki/Arms_Dealer).
