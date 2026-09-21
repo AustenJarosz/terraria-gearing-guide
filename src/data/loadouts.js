@@ -1,5 +1,5 @@
 // Master Mode, Desktop 1.4.5.7. Edit these stage/class entries to tune the guide.
-import { linkedEquipment } from './equipmentLinks.js'
+import { getLinkedEquipment } from './equipmentLinks.js'
 // accessories = one complete equipped build (6 slots, or 7 after the Demon Heart).
 // accessorySwaps = alternatives, with the exact equipped item they replace.
 // Weapons and armor are choices, not a shopping list. The first weapon is the default.
@@ -25,9 +25,10 @@ const preBoss = {
       pyroclasticStone: note('Optional · difficult early', 'Possible to obtain pre-boss, but hard to get and unnecessary for this fight. Keep Shark Tooth Necklace if you do not already have it.'),
       starfury: note('Use with', 'Open sky so the falling star reaches the Eye. Change weapons when terrain blocks it.'),
     }),
-  ranged: build('fossilArmor platinumArmor goldArmor', 'goldBow boomstick musket undertaker', 'hermesBoots cloudBottle shinyBalloon regenBand sharkTooth magiluminescence',
+  ranged: build('fossilArmor platinumArmor goldArmor', 'goldBow boomstick musket undertaker minishark', 'hermesBoots cloudBottle shinyBalloon regenBand sharkTooth magiluminescence',
     `${grounded} Fossil armor is the damage option; ore armor trades damage for defense. A Platinum or Gold Bow with Frostburn Arrows is a practical first-boss weapon.`, [swap('shackle', 'magiluminescence', 'Easy temporary defense if you have not mined evil ore.')], {
-      goldBow: note('World alternative', 'Use a Gold Bow in a gold world.'),
+      goldBow: note('World alternative', 'Use a Gold Bow in a gold world. Frostburn Arrows supply an important part of this setup’s damage.'),
+      minishark: note('Optional purchase', 'A costly Arms Dealer alternative. Shark Tooth Necklace helps its rapid, low-damage hits; keep shooting while moving.'),
       musket: note('Corruption option', 'From a Shadow Orb. Use Silver or Tungsten Bullets when available.'),
       undertaker: note('Crimson option', 'From a Crimson Heart; an alternative to the Corruption-only Musket.'),
     }),
@@ -37,7 +38,7 @@ const preBoss = {
     ], {
       mysticBloom: note('Jungle craft', 'Homing petals help track the Eye. Gather its materials before any boss; Jungle exploration is the challenge.'),
       glacierFang: note('Ice alternative', 'Use if found in a Frozen Chest or fishing crate; it is not a required farm.'),
-      diamondRobe: note('Pair with', 'Wizard Hat if Tim drops one; otherwise an available defensive helmet and leggings. Any good gem robe can bridge the gap to Jungle armor.'),
+      diamondRobe: note('Gem setup', 'Pair with Diamond Staff for the matching-gem damage bonus. Ruby Staff gains the robe’s additional gem effect instead. Use a Wizard Hat if available and defensive leggings; choose Jungle armor for the other magic weapons.'),
       diamondStaff: note('World alternative', 'Use Ruby Staff in a gold world. Both are craftable options; you do not need both.'),
     }),
   summoner: build('flinxCoat', 'flinxStaff vampireFrog snapthorn', 'hermesBoots cloudBottle shinyBalloon regenBand sharkTooth feralClaws',
@@ -68,10 +69,10 @@ const earlyOptional = {
 }
 
 const skeletron = {
-  melee: build('moltenArmor', 'starfury volcano hiveFive', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf feralClaws stingerNecklace',
-    'Keep a ranged melee attack for the hands and spinning skull. Molten armor is available after obtaining an evil-biome pickaxe; no Dungeon loot is needed.', [crimson(), swap('sharkTooth', 'stingerNecklace', 'Keep the base necklace if you skipped Queen Bee or did not obtain Honey Comb.')], {
+  melee: build('moltenArmor', 'hiveFive starfury volcano', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf feralClaws stingerNecklace',
+    'Keep a ranged melee attack for the hands and spinning skull. Molten armor is available after obtaining an evil-biome pickaxe; no Dungeon loot is needed.', [crimson(), swap('sharkTooth', 'stingerNecklace', 'Keep the base necklace if you skipped Queen Bee or did not obtain Honey Comb.'), swap('hivePack', 'stingerNecklace', 'Optional Hive-Five support: improves its bees. Keep your yoyo string/counterweight in the weapon-support slot.')], {
       volcano: note('Close-range option', 'Use during safe openings; switch to Starfury or Hive-Five when keeping distance.'),
-      hiveFive: note('Optional Queen Bee craft', 'Uses Bee Wax. Starfury works if you skipped Queen Bee.'),
+      hiveFive: note('Yoyo / Queen Bee craft', 'Use Strung Counterweight, or White String while collecting the components. Hive Pack also improves the bees; Starfury is the fallback if you skipped Queen Bee.'),
     }),
   ranged: build('fossilArmor', 'beesKnees moltenFury starCannon', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf sharkTooth regenBand',
     'Use Fossil armor until the Dungeon supplies Bones for Necro armor. The Bee’s Knees is an optional Queen Bee reward; Molten Fury is the craftable fallback.', [crimson(), swap('hivePack', 'regenBand', 'Use with The Bee’s Knees and Wooden Arrows; keep regeneration for non-bee weapons.')], {
@@ -84,9 +85,11 @@ const skeletron = {
       meteorArmor: note('Pair with', 'Space Gun or Gray Zapinator. For Demon Scythe, wear Jungle armor instead.'),
       grayZap: note('Optional vendor roll', 'Traveling Merchant stock is random. Space Gun is the reliable crafted alternative.'),
     }),
-  summoner: build('beeArmor obsidianArmor', 'vampireFrog impStaff snapthorn', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf pygmyNecklace feralClaws',
+  summoner: build('beeArmor obsidianArmor', 'impStaff vampireFrog hornetStaff snapthorn', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf pygmyNecklace feralClaws',
     'Bee armor favors minion count; Obsidian armor favors whip use. Pygmy Necklace is already sold at night by the Witch Doctor after Queen Bee, well before Plantera.', [crimson(), swap('sharkTooth', 'pygmyNecklace', 'If you skipped Queen Bee and have no Witch Doctor yet, use this with Obsidian armor.')], {
-      vampireFrog: note('Use when it connects', 'Strong if frogs can reach the hands or head. Mix in an Imp when the skull stays out of reach.'),
+      impStaff: note('Airborne target', 'The dependable reach option against Skeletron. Maintain Snapthorn’s tag and let the minions reach the head and hands.'),
+      hornetStaff: note('Queen Bee alternative', 'Flying coverage if you have Bee Wax. Its poison does not affect Skeletron, so rely on direct hits and the whip tag.'),
+      vampireFrog: note('Platform-dependent', 'Use only when your platforms let frogs reach the head or hands. Imp or Hornet is more consistent when Skeletron stays airborne.'),
     }),
 }
 
@@ -106,8 +109,10 @@ const dungeonEarly = {
 }
 
 const wall = {
-  melee: build('moltenArmor', 'nightsEdge sunfury darkLance', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf feralClaws boneGlove',
-    'Night’s Edge is the main recommendation: its large attack handles the Hungry while damaging the Wall. You still have six accessory slots for this fight; the Demon Heart comes afterward.', [crimson(), swap('obsidianShield', 'horseshoeBalloons', 'A bridge-focused option for knockback immunity if you can give up the extra jump.')]),
+  melee: build('moltenArmor', 'nightsEdge sunfury darkLance cascade', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf feralClaws boneGlove',
+    'Night’s Edge is the main recommendation: its large attack handles the Hungry while damaging the Wall. You still have six accessory slots for this fight; the Demon Heart comes afterward.', [crimson(), swap('obsidianShield', 'horseshoeBalloons', 'A bridge-focused option for knockback immunity if you can give up the extra jump.')], {
+      cascade: note('Yoyo alternative', 'Optional Underworld drop after Skeletron. Use Strung Counterweight and keep pace with the Wall; Night’s Edge remains the main recommendation.'),
+    }),
   ranged: build('necroArmor', 'hellwingBow phoenixBlaster starCannon beenades', 'lightningBoots horseshoeBalloons shieldCthulhu wormScarf stingerNecklace boneGlove',
     'Hellwing Bow is the main piercing option. Phoenix Blaster is an alternative gun; Beenades are supplemental consumables, not something you must farm for every attempt.', [crimson(), swap('hivePack', 'stingerNecklace', 'For a Beenade-heavy fight; keep the necklace for the bow or gun setup.')], {
       hellwingBow: note('Ammo', 'Wooden Arrows produce piercing bats. Other arrow types lose the special bat conversion.'),
@@ -127,32 +132,36 @@ const wall = {
 }
 
 const mechanicals = {
-  melee: build('adamantiteArmor titaniumArmor', 'shadowflameKnife bananarang chainGuillotines amarok', 'wingsEarly amphibianBoots shieldCthulhu warriorEmblem powerGlove wormScarf charmMyths',
+  melee: build('adamantiteArmor titaniumArmor', 'shadowflameKnife bananarang chainGuillotines amarok iceSickle', 'wingsEarly amphibianBoots shieldCthulhu warriorEmblem powerGlove wormScarf charmMyths',
     'Wear the melee helmet. Start with mobile projectile weapons rather than trying to facetank a Master boss. Consume the Demon Heart for the seventh slot. After a first mechanical kill, Hallowed armor and Excalibur are available; True Night’s Edge and Fire Gauntlet need all three.', [crimson(), boots(), swap('yoyoBag', 'charmMyths', 'Only for Amarok or another yoyo. Use the normal build for knives, boomerangs, or blades.')], {
       shadowflameKnife: note('Primary option', 'Hardmode Goblin Warlock drop; effective for Twins and Prime while moving.'),
       bananarang: note('Alternative farm', 'From Clowns in a Hardmode Blood Moon. Works as a projectile option if the Goblin drop is unavailable.'),
       chainGuillotines: note('Corruption option', 'Corrupt Mimic drop; do not require it in a Crimson world.'),
-      amarok: note('Yoyo variant', 'Equip Yoyo Bag in the swap below. Do not leave it equipped for the other weapons.'),
+      amarok: note('Yoyo pairing', 'Choose Yoyo Bag in the support slot. Good sustained contact damage, but keep within yoyo reach; the Destroyer cannot be Frostbitten.'),
+      iceSickle: note('Destroyer alternative', 'Lingering projectiles can hit several segments. Its short range is less suitable for chasing the Twins; use knives for those fights.'),
     }),
   ranged: build('adamantiteArmor titaniumArmor', 'daedalus onyxBlaster dartRifle dartPistol', 'wingsEarly amphibianBoots shieldCthulhu rangerEmblem wormScarf stingerNecklace charmMyths',
-    'Wear the ranged helmet. The base accessories work with guns and darts; use the quiver swap for Stormbow. Defeating the Destroyer lets you craft Megashark for the other two; Prime unlocks Flamethrower. Hallowed armor becomes an option after your first mechanical kill.', [crimson(), boots(), swap('phoenixQuiver', 'stingerNecklace', 'For Daedalus Stormbow. Use Magic or Molten Quiver until you have the Harpy Charm upgrade.')], {
+    'Wear the ranged helmet. The base accessories work with guns and darts; use the quiver choice for Stormbow. Defeating the Destroyer lets you craft Megashark for the other two; Prime unlocks Flamethrower. Hallowed armor becomes an option after your first mechanical kill.', [crimson(), boots(), swap('phoenixQuiver', 'stingerNecklace', 'For Daedalus Stormbow. Use Magic or Molten Quiver until you have the Harpy Charm upgrade.')], {
       daedalus: note('Destroyer / ammo', 'Piercing Unholy Arrows work well on its segments. Holy Arrows are another option; this bow needs clear overhead space.'),
       onyxBlaster: note('Twins / Prime', 'Use Crystal Bullets for single-target damage; Ichor Bullets are a Crimson alternative.'),
       dartRifle: note('Corruption option', 'Cursed Darts are useful for spreading damage across the Destroyer; it is immune to ordinary debuffs.'),
       dartPistol: note('Crimson option', 'Ichor Darts split into several projectiles. Ichor helps against Twins and Prime, but cannot debuff the Destroyer.'),
     }),
-  mage: build('adamantiteArmor titaniumArmor', 'skyFracture spiritFlame lifeDrain nimbusRod goldenShower', 'wingsEarly amphibianBoots shieldCthulhu sorcererEmblem wormScarf restorationShield manaCloak',
+  mage: build('adamantiteArmor titaniumArmor', 'skyFracture spiritFlame crystalSerpent lifeDrain meteorStaff nimbusRod goldenShower', 'wingsEarly amphibianBoots shieldCthulhu sorcererEmblem wormScarf restorationShield manaCloak',
     'Wear the magic headpiece. Sky Fracture or Spirit Flame covers single targets; Life Drain and Nimbus Rod suit the Destroyer. After The Twins, Rainbow Rod is a useful upgrade for the others. Bring Mana Regeneration Potions and mana potions.', [crimson(), boots(), swap('charmMyths', 'manaCloak', 'A defensive alternative if you manage mana manually with the quick-mana key.')], {
       skyFracture: note('Twins / Prime', 'An aimed single-target option; requires a Magic Missile from the pre-Hardmode Dungeon.'),
+      crystalSerpent: note('Fishing alternative', 'A Hallow fishing reward with shattering shots; useful if you have not obtained the other main weapons.'),
+      meteorStaff: note('Destroyer / open sky', 'Overhead area damage can catch several segments. Mana-intensive: use your regeneration accessory and potions; avoid covered arenas.'),
       lifeDrain: note('Destroyer option', 'Crimson Mimic drop; can hit multiple segments. It is not available from Corrupt Mimics.'),
       nimbusRod: note('Supplemental damage', 'Place clouds where the Destroyer will pass, then return to your main weapon.'),
       goldenShower: note('Utility · Crimson', 'Refresh Ichor against Twins or Prime, then switch to your damage weapon. The Destroyer is immune.'),
     }),
-  summoner: build('spiderArmor', 'ruinousStaff sanguineStaff bladeStaff firecracker coolWhip', 'wingsEarly amphibianBoots shieldCthulhu summonerEmblem pygmyNecklace twilightGrasp wormScarf',
+  summoner: build('spiderArmor', 'ruinousStaff sanguineStaff bladeStaff firecracker coolWhip snapthorn', 'wingsEarly amphibianBoots shieldCthulhu summonerEmblem pygmyNecklace twilightGrasp wormScarf',
     'Choose Ruinous/Sanguine with Firecracker, or Blade Staff with flat-tag whips. Spider Staff remains a starter while farming. Queen Slime and Dreadnautilus are optional farms. After your first mechanical kill, craft Durendal; Hallowed armor with its Hood is another upgrade.', [crimson(), boots(), swap('berserkerGlove', 'twilightGrasp', 'Crimson defensive option for a one-whip build. Do not keep stacking tags without the extra tag slots.')], {
       ruinousStaff: note('Pair with', 'Firecracker. Its heavy individual minion hits suit the explosion tag.'),
       sanguineStaff: note('Optional Dreadnautilus reward', 'Reliable tracking for flying targets. Pair with Firecracker; Ruinous Staff is the craftable alternative.'),
-      bladeStaff: note('Optional Queen Slime reward', 'Use Cool Whip plus Snapthorn if desired and keep Twilight Grasp for multiple tags. Firecracker is a poor fit for its small hits.'),
+      bladeStaff: note('Fast-hit setup', 'Use Cool Whip and optional Snapthorn with Twilight Grasp. Its small hits are a poor Firecracker match. In 1.4.5.7 it receives reduced flat tag damage.'),
+      snapthorn: note('Extra tag', 'Optional alongside Cool Whip with Twilight Grasp; refresh the tag and whip-speed buff. This is support, not the main Hardmode whip.'),
       coolWhip: note('Use with', 'Blade Staff’s rapid hits. Also provides supplemental damage while working toward another minion.'),
     }),
 }
@@ -160,23 +169,24 @@ const mechanicals = {
 const plantera = {
   melee: build('turtleArmor hallowedArmor', 'trueNightsEdge trueExcalibur chlorophyteClaymore yelets', 'wingsEarly amphibianBoots shieldCthulhu fireGauntlet warriorEmblem wormScarf charmMyths',
     'All three mechanical bosses are down, so True Night’s Edge and the Chlorophyte sword upgrades are now available. Turtle armor favors protection; Hallowed armor offers Holy Protection with its melee helmet.', [crimson(), boots(), swap('magicYoyoBag', 'charmMyths', 'Use with Yelets. Keep the normal accessory for sword builds.')], {
-      yelets: note('Yoyo variant', 'Use Magic Yoyo Bag; Yoyo Bag works if you have not obtained Magic String.'),
-      trueExcalibur: note('Alternative', 'Strong at closer range; use True Night’s Edge or Chlorophyte Claymore when keeping more distance.'),
+      yelets: note('Yoyo pairing', 'Choose Magic Yoyo Bag or Yoyo Bag in the support slot. Keep contact while circling Plantera rather than repeatedly retracting the yoyo.'),
+      trueExcalibur: note('Alternative', 'Strong at closer range. True Night’s Edge reaches farther; Chlorophyte Claymore now makes close-range spore clouds and a ground impact, not a long-range orb.'),
     }),
   ranged: build('hallowedArmor chlorophyteArmor', 'megashark flamethrower shotbow', 'wingsEarly amphibianBoots shieldCthulhu rangerEmblem avengerEmblem wormScarf charmMyths',
     'Choose the ranged headpiece. Megashark is the flexible main weapon; Flamethrower is excellent when Plantera and its tentacles stay within the flames.', [crimson(), boots(), swap('phoenixQuiver', 'charmMyths', 'For Chlorophyte Shotbow; keep the base build for Megashark or Flamethrower.')], {
       megashark: note('Ammo', 'Crystal Bullets for damage. Chlorophyte Bullets trade some output for reliable hits while dodging.'),
       flamethrower: note('Ammo / range', 'Gel. Crafting requires Skeletron Prime’s Souls of Fright; fight at flame range without touching Plantera.'),
-      shotbow: note('Bow variant', 'Holy or Ichor Arrows, plus the Phoenix Quiver swap. Do not put a quiver on the gun/flame setup.'),
+      shotbow: note('Bow variant', 'Holy or Ichor Arrows, plus the Phoenix Quiver choice. Do not put a quiver on the gun/flame setup.'),
     }),
-  mage: build('hallowedArmor chlorophyteArmor', 'venomStaff rainbowRod skyFracture goldenShower', 'wingsEarly amphibianBoots shieldCthulhu celestialEmblem restorationShield manaCloak wormScarf',
+  mage: build('hallowedArmor chlorophyteArmor', 'venomStaff rainbowRod crystalSerpent goldenShower', 'wingsEarly amphibianBoots shieldCthulhu celestialEmblem restorationShield manaCloak wormScarf',
     'Wear the magic headpiece. Venom Staff is now craftable with Chlorophyte; Rainbow Rod provides tracking while you dodge. Hallowed armor is a strong defensive choice.', [crimson(), boots(), swap('charmMyths', 'manaCloak', 'Use if you prefer manual mana potions and more healing uptime.')], {
       venomStaff: note('Primary option', 'Use at a distance where several projectiles connect. Requires Poison Staff plus Chlorophyte Bars.'),
       goldenShower: note('Utility · Crimson', 'Apply Ichor, then switch to Venom Staff or Rainbow Rod for damage.'),
     }),
-  summoner: build('hallowedArmor', 'bladeStaff sanguineStaff ruinousStaff durendal firecracker', 'wingsEarly amphibianBoots shieldCthulhu pygmyNecklace summonerEmblem twilightGrasp wormScarf',
+  summoner: build('hallowedArmor', 'bladeStaff sanguineStaff ruinousStaff opticStaff durendal firecracker', 'wingsEarly amphibianBoots shieldCthulhu pygmyNecklace summonerEmblem twilightGrasp wormScarf',
     'Use Hallowed Hood, not a melee/ranged/magic headpiece. Durendal is an important post-mechanical upgrade in 1.4.5.7; the minion and whip should be chosen as a pair.', [crimson(), boots(), swap('berserkerGlove', 'wormScarf', 'Crimson-world defense and whip speed if you prefer it to the evil-boss accessory.')], {
-      bladeStaff: note('Pair with', 'Durendal for its minion-triggered damage; add another flat tag only with Twilight Grasp equipped.'),
+      bladeStaff: note('Pair with', 'Durendal adds flat tag damage plus its new minion-triggered hit. Keep attacking with the whip; reserve Firecracker for the higher-hit-damage minions.'),
+      opticStaff: note('Craftable alternative', 'Available after the Twins. Works with Durendal in an open arena; avoid walls that block the minions from reaching Plantera.'),
       sanguineStaff: note('Alternative route', 'Use Firecracker with its larger hits. Requires Dreadnautilus; Ruinous Staff is craftable.'),
       ruinousStaff: note('Pair with', 'Firecracker. Keep Durendal as an additional tag with Twilight Grasp.'),
       firecracker: note('Use with', 'Ruinous or Sanguine minions, rather than Blade Staff.'),
@@ -191,7 +201,7 @@ const dungeonLate = {
   ranged: build('shroomiteArmor hallowedArmor', 'megashark shotbow flamethrower', 'leafWings amphibianBoots shieldCthulhu rangerEmblem avengerEmblem wormScarf charmMyths',
     'Shroomite is available from the Truffle’s Autohammer after Plantera, before collecting any Dungeon loot. Use Hallowed armor if you have not set up that shop. Hunt Tactical Shotgun and Rifle Scope inside.', [crimson(), boots(), swap('phoenixQuiver', 'charmMyths', 'For Chlorophyte Shotbow; match Shroomite’s headpiece to arrows.')], {
       megashark: note('Ammo', 'Crystal Bullets; Chlorophyte Bullets are the homing alternative for awkward corridors.'),
-      shotbow: note('Ammo', 'Holy or Ichor Arrows; use Shroomite Headgear and the quiver swap.'),
+      shotbow: note('Ammo', 'Venom or Ichor Arrows; use Shroomite Headgear and the quiver swap.'),
     }),
   mage: build('hallowedArmor chlorophyteArmor', 'venomStaff rainbowRod waspGun goldenShower', 'leafWings amphibianBoots shieldCthulhu celestialEmblem restorationShield manaCloak wormScarf',
     'Enter in your magic Hallowed or Chlorophyte set. Spectre armor requires Ectoplasm from this visit, so it is an upgrade target rather than entry gear.', [crimson(), boots()], {
@@ -207,23 +217,26 @@ const dungeonLate = {
 }
 
 const golem = {
-  melee: build('turtleArmor hallowedArmor', 'terraBlade seedler paladinsHammer trueNightsEdge', 'leafWings amphibianBoots masterNinja fireGauntlet warriorEmblem frozenShield charmMyths',
+  melee: build('turtleArmor hallowedArmor', 'terraBlade eyeYoyo seedler paladinsHammer trueNightsEdge vampireKnives', 'leafWings amphibianBoots masterNinja fireGauntlet warriorEmblem frozenShield charmMyths',
     'Turtle or melee Hallowed armor works for the first Golem. Beetle armor needs his Beetle Husks, so it comes afterward. Terra Blade is available now only if you already farmed a post-Plantera Solar Eclipse.', [boots(), swap('wormScarf', 'charmMyths', 'More damage reduction; Brain of Confusion is the Crimson alternative.')], {
       terraBlade: note('Optional early Eclipse', 'Requires a Broken Hero Sword from Mothron after Plantera. Use Seedler or True Night’s Edge if you have not done that event.'),
+      eyeYoyo: note('Optional Eclipse yoyo', 'Another post-Plantera Mothron reward. Use a yoyo bag and maintain contact with Golem while dodging; this is not required for your first Temple clear.'),
       paladinsHammer: note('Dungeon alternative', 'Piercing and returns through nearby targets. Requires farming Paladins; it is not a Golem drop.'),
+      vampireKnives: note('Crimson support', 'From the Crimson Dungeon chest after Plantera. Briefly use for healing, then return to your main damage weapon; optional and world-specific.'),
     }),
-  ranged: build('shroomiteArmor', 'tacticalShotgun venusMagnum shotbow', 'leafWings amphibianBoots masterNinja rangerEmblem avengerEmblem reconScope frozenShield',
+  ranged: build('shroomiteArmor', 'tacticalShotgun venusMagnum shotbow flamethrower', 'leafWings amphibianBoots masterNinja rangerEmblem avengerEmblem reconScope frozenShield',
     'Wear Shroomite Mask for the guns, or Headgear for the bow. Moving during a boss fight is normal; the set does not require you to stand still to make its base bonuses useful.', [boots(), swap('phoenixQuiver', 'avengerEmblem', 'For Chlorophyte Shotbow; keep the emblem for the guns.')], {
-      tacticalShotgun: note('Ammo', 'Crystal Bullets are a strong match for Golem’s large body. Megashark remains a fallback if the Dungeon gun has not dropped.'),
+      tacticalShotgun: note('Ammo', 'Nano Bullets offer strong direct damage in 1.4.5.7; Crystal Bullets add impact shards. Megashark remains a fallback while farming this gun.'),
+      flamethrower: note('Close-range alternative', 'Uses Gel and can hit clustered Golem parts. Stay out of contact range; match Shroomite Helmet to this specialist weapon.'),
       venusMagnum: note('Ammo / alternative', 'Crystal or Ichor Bullets. Requires a Plantera drop; you do not need it as well as Tactical Shotgun.'),
-      shotbow: note('Bow variant', 'Holy or Ichor Arrows; use the quiver swap and Shroomite Headgear.'),
+      shotbow: note('Bow variant', 'Venom or Ichor Arrows; use the quiver choice and Shroomite Headgear.'),
     }),
   mage: build('spectreArmor', 'infernoFork magnetSphere venomStaff', 'leafWings amphibianBoots masterNinja celestialEmblem manaCloak mysticArtsSash frozenShield',
     'Use Spectre Mask for damage. Spectre Hood is an optional healing tradeoff for this fight. Carry mana potions; keep a Mana Regeneration Potion active for sustained casting.', [boots(), swap('sorcererEmblem', 'frozenShield', 'More damage if you are comfortable giving up the shield’s protection.')], {
       magnetSphere: note('Supplemental weapon', 'Cast the sphere, then attack with Inferno Fork or Venom Staff while it fires.'),
       venomStaff: note('Fallback', 'Use if your Dungeon has not supplied Inferno Fork; its spread connects well with a large target.'),
     }),
-  summoner: build('tikiArmor hallowedArmor', 'desertTiger pygmyStaff vulgarFlower durendal firecracker', 'leafWings amphibianBoots masterNinja pygmyNecklace summonerEmblem herculesBeetle twilightGrasp',
+  summoner: build('tikiArmor hallowedArmor', 'desertTiger pygmyStaff vulgarFlower morningStar durendal firecracker', 'leafWings amphibianBoots masterNinja pygmyNecklace summonerEmblem herculesBeetle twilightGrasp',
     'Tiki armor is the damage/minion-count option; Hallowed Hood retains Holy Protection. Desert Tiger is powerful but requires a rare Desert Key, so Pygmy Staff is the practical fallback.', [boots(), swap('frozenShield', 'herculesBeetle', 'A defensive option for surviving contact and reducing knockback.')], {
       desertTiger: note('Pair with', 'Vulgar Display of Flower; use Firecracker if Plantera did not drop the whip. Repeated summons strengthen one tiger.'),
       pygmyStaff: note('Pair with', 'Vulgar Display of Flower and Durendal tags, supported by Twilight Grasp.'),
@@ -242,15 +255,15 @@ const detour = {
     'Match the Shroomite headpiece: Mask for bullets, Helmet for Stynger, Headgear for arrows. The starting kit does not assume weapons dropped by the events or optional bosses.', [boots(), swap('phoenixQuiver', 'destroyerEmblem', 'For Chlorophyte Shotbow. The base accessories support the gun and Stynger options.')], {
       tacticalShotgun: note('Ammo', 'Crystal Bullets for damage; Chlorophyte Bullets for fast targets you struggle to track.'),
       stynger: note('Crowds / large targets', 'Buy Stynger Bolts from the Witch Doctor while carrying the weapon. Use the Shroomite Helmet.'),
-      shotbow: note('Bow alternative', 'Holy or Ichor Arrows with the quiver swap. Works if you have not obtained the Dungeon/Golem weapons.'),
+      shotbow: note('Bow alternative', 'Venom or Ichor Arrows with the quiver swap. Works if you have not obtained the Dungeon/Golem weapons.'),
     }),
   mage: build('spectreArmor', 'heatRay infernoFork magnetSphere', 'steampunkWings amphibianBoots masterNinja celestialEmblem manaCloak mysticArtsSash frozenShield',
     'Use Spectre Mask for damage, with Hood as an optional healing tradeoff. Heat Ray covers single targets; Inferno Fork and Magnet Sphere help with crowds. No optional-event reward is required to start.', [boots(), swap('sorcererEmblem', 'frozenShield', 'A damage-focused swap if you can give up the shield’s protection.')], {
       heatRay: note('Single targets', 'Golem drop; use Inferno Fork if you did not obtain it.'),
       magnetSphere: note('Supplemental damage', 'Cast it, then switch back to your main weapon while the sphere fires.'),
     }),
-  summoner: build('tikiArmor hallowedArmor', 'desertTiger pygmyStaff vulgarFlower durendal firecracker', 'steampunkWings amphibianBoots masterNinja pygmyNecklace summonerEmblem herculesBeetle twilightGrasp',
-    'Use Tiki armor for more minions or Hallowed Hood for Holy Protection. Start the detours with your Dungeon/Plantera kit; Spooky armor, scrolls, Xeno Staff, and Kaleidoscope are rewards to earn here.', [boots(), swap('frozenShield', 'herculesBeetle', 'A defensive alternative if the event or boss is killing you before your damage pays off.')], {
+  summoner: build('tikiArmor hallowedArmor', 'desertTiger pygmyStaff vulgarFlower morningStar durendal firecracker', 'steampunkWings amphibianBoots masterNinja pygmyNecklace summonerEmblem herculesBeetle twilightGrasp',
+    'Use Tiki armor for more minions or Hallowed Hood for Holy Protection. Start the detours with your Dungeon/Plantera kit; Spooky armor, scrolls, and Xeno Staff are rewards to earn here.', [boots(), swap('frozenShield', 'herculesBeetle', 'A defensive alternative if the event or boss is killing you before your damage pays off.')], {
       desertTiger: note('Pair with', 'Vulgar Display of Flower, or Firecracker if Plantera did not drop it. Requires a Desert Key; Pygmy Staff is the easier fallback.'),
       pygmyStaff: note('Pair with', 'Vulgar Display of Flower and Durendal with Twilight Grasp for the extra tag slots.'),
       vulgarFlower: note('Plantera reward', 'A strong upgrade for large individual minion hits. This does not require a side event or optional boss.'),
@@ -265,20 +278,21 @@ const lateSwaps = (damageSlot, defensiveSlot) => [
   ...(damageSlot ? [swap('celestialShell', damageSlot, 'A balanced damage, defense, and regeneration option in place of the class emblem.')] : []),
 ]
 const cultist = {
-  melee: build('beetleArmor', 'terraBlade influxWaver possessedHatchet eyeYoyo flyingDragon', 'steampunkWings amphibianBoots masterNinja fireGauntlet warriorEmblem celestialShell frozenShield',
+  melee: build('beetleArmor', 'flyingDragon terraBlade influxWaver kraken eyeYoyo possessedHatchet', 'steampunkWings amphibianBoots masterNinja fireGauntlet warriorEmblem celestialShell frozenShield',
     'Choose Beetle Shell for defense or Scale Mail for damage. Aim at the real Cultist; accurate manual attacks help avoid the clones. Optional-detour weapons are upgrades, not requirements.', [...lateSwaps(null, 'warriorEmblem'), swap('magicYoyoBag', 'warriorEmblem', 'Only for The Eye of Cthulhu yoyo; use the emblem for swords and other melee weapons.')], {
       terraBlade: note('Requires an Eclipse', 'Craft after obtaining a Broken Hero Sword from post-Plantera Mothron.'),
       influxWaver: note('Optional Martian reward', 'Strong aimed attacks. Use Possessed Hatchet or your existing sword if you skipped Martian Madness.'),
       possessedHatchet: note('Golem fallback', 'Usable if you skipped detours; control which enemy you are targeting when clones appear.'),
-      eyeYoyo: note('Optional Eclipse reward', 'Equip the Magic Yoyo Bag swap. This is the yoyo, not the early boss summon.'),
+      eyeYoyo: note('Optional Eclipse reward', 'Use a yoyo bag. A fallback to Kraken if you skipped Fishron; keep the yoyo on the real Cultist.'),
+      kraken: note('Optional Fishron reward', 'The stronger late yoyo option in 1.4.5.7. Use Magic Yoyo Bag or Yoyo Bag; this is no longer Dungeon loot.'),
       flyingDragon: note('Optional Betsy reward', 'A powerful aimed projectile option if you completed Old One’s Army III.'),
     }),
   ranged: build('shroomiteArmor', 'xenopopper tacticalShotgun tsunami eventide', 'steampunkWings amphibianBoots masterNinja rangerEmblem reconScope destroyerEmblem frozenShield',
     'Use Shroomite Mask for the guns and Headgear for bows. Tactical Shotgun is the Dungeon fallback if you skipped optional bosses/events. Aim at the real Cultist; do not build around Ichor, to which he is immune.', [...lateSwaps('rangerEmblem', 'destroyerEmblem'), swap('phoenixQuiver', 'destroyerEmblem', 'For Tsunami or Eventide. Keep the emblem for guns.')], {
-      xenopopper: note('Optional Martian reward', 'Crystal Bullets for aimed damage. Chlorophyte Bullets help tracking but can make clone targeting less predictable.'),
+      xenopopper: note('Optional Martian reward', 'Aim Nano or Crystal Bullets at the real Cultist. Avoid homing ammo here: it has a damage penalty and can target clones.'),
       tacticalShotgun: note('Fallback / ammo', 'Crystal Bullets; you can use this without completing optional boss detours.'),
-      tsunami: note('Optional Fishron reward', 'Holy Arrows for damage; use the quiver swap and Shroomite Headgear.'),
-      eventide: note('Optional Empress reward', 'Wooden Arrows activate its special projectiles. Use the quiver swap.'),
+      tsunami: note('Optional Fishron reward', 'Use high-damage Venom Arrows, Shroomite Headgear and the quiver choice. Do not rely on Ichor against the Cultist.'),
+      eventide: note('Optional Empress reward', 'Wooden Arrows activate its special projectiles. Use the quiver choice.'),
     }),
   mage: build('spectreArmor', 'razorpine razorTyphoon heatRay nightglow', 'steampunkWings amphibianBoots masterNinja celestialEmblem manaCloak mysticArtsSash frozenShield',
     'Spectre Mask is the damage default. Razorpine, Razorblade Typhoon, and Nightglow need optional encounters; Heat Ray is the Golem fallback. Ordinary debuffs such as Ichor do not work on the Cultist.', lateSwaps(null, 'frozenShield'), {
@@ -286,13 +300,14 @@ const cultist = {
       razorTyphoon: note('Optional Fishron reward', 'Homing is convenient but be deliberate around the clone phase.'),
       nightglow: note('Optional Empress reward', 'Another tracking option; Heat Ray is available without the detour.'),
     }),
-  summoner: build('spookyArmor tikiArmor', 'xenoStaff ravenStaff pygmyStaff kaleidoscope morningStar', 'steampunkWings amphibianBoots masterNinja papyrusScarab necromanticScroll summonerEmblem twilightGrasp',
-    'Spooky armor and both scroll accessories require Pumpkin Moon. Tiki armor and the swaps below keep this build usable if you skipped it. Xeno Staff and Kaleidoscope are optional upgrades; whip the real Cultist to focus your minions.', [
+  summoner: build('spookyArmor tikiArmor', 'xenoStaff ravenStaff sanguineStaff kaleidoscope morningStar durendal', 'steampunkWings amphibianBoots masterNinja papyrusScarab necromanticScroll summonerEmblem twilightGrasp',
+    'Spooky armor and both scroll accessories require Pumpkin Moon. Tiki armor and the swaps below keep this build usable if you skipped it. Xeno Staff and Kaleidoscope are optional upgrades; Sanguine Staff and Durendal provide an earlier fallback. Whip the real Cultist to focus your minions.', [
       ...lateSwaps(null, 'summonerEmblem'),
       swap('herculesBeetle', 'papyrusScarab', 'If you have not obtained a Necromantic Scroll from Mourning Wood.'),
       swap('pygmyNecklace', 'necromanticScroll', 'If you skipped Pumpkin Moon or have only one scroll to craft Papyrus Scarab.'),
     ], {
-      xenoStaff: note('Optional Martian reward', 'Reliable tracking for the moving Cultist; Pygmy Staff is the no-detour fallback.'),
+      xenoStaff: note('Optional Martian reward', 'Reliable tracking for the moving Cultist. Use Kaleidoscope or Morning Star; Sanguine Staff is an earlier flying alternative.'),
+      sanguineStaff: note('Earlier fallback', 'Requires Dreadnautilus. Tracks airborne targets while you focus on the real Cultist with Durendal or Morning Star.'),
       ravenStaff: note('Optional Pumpkin Moon reward', 'An alternative if you completed Pumpkin Moon but not Martian Madness.'),
       kaleidoscope: note('Optional Empress reward', 'Use with your minions. Twilight Grasp allows another whip tag alongside it.'),
       morningStar: note('Dungeon fallback', 'Use if you have not beaten Empress. Can also add a tag alongside Kaleidoscope with Twilight Grasp.'),
@@ -311,7 +326,22 @@ const pillarItemNotes = {
 // Pillars reuse the available pre-Cultist equipment, but get their own fight-specific advice.
 const pillars = Object.fromEntries(Object.entries(cultist).map(([classId, kit]) => [classId, {
   ...kit,
-  itemNotes: { ...kit.itemNotes, ...pillarItemNotes[classId] },
+  weapons: classId === 'mage' ? ids('razorTyphoon razorpine heatRay nightglow betsysWrath') : classId === 'summoner' ? [...kit.weapons, 'electricEel', 'darkHarvest'] : kit.weapons,
+  itemNotes: { ...kit.itemNotes, ...pillarItemNotes[classId], ...{
+    melee: {
+      eyeYoyo: note('Yoyo alternative', 'Use a yoyo bag for sustained hits on clustered enemies. Kraken is the stronger optional Fishron upgrade.'),
+      flyingDragon: note('Optional Betsy reward', 'Wide projectiles pass through walls, useful against crowds and enemies behind terrain.'),
+    },
+    ranged: {
+      tsunami: note('Optional Fishron reward', 'Venom Arrows and a quiver work well against priority targets. Match Shroomite Headgear to the bow.'),
+    },
+    mage: { betsysWrath: note('Optional support', 'Apply Betsy’s Curse to vulnerable enemies, then attack with your main spell. Obtained from Betsy; not required for a first pillar clear.') },
+    summoner: {
+      sanguineStaff: note('Earlier fallback', 'Requires Dreadnautilus. Tracks airborne enemies; focus dangerous targets with Morning Star or Durendal.'),
+      electricEel: note('Optional Fishron upgrade', 'Its electric energy benefits from nearby enemies. Pair with fast-hitting minions and keep Twilight Grasp when adding it alongside another tag.'),
+      darkHarvest: note('Crowd support', 'Its tag spreads damage through clustered enemies. Add it alongside your main whip only with an extra tag slot; it is an optional Pumpking drop.'),
+    },
+  }[classId] },
   notes: {
     melee: 'Start with your pre-Cultist equipment. Terra Blade and Influx Waver handle crowds; be careful with attacks near Selenians because they can reflect projectiles while spinning. After Solar falls, craft Daybreak or Solar Eruption for the remaining pillars.',
     ranged: 'Start with your gun or bow setup and match Shroomite’s headpiece. Piercing and area damage help with crowds. Once Vortex falls, craft Phantasm or Vortex Beater; they are not needed to clear the first pillar.',
@@ -321,19 +351,20 @@ const pillars = Object.fromEntries(Object.entries(cultist).map(([classId, kit]) 
 }]))
 
 const moon = {
-  melee: build('beetleArmor', 'daybreak solarEruption', 'steampunkWings amphibianBoots masterNinja fireGauntlet warriorEmblem celestialShell frozenShield',
+  melee: build('beetleArmor', 'daybreak solarEruption kraken', 'steampunkWings amphibianBoots masterNinja fireGauntlet warriorEmblem celestialShell frozenShield',
     'Use Beetle Shell for a forgiving first clear, or Scale Mail for damage. Daybreak lets you keep distance; Solar Eruption requires closer range. Solar armor is not available until after this fight. Moon Bite prevents Vampire Knives healing.', lateSwaps(null, 'warriorEmblem'), {
       daybreak: note('Primary weapon', 'Keep spears embedded in the eye you are focusing. Craft from Solar Fragments after the pillar.'),
       solarEruption: note('Close-range alternative', 'Useful when several parts are within reach; do not chase contact range at the expense of dodging.'),
+      kraken: note('Optional yoyo route', 'Requires Duke Fishron. Use a yoyo bag and focus an open eye; Daybreak is the longer-range default and requires no Fishron kill.'),
     }),
   ranged: build('shroomiteArmor', 'phantasm vortexBeater', 'steampunkWings amphibianBoots masterNinja rangerEmblem phoenixQuiver reconScope frozenShield',
-    'The default is a Phantasm bow build with Shroomite Headgear. For Vortex Beater, change to Shroomite Mask and replace the quiver using the swap below. Vortex armor requires a Moon Lord kill.', [
+    'The default is a Phantasm bow build with Shroomite Headgear. For Vortex Beater, change to Shroomite Mask and choose Destroyer Emblem in the weapon-support slot. Vortex armor requires a Moon Lord kill.', [
       ...lateSwaps('rangerEmblem', 'frozenShield'), swap('destroyerEmblem', 'phoenixQuiver', 'Required build change for Vortex Beater: quivers only improve arrows.'),
     ], {
-      phantasm: note('Ammo / pairing', 'Holy Arrows or Ichor Arrows, Shroomite Headgear, and Phoenix Quiver. Keep firing at a vulnerable eye to sustain the bow’s firing rate.'),
-      vortexBeater: note('Gun alternative', 'Chlorophyte Bullets for reliable tracking, or Crystal Bullets if you can aim consistently. Use Mask and the Destroyer Emblem swap.'),
+      phantasm: note('Ammo / pairing', 'Venom Arrows for direct damage, or Holy / Ichor Arrows, with Shroomite Headgear and a quiver. Keep firing at a vulnerable eye to sustain the bow’s firing rate.'),
+      vortexBeater: note('Gun alternative', 'Chlorophyte Bullets for reliable tracking, or Crystal Bullets if you can aim consistently. Use Mask and choose Destroyer Emblem instead of the quiver.'),
     }),
-  mage: build('spectreArmor', 'nebulaBlaze razorTyphoon nebulaArcanum betsysWrath', 'steampunkWings amphibianBoots masterNinja celestialEmblem manaCloak mysticArtsSash frozenShield',
+  mage: build('spectreArmor', 'nebulaBlaze nebulaArcanum razorTyphoon betsysWrath', 'steampunkWings amphibianBoots masterNinja celestialEmblem manaCloak mysticArtsSash frozenShield',
     'Wear Spectre Mask. Moon Bite blocks Spectre Hood healing, leaving its damage penalty without the usual benefit. Nebula armor requires Luminite after the first kill. Keep Mana Regeneration Potions and mana potions ready.', lateSwaps(null, 'frozenShield'), {
       spectreArmor: note('Use the Mask', 'Avoid relying on the Hood: Moon Bite disables its healing during the fight.'),
       nebulaBlaze: note('Primary option', 'Fast homing projectiles suit exposed eyes. Crafted from Nebula Fragments.'),
@@ -367,16 +398,49 @@ const byStage = {
   'event-upgrades': detour,
   'optional-bosses': Object.fromEntries(Object.entries(detour).map(([classId, kit]) => [classId, {
     ...kit,
-    ...(classId === 'summoner' ? {
-      weapons: ids('sanguineStaff ruinousStaff desertTiger vulgarFlower durendal firecracker'),
-      itemNotes: {
-        sanguineStaff: note('Airborne targets', 'Optional Dreadnautilus reward with reliable tracking. Use Vulgar Display of Flower, or Firecracker if you lack it.'),
-        ruinousStaff: note('Craftable alternative', 'Heavy minion hits pair with Vulgar Display of Flower or Firecracker. Requires no optional boss drop.'),
-        desertTiger: note('Rare-key alternative', 'Use if you have the Desert Chest weapon. Its strong hits pair with Vulgar Display of Flower.'),
-        vulgarFlower: kit.itemNotes.vulgarFlower,
+    ...{
+      melee: {
+        weapons: ids('flyingDragon terraBlade influxWaver possessedHatchet vampireKnives'),
+        itemNotes: {
+          flyingDragon: note('Optional Betsy reward', 'Long-range projectiles suit both fights. Use Terra Blade or Possessed Hatchet if you have not cleared Old One’s Army III.'),
+          terraBlade: note('Optional Eclipse upgrade', 'Needs post-Plantera Mothron. Its projectiles benefit from melee speed; use Beetle Scale Mail for damage or Shell for protection.'),
+          influxWaver: note('Optional Martian reward', 'Strong aimed projectile damage. Requires Martian Madness, not either boss on this page.'),
+          possessedHatchet: note('Golem fallback', 'Homing helps track both bosses without requiring an optional event weapon.'),
+          vampireKnives: note('Crimson support', 'Requires the Crimson Dungeon chest. Use briefly to recover health in normal nighttime fights; it cannot save you from daytime Empress’s lethal hits.'),
+        },
       },
-    } : {}),
-    notes: `${kit.notes} For Fishron and nighttime Empress, prioritize tracking and mobility. Upgrade to their rewards after the first win; this is not a daytime Empress no-hit build.`,
+      ranged: {
+        weapons: ids('xenopopper tacticalShotgun chainGun shotbow'),
+        itemNotes: {
+          xenopopper: note('Optional Martian reward', 'Nano or Crystal Bullets reward accurate shots; Chlorophyte Bullets help track fast movement.'),
+          tacticalShotgun: note('Dungeon fallback', 'Use Chlorophyte Bullets to bring the spread onto the boss. Nano or Crystal Bullets are alternatives when you can aim reliably.'),
+          chainGun: note('Optional Frost Moon reward', 'Use Chlorophyte Bullets to control its wide spread. Requires Santa-NK1, not Fishron or Empress.'),
+          shotbow: note('Bow alternative', 'Use Venom or Ichor Arrows, the quiver choice, and Shroomite Headgear. Switch back to Mask for the guns.'),
+        },
+      },
+      mage: {
+        weapons: ids('razorpine heatRay spectreStaff goldenShower'),
+        itemNotes: {
+          razorpine: note('Optional Frost Moon reward', 'High aimed damage from Everscream’s weapon. Use the mana regeneration accessory and keep potions ready.'),
+          heatRay: note('Golem fallback', 'Fast aimed shots are useful against moving bosses. More reliable here than leaving a slow Magnet Sphere behind them.'),
+          spectreStaff: note('Dungeon tracking option', 'Homing sacrifices peak damage for easier aiming while dodging. No side event or Fishron/Empress kill required.'),
+          goldenShower: note('Crimson support', 'Briefly apply Ichor, then return to your main spell. Optional utility, not the main damage weapon.'),
+        },
+      },
+      summoner: {
+        armor: ids('spookyArmor tikiArmor hallowedArmor'),
+        weapons: ids('xenoStaff desertTiger sanguineStaff ruinousStaff morningStar vulgarFlower durendal firecracker'),
+        itemNotes: {
+          spookyArmor: note('Optional Pumpkin Moon upgrade', 'More damage if you have Spooky Wood. Tiki or Hallowed Hood remains a fallback without the event.'),
+          xenoStaff: note('Optional Martian reward', 'Accurate airborne minions, particularly useful for Empress. Pair with Morning Star / Durendal; Sanguine Staff is an earlier tracking fallback.'),
+          sanguineStaff: note('Airborne targets', 'Optional Dreadnautilus reward with reliable tracking. Use Vulgar Display of Flower, or Firecracker if you lack it.'),
+          ruinousStaff: note('Craftable alternative', 'Heavy minion hits pair with Vulgar Display of Flower or Firecracker. Requires no optional boss drop.'),
+          desertTiger: note('Rare-key option', 'Pair with Vulgar Display of Flower. Strong against Empress; for Fishron’s fast dashes, Xeno or Sanguine offers more consistent airborne tracking.'),
+          vulgarFlower: kit.itemNotes.vulgarFlower,
+        },
+      },
+    }[classId],
+    notes: 'For Duke Fishron and nighttime Empress, prioritize reliable hits while moving. Optional event upgrades are listed first, with earlier alternatives alongside them. No reward from Fishron or Empress is required for these first clears. This is not a daytime Empress no-hit build.',
   }])),
   'pre-lunatic': cultist,
   'celestial-pillars': pillars,
@@ -399,7 +463,7 @@ const withAccessoryChoices = kit => {
   add('magnetFlower', 'Mana support · choose one', ['magnetFlower', 'celestialCuffs', 'manaFlower'],
     'Magnet Flower: automatic potions and mana-star pickup. Celestial Cuffs: more maximum mana and mana when hit, with the same pickup range; use quick mana yourself. Mana Flower is the fallback without a Celestial Magnet. Do not take hits deliberately.')
   add('manaCloak', 'Mana support · choose one', ['manaCloak', 'magnetFlower', 'celestialCuffs'],
-    'Mana Cloak adds stars when hit. Magnet Flower trades that for mana-star pickup range. Both automate potions. Celestial Cuffs favor maximum mana and pickup, but need manual quick mana.')
+    'Mana Cloak now creates mana stars on magic hits; collecting them grants Mana Surge. Magnet Flower instead extends mana-star pickup range. Both automate potions. Celestial Cuffs favor maximum mana and pickup, but need manual quick mana.')
   return {
     accessoryChoices,
     accessorySwaps: kit.accessorySwaps.filter(swap => !accessoryChoices[swap.replaces]?.ids.includes(swap.id)),
@@ -415,15 +479,13 @@ const headpieces = {
 export const loadouts = Object.entries(byStage).flatMap(([stageId, builds]) =>
   Object.entries(builds).map(([classId, kit]) => {
     const choices = withAccessoryChoices(kit)
-    const linked = linkedEquipment[stageId]?.[classId] || {}
+    const linked = getLinkedEquipment(stageId, classId, { ...kit, ...choices })
     return {
-      classId, stageId, ...kit, ...choices,
-      itemLinks: linked.itemLinks || {},
-      ammo: linked.ammo || [],
-      accessoryChoices: { ...choices.accessoryChoices, ...linked.accessoryChoices },
+      classId, stageId, ...kit, ...choices, ...linked,
       itemNotes: {
         ...Object.fromEntries(kit.armor.filter(id => headpieces[id]?.[classId]).map(id => [id, note('Headpiece', `Use the ${headpieces[id][classId]} for this class.`)])),
         ...kit.itemNotes,
+        ...linked.itemNotes,
       },
     }
   }),

@@ -1,9 +1,11 @@
 // Practical summaries for Desktop 1.4.5.7; see CONTENT_SOURCES.md.
 import { loadoutItems } from './loadoutItems.js'
 import { preparationItems } from './preparationItems.js'
+import { weaponSupportItems } from './weaponSupportItems.js'
 export const items = {
   ...loadoutItems,
   ...preparationItems,
+  ...weaponSupportItems,
   "platinumArmor": {
     "name": "Platinum armor",
     "file": "Platinum_Helmet.png",

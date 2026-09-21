@@ -5,6 +5,7 @@ import { unpackToFiles } from 'xnb'
 import { loadoutItems } from '../src/data/loadoutItems.js'
 import { preparationItems, preparationSpriteIds } from '../src/data/preparationItems.js'
 import { dungeonChestSpriteIds } from '../src/data/dungeonChests.js'
+import { weaponSupportItems, weaponSupportSpriteIds } from '../src/data/weaponSupportItems.js'
 import { acquisitionIcons } from '../src/data/acquisitionIcons.js'
 import { gearAcquisition } from '../src/data/gearAcquisition.js'
 
@@ -12,6 +13,8 @@ import { gearAcquisition } from '../src/data/gearAcquisition.js'
 const additions = {
   ...preparationSpriteIds,
   ...dungeonChestSpriteIds,
+  ...weaponSupportSpriteIds,
+  'Stone_Block.png': 3,
   'Trimarang.png': 5298, 'Pyroclastic_Stone.png': 6178, 'Snapping_Stone.png': 6167,
   'Magma_Stone.png': 1322, 'Shroomerang.png': 4764, 'Ice_Boomerang.png': 670,
   'White_String.png': 3306, 'Frostburn_Arrow.png': 988, 'Musket_Ball.png': 97, 'Ice_Torch.png': 974,
@@ -66,9 +69,11 @@ for (const [file, frameHeight] of [['Ale.png', 20], ['Seafood_Dinner.png', 22], 
 }
 const icons = { ...acquisitionIcons }
 icons['Placed Bottle'] = 'Bottle.png'
+icons['Any Wood'] = 'Wood.png'
 for (const [file] of Object.entries(additions)) icons[file.slice(0, -4).replaceAll('_', ' ')] = file
 for (const item of Object.values(loadoutItems)) icons[item.name] = item.file
 for (const item of Object.values(preparationItems)) icons[item.name] = item.file
+for (const item of Object.values(weaponSupportItems)) icons[item.name] = item.file
 // Ingredients that were previously only equipment cards also need recipe icons.
 icons['Cloud in a Bottle'] = 'Cloud_in_a_Bottle.png'
 icons['Shark Tooth Necklace'] = 'Shark_Tooth_Necklace.png'

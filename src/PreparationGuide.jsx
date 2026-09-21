@@ -3,11 +3,9 @@ import { getPreparation } from './data/preparation'
 
 export function PreparationGuide({ stageId, classId }) {
   const prep = getPreparation(stageId, classId)
-  return <section className="preparation" aria-label="Potions & buffs">
-    <div className="preparation-heading">
-      <h3>Potions & buffs</h3>
-      <p>A useful selection for this stage. Hover or tap an item for its recipe or source.</p>
-    </div>
+  return <details className="preparation loadout-swaps">
+    <summary>Potions & buffs <span>Recovery, class buffs & arena stations</span></summary>
+    <p className="preparation-help">A useful selection for this stage. Hover or tap an item for its recipe or source.</p>
     <div className="preparation-columns">
       <article className="preparation-column">
         <h4>Recovery & essentials</h4>
@@ -36,5 +34,5 @@ export function PreparationGuide({ stageId, classId }) {
       <h4>Useful for this encounter</h4>
       <ItemGrid ids={prep.extras} notes={prep.notes} showStats />
     </div>}
-  </section>
+  </details>
 }

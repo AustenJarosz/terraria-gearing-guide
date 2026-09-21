@@ -3,6 +3,7 @@ import { bossDrops } from './bossDrops.js'
 import { dungeonDrops } from './dungeonDrops.js'
 import { checklistEvents } from './checklistEvents.js'
 import { preparationAcquisition } from './preparationItems.js'
+import { weaponSupportAcquisition } from './weaponSupportItems.js'
 
 const anvil = ['Iron Anvil', 'Lead Anvil']
 const hardAnvil = ['Mythril Anvil', 'Orichalcum Anvil']
@@ -16,6 +17,7 @@ const drops = (...rows) => ({ drops: rows.map(([enemy, rate, note]) => ({ enemy,
 
 export const gearAcquisition = {
   ...preparationAcquisition,
+  ...weaponSupportAcquisition,
   trimarang: craft([['Enchanted Boomerang', 1], ['Shroomerang', 1], ['Ice Boomerang', 1]], ['Work Bench']),
   pyroclasticStone: { ...combine('Snapping Stone', 'Magma Stone'), note: 'Possible before any boss, but requires the Goblin Tinkerer’s workshop and difficult early materials. An optional upgrade, not required for the Eye.' },
   whiteString: craft([['Cobweb', 30]], ['Loom']),

@@ -8,7 +8,7 @@ export function EquipmentGuide({ base: loadout, stage }) {
       <div className="slots">
         <article className="slot">
           <h3>Armor</h3>
-          <ItemGrid ids={loadout.armor} notes={loadout.itemNotes} />
+          <ItemGrid ids={loadout.armor} notes={loadout.itemNotes} links={loadout.itemLinks} />
         </article>
         <article className="slot">
           <h3>Weapons</h3>
@@ -31,6 +31,7 @@ export function EquipmentGuide({ base: loadout, stage }) {
           {loadout.accessorySwaps.map(swap => {
             const worldChoice = ['wormScarf', 'brainConfusion'].includes(swap.id)
             return <AccessoryGrid key={`${swap.id}-${swap.replaces}`} ids={[swap.id]}
+              links={loadout.itemLinks}
               choices={worldChoice ? { [swap.id]: { label: 'World evil · choose one', ids: ['wormScarf', 'brainConfusion'], text: `Replace ${items[swap.replaces].name}. Worm Scarf is the Corruption option; Brain of Confusion is the Crimson option. Use either for this slot.` } } : {}}
               notes={worldChoice ? {} : { [swap.id]: [{ label: `Replace ${items[swap.replaces].name}`, text: swap.text }] }} />
           })}

@@ -1,6 +1,6 @@
 # Master Mode gearing audit
 
-Reviewed September 17, 2026 for Desktop **1.4.5.7**, ordinary worlds, solo-friendly first clears. This is a practical selection of coherent builds, not a claim that every recommended item is the maximum possible DPS configuration. Mixed armor, mounts replacing flight accessories, and specialized arena strategies are outside these default builds.
+Reviewed September 20, 2026 for Desktop **1.4.5.7**, ordinary worlds, solo-friendly first clears. This is a practical selection of coherent builds, not a claim that every recommended item is the maximum possible DPS configuration. Mixed armor, mounts replacing flight accessories, and specialized arena strategies are outside these default builds.
 
 ## Where to edit
 
@@ -9,6 +9,8 @@ Reviewed September 17, 2026 for Desktop **1.4.5.7**, ordinary worlds, solo-frien
 - `src/data/items.js` and `src/data/loadoutItems.js`: item names, images, summaries, and wiki links. New audit items are in the latter and merged into the main catalog.
 - `src/data/gearAcquisition.js`: structured recipe ingredients/stations, drop percentages, and shop conditions used by item previews. Existing checklist and Dungeon loot is reused where names match.
 - `src/data/itemNotes.js`: reusable visible item conditions. A loadout's `itemNotes` overrides these for that particular recommendation.
+- `src/data/equipmentLinks.js`: weapon families, stage-appropriate ammunition, matching badges, and weapon-support accessory choices across all classes. This adds pairings without filtering or splitting the weapon list.
+- `src/data/weaponSupportItems.js`: yoyo support, additional weapons and ammunition, recipes and verified sprite IDs from this pairing review.
 - `src/data/roadmap.js`: encounter descriptions and rewards to chase after winning. It no longer contains a second, conflicting set of loadouts.
 
 `build(armor, weapons, accessories, notes, accessorySwaps, itemNotes)` accepts space-separated item IDs for its first three arguments. Armor and weapons are alternatives; the first weapon is the suggested starting choice. Partial outfits such as Flinx Fur Coat have explicit notes about the remaining pieces. Class-specific armor headpieces are added automatically for the ore/Hallowed/Chlorophyte sets.
@@ -60,6 +62,16 @@ This pass adds Mystic Bloom and Glacier Fang to pre-boss mage, upgrades balloon 
 
 All recommended weapons remain visible. Edit src/data/equipmentLinks.js to give matching weapons and accessories the same named, colored badge for a stage/class. Labels always include text; item-name colors continue to indicate Terraria rarity.
 
-Accessories stay in the Accessories column. The pre-boss melee weapon-support slot groups Feral Claws (Swords) and White String (Yoyo) as a one-slot choice. Ranged ammunition has its own section with matching Bows/Guns badges. No setup selection or nested accessory cards are used.
+Accessories stay in the Accessories column. Yoyo support shares an existing slot: String/Strung Counterweight before Hardmode, Yoyo Bag/Glove before mechanicals, and Magic Yoyo Bag/plain Bag later. A bag includes its components' effects; they are not extra equipped slots. Ranged ammunition has its own section, paired with bows, guns, darts, Star Cannon, Flamethrower or Stynger. No setup selection or accessories in the weapon column are used.
+
+Meteor/gem-set labels connect armor to compatible weapons. Summoner labels distinguish frequent minion hits with flat-tag whips from heavy hits with Firecracker/Vulgar Display of Flower. These are pairing suggestions, not exclusive compatibility rules. Twilight Grasp supports up to three tags; the list does not require cycling through every whip.
+
+The optional-boss stop now uses its own fast-target choices. Earlier event rewards are explicitly optional upgrades, with Dungeon/Golem/craftable fallbacks. Fishron/Empress loot never appears in their first-clear kit. The earlier event stop still assumes none of its own rewards. Cultist ammo avoids Chlorophyte Bullets' penalty; pillars favor crowd coverage, and Moon Lord starts with fragment weapons. Kraken follows its 1.4.5.7 Fishron source rather than its old Dungeon source.
+
+Potions & buffs is a native, initially collapsed disclosure, alongside the existing accessory swaps. It retains all class/stage preparation content.
+
+The September 20 pass covers every stored class/stage entry. The verifiers also require visible yoyo support, compatible ammo for every ranged weapon family, Wooden Arrows for conversion bows, a real partner for each badge, no heavy-hit badge on Blade Staff, and progression gates for the new ammo/weapons. Browser checks cover disclosure behavior, recipe previews, and the rendered pairings.
 
 References: [Strings](https://terraria.wiki.gg/wiki/Strings), [Frostburn Arrow](https://terraria.wiki.gg/wiki/Frostburn_Arrow), [Arms Dealer](https://terraria.wiki.gg/wiki/Arms_Dealer).
+
+Additional item-mechanic checks: [Yoyos](https://terraria.wiki.gg/wiki/Yoyos), [Kraken](https://terraria.wiki.gg/wiki/Kraken), [Electric Eel](https://terraria.wiki.gg/wiki/Electric_Eel), [Nano Bullet](https://terraria.wiki.gg/wiki/Nano_Bullet), [Chlorophyte Bullet](https://terraria.wiki.gg/wiki/Chlorophyte_Bullet), [Wooden Arrow recipes](https://terraria.wiki.gg/wiki/Wooden_Arrow), [Silver Bullet](https://terraria.wiki.gg/wiki/Silver_Bullet), [Tungsten Bullet](https://terraria.wiki.gg/wiki/Tungsten_Bullet). Newly added item rarity colors are checked against the corresponding official wiki item pages.

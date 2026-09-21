@@ -776,14 +776,17 @@
 .equipment-link-yoyo { --link-color: #d5b3ff; }
 .equipment-link-bows { --link-color: #f1cf83; }
 .equipment-link-guns { --link-color: #8ce2ce; }
+.equipment-link-darts, .equipment-link-gel { --link-color: #a6df9a; }
+.equipment-link-stars, .equipment-link-bolts, .equipment-link-bees { --link-color: #f1cf83; }
+.equipment-link-meteor, .equipment-link-gems, .equipment-link-mana { --link-color: #d5b3ff; }
+.equipment-link-rapidHits { --link-color: #9cc9ff; }
+.equipment-link-heavyHits { --link-color: #f3b899; }
+.equipment-link-whips { --link-color: #a6df9a; }
 .loadout-ammo { margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
 .loadout-ammo h3 { margin: 0 0 .75rem; color: var(--accent); font-size: .9rem; }
 .loadout-ammo .item-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
 
-.preparation { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
-.preparation-heading { margin-bottom: 1rem; }
-.preparation-heading h3 { margin: 0 0 .35rem; color: var(--ink); font-size: 1.2rem; }
-.preparation-heading p, .preparation-help, .preparation-flasks > p { margin: 0 0 .8rem; color: var(--muted); font-size: .85rem; line-height: 1.55; }
+.preparation-help, .preparation-flasks > p { margin: 0 0 .8rem; color: var(--muted); font-size: .85rem; line-height: 1.55; }
 .preparation-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; align-items: start; }
 .preparation-column { min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
 .preparation h4 { margin: 0 0 .8rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }

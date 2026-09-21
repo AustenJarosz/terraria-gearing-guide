@@ -92,7 +92,6 @@ for (const id of new Set(Object.values(bossArt).flat())) {
  assert(png.readUInt32BE(16) > 0 && png.readUInt32BE(20) > 0)
 }
 assert.equal(new Set(stages.map(stage => stage.id)).size, stages.length, 'Duplicate roadmap stop')
-const sideRewards = new Set(sideEncounters.flatMap(stage => Object.values(stage.rewards).flat()))
 const lunarWeapons = ['solarEruption', 'daybreak', 'phantasm', 'vortexBeater', 'nebulaBlaze', 'nebulaArcanum', 'stardustDragon', 'stardustCell', 'constellation']
 const groupedEncounters = sideStages.flatMap(stage => stage.encounters)
 assert.equal(new Set(groupedEncounters.map(encounter => encounter.id)).size, sideEncounters.length, 'Missing or duplicated grouped encounter')
@@ -113,8 +112,12 @@ for (const loadout of loadouts) {
  for (const id of ids) assert(items[id], `Unknown item: ${id}`)
  if (stages[stage].era === 'pre-hardmode') assert(!ids.includes('charmMyths'), 'Charm of Myths requires Hardmode')
  if (['pre-boss', 'pre-skeletron', 'pre-wof', 'pre-mechanicals', 'pre-plantera'].includes(loadout.stageId)) assert(!ids.includes('leafWings'), 'Leaf Wings require Plantera')
- if (sideStages.some(s => s.id === loadout.stageId)) {
-  for (const id of ids) assert(!sideRewards.has(id), `First-clear kit assumes optional rewards: ${key}/${id}`)
+ const sideStage = sideStages.find(s => s.id === loadout.stageId)
+ if (sideStage) {
+  // The earlier event stop can supply optional upgrades for Fishron/Empress,
+  // but neither grouped stop may assume rewards from its own encounters.
+  const ownRewards = new Set(sideStage.encounters.flatMap(encounter => Object.values(encounter.rewards).flat()))
+  for (const id of ids) assert(!ownRewards.has(id), `First-clear kit assumes its own rewards: ${key}/${id}`)
  }
  if (loadout.stageId !== 'pre-moon-lord') {
   for (const id of ids) assert(!lunarWeapons.includes(id), `Lunar weapon before pillar clear: ${key}/${id}`)
@@ -126,6 +129,7 @@ for (const item of Object.values(items)) {
  const png = fs.readFileSync(`public/items/${item.file}`)
  assert.equal(png.subarray(0,8).toString('hex'), '89504e470d0a1a0a', `Invalid PNG: ${item.file}`)
  assert(png.readUInt32BE(16) > 0 && png.readUInt32BE(20) > 0)
- assert(item.info && item.obtain && item.source)
+ assert(item.info && item.obtain && item.source, `Incomplete item metadata: ${item.name}`)
+ assert(['white', 'blue', 'green', 'orange', 'light-red', 'pink', 'lime', 'yellow', 'cyan', 'red', 'purple', 'expert', 'master'].includes(item.rarity), `Invalid rarity: ${item.name}`)
 }
 console.log(`Verified ${seen.size} loadouts and ${Object.keys(items).length} PNG assets; progression checks passed.`)
