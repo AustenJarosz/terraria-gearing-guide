@@ -51,7 +51,8 @@ export function getPreparation(stageId, classId) {
 
   let flasks = []
   if (['melee', 'summoner'].includes(classId)) {
-    if (stage.postPlantera) flasks = ['flaskVenom', 'flaskIchor', 'flaskCursedFlames']
+    if (stageId === 'pre-lunatic') flasks = ['flaskNanites']
+    else if (stage.postPlantera) flasks = ['flaskVenom', 'flaskIchor', 'flaskNanites']
     else if (stage.hardmode) flasks = ['flaskIchor', 'flaskCursedFlames']
     else if (stage.queenBeeOptional) flasks = [stageId === 'pre-wof' ? 'flaskPoison' : 'flaskFire']
   }
@@ -72,6 +73,7 @@ export function getPreparation(stageId, classId) {
     flaskIchor: note('Crimson · defense debuff', 'Less useful if another weapon already keeps Ichor applied.'),
     flaskCursedFlames: note('Corruption · damage over time', 'An alternative when Ichor is unavailable.'),
     flaskVenom: note('Post-Plantera', 'Strong damage over time; pairs well with a separate Ichor weapon.'),
+    flaskNanites: note('Direct damage', 'Adds 5% to melee and whip hits in 1.4.5.7, even when the enemy cannot be confused. Does not increase minion damage.'),
   }
   if (stage.healing === 'healingPotion') notes.healingPotion = note('Early upgrade', 'Craft before bosses. Lesser Healing Potions restore 50 health if you need a cheaper fallback.')
   if (stage.healing === 'jungleJuice') notes.jungleJuice = note('Spare Life Fruit', 'Reach 500 permanent health first. Greater Healing Potions (150 health) are the cheaper fallback.')
@@ -88,6 +90,7 @@ export function getPreparation(stageId, classId) {
     notes.heartreachPotion = note('Event waves', 'Collect hearts left by defeated enemies and minibosses.')
   }
   if (stageId === 'pre-hardmode-optional') notes.warmthPotion = note('Deerclops', 'For cold attacks, not Queen Bee or King Slime.')
+  if (stageId === 'pre-lunatic') notes.flaskNanites = note('Cultist option', 'The damage bonus still works against the Cultist. Ichor and damage-over-time flasks do not help against his debuff immunity.')
   if (stageId === 'celestial-pillars') notes.heartreachPotion = note('Pillar enemies', 'Collect hearts during the enemy waves.')
 
   let flaskNote = 'Only one flask at a time. Applies to melee attacks and whips; minions do not apply it. Craft at the Witch Doctor’s Imbuing Station after Queen Bee.'

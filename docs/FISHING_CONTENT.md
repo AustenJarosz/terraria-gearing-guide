@@ -1,6 +1,6 @@
 # Fishing guide
 
-The fourth main view is `src/FishingGuide.jsx`. Edit the milestones, useful random rewards and upgrade ingredients in `src/data/fishing.js`. This is a focused Angler rewards guide for standard Desktop 1.4.5, not a complete fishing loot catalogue.
+The fourth main view is `src/FishingGuide.jsx`. Edit the milestones, useful random rewards and upgrade ingredients in `src/data/fishing.js`. This is a focused Angler rewards guide for standard Desktop 1.4.5.7, not a complete fishing loot catalogue.
 
 The optional counter records completed turn-ins manually under `terraria-guide-fishing-quests` in localStorage. It has no connection to Terraria save files, boss completion or NPC recruitment. It is one local count; users are told to adjust it when changing characters. Reached milestone styling means the entered quest count has passed the milestone, not that an item is in the user's inventory.
 
@@ -19,6 +19,10 @@ Percentages are unmodified base roll chances, conditional on reaching that roll 
 
 The current [accessory reward calculation](https://terraria.wiki.gg/wiki/Angler#Accessory_rewards) combines three virtual 1/40 rolls, three 1/30 rolls and one 1/25 roll, then multiplies the combined success chance by 0.8. At multiplier 1 this is 15.7008404% for the shared pool; division by seven eligible items gives 2.2429772% each. Do not label the virtual 2.5%, 3.33% and 4% values as the individual accessory chances: the selection from eligible accessories is uniform. Ownership changes that selection, not the shared-roll success probability. Upgrades, portable storage and all loadout/social slots count; ordinary chests do not. All seven return to the pool once all are owned.
 
-The expanded UI explanation covers quest-count improvement (capped around 150), happiness, ownership, and reward priority. It deliberately avoids predicting absolute odds without world state, quest fish, happiness, accessory inventory and prior-roll eligibility.
+The expanded UI explanation covers quest-count improvement (capped at 150), happiness, ownership, and reward priority. Luck does not affect these rewards. It deliberately avoids predicting absolute odds without world state, quest fish, happiness, accessory inventory and prior-roll eligibility.
 
 Local sprites come from the installed game's ItemID constants and XNB assets, exported with `scripts/export-fishing-sprites.mjs`. Runtime needs only committed PNGs. Validate with `node scripts/verify-fishing.mjs`, build/lint, and browser checks for counter updates, reload persistence, keyboard access, and narrow layouts.
+
+September 22, 2026 audit: rechecked the complete milestone/random-reward list against [Angler main rewards](https://terraria.wiki.gg/wiki/Angler#Main_rewards) and the accessory calculation. Added the useful Fish Hook and Minecarp rewards (each 1/60 conditional base chance) and local inventory sprites. Clarified that Sponge and Fin Wings first become eligible on quest 11, while Hotline first becomes eligible on quest 26 and also requires Hardmode. Bottomless Water Bucket can roll from quest 11 at 1/70; repeat Golden Fishing Rods can roll from quest 76 at 1/250. These remain subject to earlier reward rolls and milestone priority. The existing seven-accessory pool calculation was correct; the explanatory percentages now read from that same data instead of separate hard-coded values.
+
+Regression checks cover first-eligible quests, Hardmode flags, reward uniqueness, fixed/random separation, all seven equal accessory shares and every local sprite. The counter remains a user-entered estimate and does not change displayed base chances.

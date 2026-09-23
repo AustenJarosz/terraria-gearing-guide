@@ -7,7 +7,7 @@ import { equipmentLinkTypes, weaponFamilies, ammoFamilies } from '../src/data/eq
 // First-entry progression gates. Some optional bosses can be fought sooner than
 // the suggested route; their gear still cannot be required to beat themselves.
 const gates = [
-  ['pre-mechanicals', 'yoyoGlove holyArrow ichorArrow crystalBullet ichorBullet cursedDart ichorDart crystalDart'],
+  ['pre-mechanicals', 'yoyoGlove holyArrow ichorArrow crystalBullet ichorBullet cursedDart ichorDart crystalDart crystalSerpent meteorStaff iceSickle'],
   ['pre-plantera', 'chlorophyteBullet'],
   ['dungeon-post-plantera', 'venomArrow nanoBullet'],
   ['pre-golem', 'spectreStaff'],
@@ -34,6 +34,7 @@ const oneOf = [
   ['manaRegenBand', 'restorationShield', 'mysticArtsSash'],
   ['whiteString', 'strungCounterweight', 'yoyoGlove', 'yoyoBag', 'magicYoyoBag'],
   ['cloudBottle', 'cloudBalloon', 'horseshoeBalloons'],
+  ['wormScarf', 'brainConfusion'],
 ]
 const validateEquipped = (accessories, key) => {
   assert.equal(new Set(accessories).size, accessories.length, `Duplicate equipped accessory: ${key}`)
@@ -48,6 +49,7 @@ for (const stage of stages) for (const cls of classes) {
   const kit = matches[0]
   assert.equal(kit.accessories.length, stage.era === 'hardmode' ? 7 : 6, `Unfilled Master slots: ${key}`)
   assert(kit.armor.length && kit.weapons.length && kit.notes, `Incomplete build: ${key}`)
+  for (const category of ['armor', 'weapons', 'ammo']) assert.equal(new Set(kit[category]).size, kit[category].length, `Duplicate ${category}: ${key}`)
   validateEquipped(kit.accessories, key)
   const listed = [...kit.armor, ...kit.weapons, ...kit.accessories, ...kit.ammo]
   for (const [slot, choice] of Object.entries(kit.accessoryChoices)) {
@@ -66,6 +68,16 @@ for (const stage of stages) for (const cls of classes) {
     validateEquipped(kit.accessories.map(id => id === alternative.replaces ? alternative.id : id), `${key} swap ${alternative.id}`)
     listed.push(alternative.id)
   }
+  // More than one replacement can be used at once. Checking each against only
+  // the baseline misses conflicts between two independently valid alternatives.
+  const configurations = kit.accessories.reduce((sets, slot) => {
+    const options = [...new Set([
+      ...(kit.accessoryChoices[slot]?.ids || [slot]),
+      ...kit.accessorySwaps.filter(swap => swap.replaces === slot).map(swap => swap.id),
+    ])]
+    return sets.flatMap(equipped => options.map(id => [...equipped, id]))
+  }, [[]])
+  for (const equipped of configurations) validateEquipped(equipped, key + ' combined choices')
   for (const [id, links] of Object.entries(kit.itemLinks)) {
     assert(listed.includes(id), 'Badge on unlisted item: ' + key + '/' + id)
     assert(links.every(link => equipmentLinkTypes[link]), 'Unknown equipment label: ' + key)

@@ -1,42 +1,31 @@
-import { AccessoryGrid, ItemGrid } from './ItemChip'
-import { items } from './data/items'
+import { ItemChip } from './ItemChip'
+import { AccessoryGuide } from './AccessoryGuide'
+import { ClassicEquipmentGuide } from './ClassicEquipmentGuide'
+import { CompactEquipmentGuide } from './CompactEquipmentGuide'
 import { PreparationGuide } from './PreparationGuide'
 
-export function EquipmentGuide({ base: loadout, stage }) {
-  return <div>
-      <p className="gear-hint">Hover for a preview; tap to keep it open. Accessories fill all {stage.era === 'hardmode' ? '7 Master Mode slots after consuming the Wall of Flesh’s Demon Heart' : '6 Master Mode slots'}.{Object.keys(loadout.itemLinks).length > 0 && ' Match the small labels across weapons and gear. Item-name colors still show rarity.'}</p>
-      <div className="slots">
-        <article className="slot">
-          <h3>Armor</h3>
-          <ItemGrid ids={loadout.armor} notes={loadout.itemNotes} links={loadout.itemLinks} />
-        </article>
-        <article className="slot">
-          <h3>Weapons</h3>
-          <ItemGrid ids={loadout.weapons} notes={loadout.itemNotes} links={loadout.itemLinks} />
-        </article>
-        <article className="slot">
-          <h3>Accessories <span className="slot-count">{loadout.accessories.length} / {stage.era === 'hardmode' ? 7 : 6} slots</span></h3>
-          {Object.keys(loadout.accessoryChoices).length > 0 && <p className="accessory-choice-hint">Pick one item from each “choose one” group. Each group fills a single slot.</p>}
-          <AccessoryGrid ids={loadout.accessories} notes={loadout.itemNotes} choices={loadout.accessoryChoices} links={loadout.itemLinks} />
-        </article>
-      </div>
-      {loadout.ammo.length > 0 && <section className="loadout-ammo" aria-label="Ammunition">
-        <h3>Ammunition</h3>
-        <ItemGrid ids={loadout.ammo} notes={loadout.itemNotes} links={loadout.itemLinks} />
-      </section>}
-      {loadout.accessorySwaps?.length > 0 && <details className="loadout-swaps">
-        <summary>Accessory swaps <span>{loadout.accessorySwaps.length} {loadout.accessorySwaps.length === 1 ? 'alternative' : 'alternatives'}</span></summary>
-        <p className="gear-hint">Replace the named accessory; these are alternatives for this build, not extra slots.</p>
-        <div className="loadout-swap-grid">
-          {loadout.accessorySwaps.map(swap => {
-            const worldChoice = ['wormScarf', 'brainConfusion'].includes(swap.id)
-            return <AccessoryGrid key={`${swap.id}-${swap.replaces}`} ids={[swap.id]}
-              links={loadout.itemLinks}
-              choices={worldChoice ? { [swap.id]: { label: 'World evil · choose one', ids: ['wormScarf', 'brainConfusion'], text: `Replace ${items[swap.replaces].name}. Worm Scarf is the Corruption option; Brain of Confusion is the Crimson option. Use either for this slot.` } } : {}}
-              notes={worldChoice ? {} : { [swap.id]: [{ label: `Replace ${items[swap.replaces].name}`, text: swap.text }] }} />
-          })}
-        </div>
-      </details>}
+function EquipmentSection({ title, kind, ids, loadout }) {
+  if (!ids.length) return null
+  return <section className={`equipment-section equipment-${kind}`} aria-label={`${title} recommendations`}>
+    <div className="equipment-heading"><h3>{title}</h3></div>
+    <ul className="equipment-options">
+      {ids.map(id => <li key={id}>
+        <ItemChip id={id} variant="equipment"
+          notes={loadout.itemNotes[id]} links={loadout.itemLinks[id]} />
+      </li>)}
+    </ul>
+  </section>
+}
+
+export function EquipmentGuide({ base: loadout, stage, layout = 'modern' }) {
+  return <div className={`equipment-guide layout-${layout}`}>
+      <p className="gear-hint">Hover or tap an item for its recipe and build notes.{Object.keys(loadout.itemLinks).length > 0 && ' Matching labels connect weapons with their supporting gear.'}</p>
+      {layout === 'classic' ? <ClassicEquipmentGuide loadout={loadout} stage={stage} /> : layout === 'compact' ? <CompactEquipmentGuide loadout={loadout} stage={stage} /> : <>
+      <EquipmentSection title="Armor" kind="armor" ids={loadout.armor} loadout={loadout} />
+      <EquipmentSection title="Weapons" kind="weapons" ids={loadout.weapons} loadout={loadout} />
+      <EquipmentSection title="Ammunition" kind="ammo" ids={loadout.ammo} loadout={loadout} />
+      <AccessoryGuide loadout={loadout} hardmode={stage.era === 'hardmode'} />
+      </>}
       <PreparationGuide stageId={stage.id} classId={loadout.classId} />
       <aside className="notes"><h3>Build notes</h3><p>{loadout.notes}</p></aside>
     </div>

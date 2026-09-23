@@ -18,7 +18,8 @@ for (const loadout of loadouts) {
     assert(!loadout.accessories.includes(id), `Consumable counted as accessory slot: ${id}`)
   }
   const hardmode = stages.find(stage => stage.id === stageId).era === 'hardmode'
-  if (!hardmode) for (const id of ['greaterHealingPotion', 'jungleJuice', 'superHealingPotion', 'greaterManaPotion', 'superManaPotion', 'ammoBox', 'crystalBall', 'flaskIchor', 'flaskCursedFlames', 'flaskVenom']) assert(!ids.includes(id), `Premature unlock: ${stageId}/${id}`)
+  if (!hardmode) for (const id of ['greaterHealingPotion', 'jungleJuice', 'superHealingPotion', 'greaterManaPotion', 'superManaPotion', 'ammoBox', 'crystalBall', 'flaskIchor', 'flaskCursedFlames', 'flaskVenom', 'flaskNanites']) assert(!ids.includes(id), `Premature unlock: ${stageId}/${id}`)
+  if (['pre-mechanicals', 'pre-plantera'].includes(stageId)) for (const id of ['flaskVenom', 'flaskNanites']) assert(!ids.includes(id), `Post-Plantera vendor ingredient before Plantera: ${stageId}/${id}`)
   if (classId !== 'mage') for (const id of ['manaPotion', 'greaterManaPotion', 'superManaPotion', 'magicPowerPotion', 'manaRegenerationPotion', 'crystalBall', 'starBottle']) assert(!ids.includes(id), `Mage buff on ${classId}`)
   if (classId !== 'ranged') for (const id of ['archeryPotion', 'ammoReservationPotion', 'ammoBox']) assert(!ids.includes(id), `Ranged buff on ${classId}`)
   if (classId === 'summoner') assert(!ids.includes('ragePotion') && !ids.includes('sharpeningStation'), 'Do not recommend ordinary crit or melee-only armor penetration for summons')
@@ -32,6 +33,8 @@ for (const loadout of loadouts) {
 assert.deepEqual(getPreparation('pre-wof', 'melee').flasks, ['flaskPoison'], 'Wall of Flesh is immune to fire')
 assert.deepEqual(getPreparation('pre-skeletron', 'melee').flasks, ['flaskFire'], 'Skeletron is immune to poison')
 assert.match(getPreparation('pre-mechanicals', 'summoner').flaskNote, /Destroyer is immune/)
+for (const classId of ['melee', 'summoner']) assert.deepEqual(getPreparation('pre-lunatic', classId).flasks, ['flaskNanites'], 'Cultist is immune to the other recommended flask debuffs')
+assert.deepEqual(gearAcquisition.flaskNanites.recipes[0].ingredients, [['Bottled Water', 1], ['Nanites', 5]])
 assert.deepEqual(gearAcquisition.superManaPotion.recipes[0].ingredients, [['Greater Mana Potion', 8], ['Fallen Star', 2], ['Ectoplasm', 1]])
 assert.equal(gearAcquisition.superManaPotion.recipes[0].quantity, 8)
 assert.equal(gearAcquisition.jungleJuice.recipes[0].quantity, 3)

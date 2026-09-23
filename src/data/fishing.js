@@ -1,4 +1,4 @@
-// Standard Desktop 1.4.5 Angler progression. See docs/FISHING_CONTENT.md.
+// Standard Desktop 1.4.5.7 Angler progression. See docs/FISHING_CONTENT.md.
 // At chance multiplier 1, conditional on reaching the accessory reward roll.
 // The virtual 2.5% / 3.33% / 4% rolls form ONE pool, not individual item rates.
 export const accessoryBaseChance = (1 - (1 - 1 / 40) ** 3 * (1 - 1 / 30) ** 3 * (1 - 1 / 25)) * 0.8
@@ -18,9 +18,11 @@ export const fishingRewards = [
   { name: 'Tackle Box', id: 2375, ...accessoryRate, group: 'Fishing gear', benefit: 'Reduces bait consumption.', unlock: 'Random quest reward' },
   { name: 'Fishing Bobber', id: 5139, ...accessoryRate, group: 'Fishing gear', benefit: '+10 fishing power; can be upgraded to glowing variants.', unlock: 'Random quest reward' },
   { name: 'Golden Bug Net', id: 3183, baseChance: 1 / 80, group: 'Useful tools', benefit: 'A larger net that can catch lava bait in the Underworld.', unlock: 'Random quest reward' },
-  { name: 'Super Absorbant Sponge', id: 3032, baseChance: 1 / 70, group: 'Useful tools', benefit: 'Removes water without filling up. Available before Hardmode.', unlock: 'Random reward after 10 completed quests' },
-  { name: 'Hotline Fishing Hook', id: 2422, baseChance: 1 / 100, group: 'Hardmode rewards', benefit: '45% fishing power and built-in lava fishing. Quest 25 does not guarantee it.', unlock: 'Hardmode + more than 25 quests; random reward' },
-  { name: 'Fin Wings', id: 2494, baseChance: 1 / 70, group: 'Hardmode rewards', benefit: 'An early Hardmode flight option if the reward rolls your way.', unlock: 'Hardmode + more than 10 quests; random reward' },
+  { name: 'Super Absorbant Sponge', id: 3032, baseChance: 1 / 70, firstQuest: 11, group: 'Useful tools', benefit: 'Removes water without filling up. Available before Hardmode.', unlock: 'Random reward from quest 11 onward' },
+  { name: 'Fish Hook', id: 2360, baseChance: 1 / 60, group: 'Useful tools', benefit: 'A grappling hook for exploration and mobility; not a fishing accessory.', unlock: 'Random quest reward' },
+  { name: 'Minecarp', id: 4067, baseChance: 1 / 60, group: 'Useful tools', benefit: 'A minecart that keeps its speed underwater.', unlock: 'Random quest reward' },
+  { name: 'Hotline Fishing Hook', id: 2422, baseChance: 1 / 100, firstQuest: 26, hardmode: true, group: 'Hardmode rewards', benefit: '45% fishing power and built-in lava fishing. Quest 26 unlocks the chance; it does not guarantee the rod.', unlock: 'Hardmode · random reward from quest 26 onward' },
+  { name: 'Fin Wings', id: 2494, baseChance: 1 / 70, firstQuest: 11, hardmode: true, group: 'Hardmode rewards', benefit: 'An early Hardmode flight option if the reward rolls your way.', unlock: 'Hardmode · random reward from quest 11 onward' },
   { name: "Fisherman's Pocket Guide", id: 3120, ...accessoryRate, group: 'Information accessories', benefit: 'Displays current fishing power.', unlock: 'Random quest reward' },
   { name: 'Weather Radio', id: 3037, ...accessoryRate, group: 'Information accessories', benefit: 'Displays the weather.', unlock: 'Random quest reward' },
   { name: 'Sextant', id: 3096, ...accessoryRate, group: 'Information accessories', benefit: 'Displays the moon phase.', unlock: 'Random quest reward' },

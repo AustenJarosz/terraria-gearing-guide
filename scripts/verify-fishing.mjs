@@ -6,9 +6,18 @@ assert.deepEqual(fishingMilestones.map(item => [item.count, item.name]), [
   [20, 'Angler Pants'], [25, 'Bottomless Water Bucket'], [30, 'Golden Fishing Rod'],
 ])
 assert(!fishingMilestones.some(item => item.name === 'Hotline Fishing Hook'))
-assert.match(fishingRewards.find(item => item.name === 'Hotline Fishing Hook').unlock, /Hardmode.*25.*random/)
+assert.match(fishingRewards.find(item => item.name === 'Hotline Fishing Hook').unlock, /Hardmode.*random.*26/)
 assert.equal(fishingRewards.find(item => item.name === 'Hotline Fishing Hook').baseChance, .01)
 assert.equal(fishingRewards.find(item => item.name === 'Golden Bug Net').baseChance, 1 / 80)
+assert.equal(fishingRewards.find(item => item.name === 'Fish Hook').baseChance, 1 / 60)
+assert.equal(fishingRewards.find(item => item.name === 'Minecarp').baseChance, 1 / 60)
+for (const [name, firstQuest, hardmode] of [['Hotline Fishing Hook', 26, true], ['Fin Wings', 11, true], ['Super Absorbant Sponge', 11, undefined]]) {
+  const reward = fishingRewards.find(item => item.name === name)
+  assert.equal(reward.firstQuest, firstQuest, name)
+  assert.equal(reward.hardmode, hardmode, name)
+  assert(reward.unlock.includes(String(firstQuest)), `${name}: eligibility label disagrees with quest gate`)
+}
+assert.equal(new Set(fishingRewards.map(item => item.name)).size, fishingRewards.length)
 const accessoryRewards = fishingRewards.filter(item => item.accessoryPool)
 assert.equal(accessoryRewards.length, 7)
 assert(Math.abs(accessoryBaseChance - .157008404) < 1e-10)

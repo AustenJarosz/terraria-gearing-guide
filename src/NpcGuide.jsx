@@ -1,17 +1,15 @@
 import { useState } from 'react'
-import { npcs, npcStages } from './data/npcs'
+import { npcs, npcStages, npcEras, findNpcs } from './data/npcs'
 import { npcItemIcons } from './data/npcItemIcons'
 
 const wiki = name => `https://terraria.wiki.gg/wiki/${encodeURIComponent(name.replaceAll(' ', '_'))}`
-const eras = ['Starting out', 'Pre-Hardmode milestones', 'Hardmode', 'Travelers']
 export function NpcGuide() {
   const [query, setQuery] = useState('')
   const [era, setEra] = useState('All NPCs')
   const search = query.trim().toLowerCase()
-  const visible = npcs.filter(npc => (era === 'All NPCs' || npc.era === era) &&
-    [npc.name, npc.role, npc.unlock, npc.service, ...npc.shops.flatMap(group => group.items.flatMap(item => [item.name, item.condition]))].some(text => text.toLowerCase().includes(search)))
+  const visible = findNpcs(query, era)
   return <section className="panel plaque npc-guide" aria-label="NPC guide">
-    <p className="kicker">Your town · Desktop 1.4.5</p>
+    <p className="kicker">Your town · Desktop 1.4.5.7</p>
     <h2>NPCs & useful shops</h2>
     <p className="gear-hint">A suggested recruitment order, with gear, tools, crafting materials and useful supplies. Open a resident to see their shop unlocks. Earlier stock remains available unless its condition says otherwise.</p>
     <div className="npc-toolbar">
@@ -19,14 +17,14 @@ export function NpcGuide() {
       <div className="npc-recruitment-filter">
         <span id="npc-recruitment-label">Recruitment</span>
         <div className="drop-filters" role="group" aria-labelledby="npc-recruitment-label">
-          {['All NPCs', ...eras].map(value => <button type="button" key={value} aria-pressed={era === value} onClick={() => setEra(value)}>{value}</button>)}
+          {['All NPCs', ...npcEras].map(value => <button type="button" key={value} aria-pressed={era === value} onClick={() => setEra(value)}>{value}</button>)}
         </div>
       </div>
     </div>
     <p className="npc-world-note">Normal worlds · Town NPCs need suitable housing to stay. In 1.4.5, one homeless NPC can arrive per day but leaves at night without a home. Special seeds can change recruitment and stock. <a href={wiki('NPCs')} target="_blank" rel="noreferrer">Housing & NPC rules ↗</a></p>
     <p className="npc-world-note">Biome pylons are shared shop stock: most resident vendors sell the local pylon when another NPC is nearby. Tavernkeep and travelers do not. <a href={wiki('Pylons')} target="_blank" rel="noreferrer">Pylon requirements ↗</a></p>
     <p className="npc-result-count" role="status">{visible.length} of {npcs.length} NPCs{search && ' · Matching shops open below'}</p>
-    {eras.map(groupName => {
+    {npcEras.map(groupName => {
       const rows = visible.filter(npc => npc.era === groupName)
       return rows.length > 0 && <section className="npc-era" key={groupName}><h3>{groupName}<span>{groupName === 'Travelers' ? 'Available throughout progression' : 'Recruitment order can vary'}</span></h3>
         {rows.map(npc => <details className="npc-card" key={`${npc.id}-${search}`} open={search ? true : undefined}>

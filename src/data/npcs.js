@@ -101,7 +101,7 @@ export const npcs = [
   npc('Princess', 45, 'Hardmode', 'All other permanent town NPCs must be present, except Santa Claus and town pets. This includes the post-Plantera Cyborg.', 'Royal cosmetics', [], 'Her normal-world shop is cosmetic. The Resonance Scepter is a death drop, not a purchase. Special-seed shops are outside this guide.'),
   npc('Santa Claus', 11, 'Hardmode', 'Defeat Frost Legion and have Christmas active (December 15–31, or the temporary Christmas unlocked by reaching Frost Moon wave 15).', 'Seasonal resident', [], 'Sells seasonal decorations and vanity, omitted here. Leaves when Christmas ends.'),
   npc('Traveling Merchant', 21, 'Travelers', 'May visit in the morning once at least two town NPCs are present. He leaves in the evening and does not move into a house.', 'Rotating rare stock', [
-    stock(0, 'Stopwatch|Lifeform Analyzer|DPS Meter|Katana|Gi|Mystic Robe|Magic Hat|Brick Layer|Extendo Grip|Paint Sprayer|Portable Cement Mixer|Presserator|Sake|Pho|Pad Thai|Blue Roller Skates', 'Random visit inventory; not guaranteed'),
+    stock(0, 'Stopwatch|Lifeform Analyzer|DPS Meter|Katana|Gi|Mystic Robe|Magic Hat|Black Counterweight|Yellow Counterweight|Brick Layer|Extendo Grip|Paint Sprayer|Portable Cement Mixer|Presserator|Sake|Pho|Pad Thai|Blue Roller Skates', 'Random visit inventory; not guaranteed'),
     stock(0, 'Revolver', 'Random stock after smashing a Shadow Orb or Crimson Heart'),
     stock(1, 'Code 1', 'Eye of Cthulhu defeated; random visit inventory'),
     stock(1, 'Gray Zapinator', 'Any pre-Hardmode boss defeated; pre-Hardmode only; random visit inventory'),
@@ -123,3 +123,20 @@ export const npcs = [
     stock(4, 'Gradient|Yoyo Glove'), stock(4, 'Healing Potion', 'Waning gibbous, waning crescent, waxing crescent or waxing gibbous'), stock(4, 'Slap Hand', 'Blood Moon'), stock(5, 'Magic String'),
   ]),
 ]
+
+export const npcEras = ['Starting out', 'Pre-Hardmode milestones', 'Hardmode', 'Travelers']
+
+// Search the labels people see as well as names, including progression and
+// conditional stock. Punctuation must not make "post plantera" miss its stage.
+const searchText = value => value.toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
+export function findNpcs(query = '', era = 'All NPCs') {
+  const words = searchText(query).split(' ').filter(Boolean)
+  return npcs.filter(resident => {
+    if (era !== 'All NPCs' && resident.era !== era) return false
+    const text = searchText([
+      resident.name, resident.role, resident.era, resident.unlock, resident.service,
+      ...resident.shops.flatMap(group => [npcStages[group.stage], ...group.items.flatMap(item => [item.name, item.condition])]),
+    ].join(' '))
+    return words.every(word => text.includes(word))
+  })
+}

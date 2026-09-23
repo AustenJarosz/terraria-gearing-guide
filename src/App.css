@@ -80,12 +80,11 @@
 .summon-info { display: inline; padding: .1rem .25rem; border: 0; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
 .summon-info:hover, .summon-info[aria-expanded='true'] { color: var(--accent); }
 .summon-item a:focus-visible, .summon-info:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.summon-preview { position: fixed; z-index: 1300; width: 320px; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow: auto; box-sizing: border-box; padding: 1rem; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface-deep); color: var(--ink); box-shadow: 0 8px 30px #0009; font-size: .875rem; line-height: 1.6; }
+.summon-preview { position: fixed; z-index: 1300; width: min(570px, calc(100% - 24px)); max-height: calc(100dvh - 24px); overflow: auto; box-sizing: border-box; padding: 1rem; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface-deep); color: var(--ink); box-shadow: 0 8px 30px #0009; font-size: .875rem; line-height: 1.6; }
 .summon-preview > strong { display: block; color: var(--accent); }
 .summon-preview-label { display: block; margin-top: .65rem; color: var(--muted); font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
 .summon-preview p { margin: .25rem 0 .75rem; }
 .summon-preview a { color: var(--accent); text-underline-offset: 3px; }
-.summon-preview { width: 570px; }
 .acquisition { margin-top: .75rem; font-size: .8rem; }
 .acquisition h4 { margin: .8rem 0 .5rem; font-size: .85rem; color: var(--ink); }
 .acquisition-recipe { display: grid; grid-template-columns: minmax(85px, .8fr) minmax(130px, 1.4fr) minmax(90px, 1fr); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
@@ -238,16 +237,7 @@
 .roadmap-hint { margin: 0 0 1rem; max-width: 65rem; color: var(--muted); font-size: 1rem; }
 .gear-hint { color: var(--muted); font-size: .875rem; margin: 0 0 1rem; }
 .gear-section-title { margin: 0 0 .5rem; color: var(--accent); font-size: 1rem; }
-.slots { display: grid; grid-template-columns: 1fr 1.15fr 1.15fr; gap: .85rem; }
-.slot-count { display: inline-block; color: var(--muted); font-size: .7rem; letter-spacing: 0; white-space: nowrap; }
-.loadout-swaps { margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
-.loadout-swaps > summary { cursor: pointer; color: var(--accent); font-weight: 700; }
-.loadout-swaps > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
-.loadout-swaps > summary span { margin-left: .6rem; color: var(--muted); font-size: .8rem; font-weight: 400; }
-.loadout-swaps[open] > summary { margin-bottom: 1rem; }
-.loadout-swap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 1rem; align-items: start; }
-.slot { padding: 1rem; min-width: 0; background: var(--surface-deep); border: 1px solid var(--line); border-radius: var(--radius); }
-.slot h3, .notes h3 { color: var(--accent); font-size: .875rem; text-transform: uppercase; letter-spacing: .12em; margin: 0 0 .75rem; }
+.notes h3 { color: var(--accent); font-size: .875rem; text-transform: uppercase; letter-spacing: .12em; margin: 0 0 .75rem; }
 .notes { margin-top: 1rem; padding: 1rem; background: var(--accent-soft); border-left: 2px solid var(--accent); border-radius: var(--radius); }
 .notes p { margin: 0; font-size: 1rem; }
 .item-grid { display: grid; gap: .5rem; }
@@ -265,7 +255,7 @@
 .rarity-blue { color: #b7b7ff; } .rarity-green { color: #80ec90; } .rarity-orange { color: #ffbc80; }
 .rarity-light-red { color: #ff9696; } .rarity-pink { color: #ff9be8; } .rarity-lime { color: #bbf178; }
 .rarity-yellow { color: #fff08a; } .rarity-red { color: #ff8585; } .rarity-expert { color: #94ede4; } .rarity-cyan { color: #8eeeff; }
-.item-popover { position: fixed; z-index: 1000; width: min(570px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; padding: 1rem; background: var(--panel-texture), var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); box-shadow: 0 14px 45px #0007; color: var(--ink); font-size: 1rem; line-height: 1.5; opacity: 0; visibility: hidden; transform: translateY(5px); transition: opacity 160ms, transform 160ms, visibility 160ms; pointer-events: none; }
+.item-popover { position: fixed; z-index: 1000; width: min(570px, calc(100% - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; padding: 1rem; background: var(--panel-texture), var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); box-shadow: 0 14px 45px #0007; color: var(--ink); font-size: 1rem; line-height: 1.5; opacity: 0; visibility: hidden; transform: translateY(5px); transition: opacity 160ms, transform 160ms, visibility 160ms; pointer-events: none; }
 .item-popover.is-open { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
 .item-popover p { margin: .65rem 0; }
 .tip-heading { display: flex; align-items: center; gap: .6rem; }
@@ -370,8 +360,6 @@
 @keyframes spirit-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 @media (max-width: 980px) {
   .class-grid, .stage-path, .era-hardmode .stage-path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .slots { grid-template-columns: 1fr; }
-  .slot .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .class-emblem { width: 145px; height: 145px; }
 }
 @media (max-width: 640px) {
@@ -386,7 +374,7 @@
   .hero-edition { line-height: 1.5; }
   .hero-edition span { display: block; }
   .panel, .loadout { padding: 1rem; }
-  .stage-path, .era-hardmode .stage-path, .encounter-plan, .slot .item-grid { grid-template-columns: 1fr; }
+  .stage-path, .era-hardmode .stage-path, .encounter-plan { grid-template-columns: 1fr; }
   .class-card { padding: .8rem; }
   .class-card-top { align-items: flex-start; }
   .class-name { font-size: 1.1rem; }
@@ -400,6 +388,13 @@
 /* A biome takes over the world without changing the selected equipment class. */
 .guide-content { display: contents; }
 .artwork-controls { position: fixed; right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); z-index: 1100; display: flex; align-items: flex-end; gap: .5rem; max-width: calc(100vw - 24px); }
+.page.has-layout-control { padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
+.gear-layout-control { position: fixed; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); z-index: 1100; display: flex; align-items: center; gap: .2rem; padding: .3rem; border: 1px solid #b6c9dc44; border-radius: 8px; background: #0b1424f0; color: #d9e3ee; box-shadow: 0 4px 16px #0004; font-size: .75rem; }
+.gear-layout-control > span { padding: 0 .5rem; color: #aebcc9; }
+.gear-layout-control button { min-height: 34px; padding: .35rem .7rem; border: 1px solid transparent; border-radius: 5px; background: transparent; color: #d9e3ee; font: inherit; cursor: pointer; }
+.gear-layout-control button[aria-pressed='true'] { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, #0b1424); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.gear-layout-control button:hover { background: #ffffff12; }
+.gear-layout-control button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 980px) {
   .artwork-controls { display: none; }
 }
@@ -554,23 +549,6 @@
   background: linear-gradient(0deg, #0a1422 0%, #0a1422ed 34%, #0a142200 75%), url('/images/eye-night-forest-lowered.png') center 62% / cover;
   border-color: #40566b;
 }
-:root[data-environment='dungeon'] {
-  --world: #05090c; --surface: #111a20; --surface-deep: #090f14;
-  --ink: #e6e5d9; --muted: #a9b8bc; --line: #3d535a;
-  --heading: 'Cinzel', Georgia, serif;
-  --radius: 3px; --shadow: 0 12px 38px #0008;
-  --panel-texture: linear-gradient(145deg, #8abdb508, transparent 65%);
-}
-.class-dungeon .world-backdrop {
-  background: linear-gradient(#050a1620, #050a1640), var(--dungeon-art) center / cover no-repeat;
-}
-.class-dungeon .world-backdrop i { display: none; }
-.class-dungeon .plaque { background: #0b1421e8; border-color: #40566b; box-shadow: 0 12px 40px #0008; }
-.class-dungeon .hero {
-  background: linear-gradient(90deg, #0a1422ed, #0a142299), var(--dungeon-art) right 45% / cover;
-  border-top: 1px solid var(--line);
-}
-.class-dungeon .loadout { border-top-color: var(--accent); }
 .dungeon-guide { margin: 1.5rem 0 2rem; }
 .dungeon-loot { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 .dungeon-chests { margin-top: 1.25rem; }
@@ -760,11 +738,6 @@
 }
 
 /* Alternatives occupy one equipment slot, even when several items are shown. */
-.accessory-choice { min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: rgba(0,0,0,.12); display: grid; gap: 7px; }
-.accessory-choice-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .76rem; }
-.accessory-choice-heading span { white-space: nowrap; opacity: .65; }
-.accessory-choice > p, .accessory-choice-hint { margin: 0; font-size: .76rem; line-height: 1.5; color: var(--muted); }
-.accessory-choice-hint { margin-bottom: 12px; }
 
 /* Compatibility labels have their own colors; item names retain rarity colors. */
 .item-title { min-width: 0; flex: 1; }
@@ -782,9 +755,91 @@
 .equipment-link-rapidHits { --link-color: #9cc9ff; }
 .equipment-link-heavyHits { --link-color: #f3b899; }
 .equipment-link-whips { --link-color: #a6df9a; }
-.loadout-ammo { margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
-.loadout-ammo h3 { margin: 0 0 .75rem; color: var(--accent); font-size: .9rem; }
-.loadout-ammo .item-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+
+/* Main gear and accessories use the same headings, surfaces and item scale. */
+.equipment-section:first-of-type { margin-top: 0; }
+.equipment-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; margin: 0; padding: 0; list-style: none; }
+.equipment-options > li { min-width: 0; padding: .25rem 0; border-top: 1px solid color-mix(in srgb, var(--line) 65%, transparent); }
+.equipment-armor .equipment-options, .equipment-ammo .equipment-options { grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.equipment-section .item-guidance { max-width: 65ch; padding: 0 .45rem .3rem 3.325rem; font-size: .8rem; line-height: 1.5; }
+.equipment-section .item-guidance strong { display: inline; font-size: inherit; text-transform: none; letter-spacing: 0; }
+.equipment-section .item-guidance strong::after { content: ' ·'; }
+.equipment-section .item-guidance p { margin-top: .2rem; }
+@media (max-width: 640px) {
+  .equipment-options, .equipment-armor .equipment-options, .equipment-ammo .equipment-options { grid-template-columns: 1fr; }
+  .equipment-section .item-guidance { padding-left: .4rem; }
+}
+/* Every accessory row represents one equipped slot and its alternatives. */
+.equipment-section, .accessory-guide { margin-top: .8rem; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
+.equipment-heading, .accessory-heading { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .55rem; }
+.equipment-heading h3, .accessory-heading h3 { margin: 0; font-family: var(--heading); font-size: 1.15rem; color: var(--ink); }
+.accessory-heading p { margin: .15rem 0 0; color: var(--muted); font-size: .75rem; }
+.accessory-capacity { flex-shrink: 0; text-align: right; }
+.accessory-capacity strong { color: var(--accent); font-size: 1.3rem; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.accessory-capacity strong span { color: var(--ink); font-size: .875rem; font-weight: 500; }
+.accessory-column-labels, .accessory-row { display: grid; grid-template-columns: 1.5rem repeat(3, minmax(0, 1fr)); gap: .65rem; }
+.accessory-column-labels { padding: 0 .35rem .4rem; color: var(--muted); font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; }
+.accessory-column-labels > :last-child { grid-column: 3 / -1; }
+.accessory-rack { margin: 0; padding: 0; list-style: none; }
+.accessory-row { align-items: start; padding: .3rem .35rem; border-top: 1px solid color-mix(in srgb, var(--line) 65%, transparent); }
+.accessory-number { align-self: start; padding-top: 1.3rem; color: var(--accent); font: .75rem ui-monospace, monospace; opacity: .8; }
+.accessory-primary, .accessory-alternatives, .accessory-options { min-width: 0; }
+.accessory-alternatives { display: grid; grid-column: 3 / -1; grid-template-columns: subgrid; }
+.accessory-or { display: none; color: var(--muted); font-size: .65rem; font-style: italic; text-align: center; }
+.accessory-options { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; gap: .3rem .65rem; }
+.accessory-no-swap { grid-column: 3 / -1; align-self: center; padding-left: .5rem; color: var(--line); }
+.equipment-section .item-card-equipment, .accessory-guide .item-card-accessory { min-width: 0; border: 1px solid transparent; border-radius: 6px; background: transparent; }
+.accessory-primary .item-card-accessory { background: color-mix(in srgb, var(--accent) 5%, var(--surface-deep)); border-color: color-mix(in srgb, var(--accent) 16%, transparent); }
+.equipment-section .item-card-equipment:hover, .equipment-section .item-card-equipment:focus-within, .accessory-guide .item-card-accessory:hover, .accessory-guide .item-card-accessory:focus-within { border-color: var(--accent); background: var(--accent-soft); }
+.equipment-section .item-chip, .accessory-guide .item-chip { gap: .5rem; min-height: 48px; padding: .3rem .45rem; }
+.equipment-section .item-icon, .accessory-guide .item-icon { width: 38px; height: 38px; border: 0; background: none; }
+.equipment-section .item-icon img, .accessory-guide .item-icon img { max-width: 32px; max-height: 32px; }
+.equipment-section .item-title, .accessory-guide .item-title { min-width: 0; }
+.equipment-section .item-name, .accessory-guide .item-name { font-size: .875rem; line-height: 1.4; overflow-wrap: anywhere; }
+.equipment-section .item-toggle, .accessory-guide .item-toggle { align-self: flex-start; font-size: .75rem; opacity: .5; }
+.item-caption { display: block; margin-top: .2rem; color: var(--muted); font-size: .7rem; line-height: 1.4; }
+.item-caption::first-letter { text-transform: uppercase; }
+.equipment-section .equipment-link, .accessory-guide .equipment-link { background: transparent; border: 0; padding: 0; font-size: .65rem; }
+.equipment-section .equipment-links, .accessory-guide .equipment-links { gap: .5rem; }
+/* Accessory cards share a name line and a metadata line, even without tags. */
+.accessory-guide { --accessory-card-height: 60px; }
+.accessory-guide .item-card-accessory { min-height: var(--accessory-card-height); }
+.accessory-guide .item-chip { min-height: calc(var(--accessory-card-height) - 2px); height: 100%; }
+.accessory-guide .item-title { display: grid; gap: .15rem; align-content: center; }
+.accessory-guide .item-name { display: block; }
+.accessory-guide .accessory-item-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem .5rem; min-height: .95rem; }
+.accessory-guide .accessory-item-meta .item-caption { margin: 0; line-height: 1.35; }
+.accessory-guide .accessory-item-meta .equipment-links { display: contents; }
+.accessory-guide .item-toggle { align-self: center; }
+.accessory-unlock { margin: .45rem 0 0; padding-top: .5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .75rem; }
+.accessory-preview-notes { margin: .8rem 0; padding: .1rem .8rem .6rem; background: var(--accent-soft); border-left: 2px solid var(--accent); }
+.preparation { margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-deep); }
+.preparation > summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+.preparation > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.preparation > summary span { margin-left: .6rem; color: var(--muted); font-size: .8rem; font-weight: 400; }
+.preparation[open] > summary { margin-bottom: 1rem; }
+@media (max-width: 1100px) {
+  .accessory-column-labels, .accessory-row { grid-template-columns: 1.5rem repeat(2, minmax(0, 1fr)); gap: .5rem; }
+  .accessory-options { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .accessory-column-labels { display: none; }
+  .accessory-row { grid-template-columns: 1.25rem minmax(0, 1fr); gap: .2rem .35rem; padding: .35rem 0; }
+  .accessory-primary { grid-column: 2; }
+  .accessory-alternatives { grid-column: 2; position: relative; grid-template-columns: minmax(0, 1fr); }
+  .accessory-or { display: block; position: absolute; left: -1.5rem; top: 1.3rem; width: 1.25rem; }
+  .accessory-no-swap { display: none; }
+}
+@media (max-width: 600px) {
+  .equipment-section, .accessory-guide { padding: .7rem .6rem; }
+  .equipment-heading, .accessory-heading { align-items: flex-start; gap: .6rem; margin-bottom: .5rem; }
+  .accessory-heading p { font-size: .75rem; line-height: 1.4; }
+  .equipment-section .item-chip, .accessory-guide .item-chip { padding: .3rem .35rem; gap: .45rem; }
+  .equipment-section .item-icon, .accessory-guide .item-icon { width: 32px; }
+}
+@media (max-width: 380px) {
+  .accessory-guide { --accessory-card-height: 86px; }
+}
 
 .preparation-help, .preparation-flasks > p { margin: 0 0 .8rem; color: var(--muted); font-size: .85rem; line-height: 1.55; }
 .preparation-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; align-items: start; }

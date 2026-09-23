@@ -1,77 +1,56 @@
-# Master Mode gearing audit
+# Master Mode gearing
 
-Reviewed September 20, 2026 for Desktop **1.4.5.7**, ordinary worlds, solo-friendly first clears. This is a practical selection of coherent builds, not a claim that every recommended item is the maximum possible DPS configuration. Mixed armor, mounts replacing flight accessories, and specialized arena strategies are outside these default builds.
+Reviewed September 22, 2026 for Desktop **1.4.5.7**, ordinary worlds and solo-friendly first clears. These are practical recommendations with optional upgrades and fallbacks, not simulated DPS rankings. Specialized arena strategies, mixed-armor optimization and mounts replacing flight accessories are outside the default builds.
 
-## Where to edit
+## Editing
 
-- `src/data/preparation.js`: curated potions, healing upgrades, flasks, and buff stations for each stage/class. Item effects and recipes live in `src/data/preparationItems.js`; see `docs/PREPARATION_CONTENT.md` for the progression rules and sources.
-- `src/data/loadouts.js`: every stage/class recommendation, including Dungeon entry builds and the grouped optional encounters. Each named section contains four classes; the final `byStage` map assigns them to the roadmap. The existing optional pre-Hardmode data is maintained, even though that extra stop is currently hidden from the roadmap UI.
-- `src/data/items.js` and `src/data/loadoutItems.js`: item names, images, summaries, and wiki links. New audit items are in the latter and merged into the main catalog.
-- `src/data/gearAcquisition.js`: structured recipe ingredients/stations, drop percentages, and shop conditions used by item previews. Existing checklist and Dungeon loot is reused where names match.
-- `src/data/itemNotes.js`: reusable visible item conditions. A loadout's `itemNotes` overrides these for that particular recommendation.
-- `src/data/equipmentLinks.js`: weapon families, stage-appropriate ammunition, matching badges, and weapon-support accessory choices across all classes. This adds pairings without filtering or splitting the weapon list.
-- `src/data/weaponSupportItems.js`: yoyo support, additional weapons and ammunition, recipes and verified sprite IDs from this pairing review.
-- `src/data/roadmap.js`: encounter descriptions and rewards to chase after winning. It no longer contains a second, conflicting set of loadouts.
+- `src/data/loadouts.js`: stage/class armor, weapons, equipped accessories, replacement choices and encounter notes. Each named build contains four classes. The 56 stored builds include older Dungeon/optional entries for compatibility; the roadmap shows 44 builds across 11 stops.
+- `src/data/items.js`: base item catalog. `loadoutItems.js`, `weaponSupportItems.js` and `preparationItems.js` supply additional catalog entries. Keep each item ID defined in one place.
+- `src/data/equipmentLinks.js`: weapon families, compatible ammunition, matching labels and weapon-support accessory choices.
+- `src/data/itemNotes.js`: reusable item guidance. A build's item notes override these where the encounter needs different advice.
+- `src/data/accessorySlots.js`: combines baseline accessories, choice groups and swaps into one row per equipped slot. `src/AccessoryGuide.jsx` renders the rows; `accessoryCaptions.js` provides choice qualifiers for New and fuller benefit captions for Compact.
+- `src/data/gearAcquisition.js`: recipes and shop conditions; it reuses boss, event and Dungeon loot rather than duplicating their drop percentages. See [acquisition previews](ACQUISITION_CONTENT.md).
+- `src/data/preparation.js`: potions, flasks and stations for each stage/class. See [potions and buffs](PREPARATION_CONTENT.md).
 
-`build(armor, weapons, accessories, notes, accessorySwaps, itemNotes)` accepts space-separated item IDs for its first three arguments. Armor and weapons are alternatives; the first weapon is the suggested starting choice. Partial outfits such as Flinx Fur Coat have explicit notes about the remaining pieces. Class-specific armor headpieces are added automatically for the ore/Hallowed/Chlorophyte sets.
+`build(armor, weapons, accessories, notes, accessorySwaps, itemNotes)` takes space-separated item IDs for its first three arguments. Armor and weapons are alternatives; the first weapon is the suggested starting choice. Partial outfits and class-specific headpieces have explicit guidance.
 
-The `accessories` list is a complete equipped build: **six** in pre-Hardmode, including the Wall of Flesh fight; **seven** in Hardmode, assuming the Demon Heart has been consumed. A swap names its replacement: `swap('brainConfusion', 'wormScarf', 'Crimson-world alternative...')`. Do not add an eighth accessory to the baseline to express a choice.
+## Display and slot rules
 
-## Decisions from this pass
+The bottom-left **New / Classic / Compact** switch persists under `terraria-guide-layout`. New is the default presentation described below. `ClassicEquipmentGuide.jsx` restores the original three-column Armor / Weapons / Accessories cards, choose-one groups and separate accessory-swaps dropdown. `CompactEquipmentGuide.jsx` refines the same three-column order with tighter cards and accessory swaps grouped beneath the item they replace. Each accessory has its own outlined card; alternatives match the starting item's width and follow a choose-one divider within the numbered slot group. Weapon and armor notes stay on the cards; accessory guidance remains in the hover/tap preview. Ammo sits beneath weapons. At tablet widths armor and weapons share a row above accessories; phones stack all three. All three layouts share the current loadout data, item previews, potions and build notes; the switch is only shown in the gearing roadmap.
 
-- Filled all accessory slots with a balance of mobility, class damage, and survival. Swaps explain bow/gun/yoyo variants, world-evil alternatives, optional flight rewards, and missing rare drops.
-- Reviewed weapons at every stop, including better early melee projectiles, appropriate Wall of Flesh piercing options, mechanical-boss weapon/ammo roles, post-Plantera Dungeon upgrades, and fragment weapons before Moon Lord.
-- Kept Dungeon entry sets obtainable before the visit. The grouped event and optional-boss kits use post-Golem equipment without assuming their own rewards. Later pages label optional farms and offer fallbacks.
-- Removed obsolete slot-pool wording. Preserved Master-only scope and the existing compact roadmap rather than adding difficulty controls or more progression stops.
-- Added current-version mana and whip upgrades. Different whip tags require extra slots; Firecracker is paired with heavier minion hits rather than blindly recommended for Blade Staff. Mage sets distinguish Mask/Hood and avoid relying on Hood healing against Moon Lord.
-- Lunar armor still requires Luminite from Moon Lord. Daytime Empress and Terraprisma are not first-clear requirements.
-- Added local sprites and structured acquisition previews for the new gear. `scripts/export-loadout-sprites.mjs` records their installed-game ItemID mappings.
+All recommended weapons stay in one visible list. Accessories have their own full-width section with six or seven numbered slot groups. The starting accessory and all its alternatives stay visible together, with text-and-color labels connecting compatible weapons and gear. Cards share column widths and a common name/metadata arrangement; a single alternative occupies the same width as an option in a larger group. Extra alternatives can use additional card rows without stretching the starting item. Narrow screens stack alternatives at the same width below their starting item. Terraria rarity colors are separate from these labels.
+
+Armor, weapons and ammunition use matching full-width sections with tight spacing and flat item rows. Generic stat/type subtitles and section descriptions are omitted; stats remain in item previews. Headpiece/build notes and pairing labels stay visible. Only accessories use slot numbers; weapon lists can include complementary minions, whips and support weapons. `EquipmentGuide.jsx` scopes this presentation so potion and reward cards keep their existing layout.
+
+The equipped baseline contains **six slots before the Wall of Flesh's Demon Heart, seven afterward**. A replacement names its slot; it does not add another slot. Choice groups retain the baseline ID for counting. World-evil defense, balloons, mana support, yoyo support and bow quivers are alternatives within those slots.
+
+Yoyos have visible String/Strung Counterweight choices before Hardmode, Glove/Bag at the first mechanical bosses, and Magic/plain Bag later. Bags include their component effects. Ammo connects to the correct bows, guns, darts, Star Cannon, Flamethrower or Stynger. Meteor and gem armor connect to compatible spells. Summoner tags distinguish frequent-hit/flat-tag pairings from heavy-hit Firecracker/Vulgar Display of Flower pairings; these are suggestions rather than exclusive compatibility rules. Twilight Grasp supports three tags, not every listed whip at once.
+
+Potions & buffs starts collapsed. In the New layout, accessory recipes, stats, complete build guidance and choice explanations live in each item's hover/tap preview. Only useful qualifiers such as world evil, requirements, difficult acquisition and fallbacks stay beneath the item name; generic benefits are omitted. Accessory alternatives never need a separate dropdown or weapon setup selector in this layout. Run `node scripts/verify-accessory-slots.mjs` to check slot merging and guidance preservation.
+
+## Progression and encounter rules
+
+- First-entry builds never require their own encounter's rewards. Dungeon entry data remains valid even though the Dungeon now appears only in the checklist.
+- Grouped events use earlier equipment. Fishron/Empress builds may show optional event upgrades alongside earlier fallbacks, but never their own rewards. Later stages label optional farms.
+- Mechanical-boss advice distinguishes Destroyer piercing from single-target weapons for Twins/Prime. Chlorophyte crafting follows all three mechanical bosses.
+- Cultist ammunition avoids Chlorophyte Bullets' homing penalty; the pillars emphasize enemy groups, and Moon Lord starts with fragment weapons.
+- Lunar armor requires a Moon Lord kill. Daytime Empress/Terraprisma is not required. Moon Bite invalidates healing from Spectre Hood and Vampire Knives during its effect.
+- Current mana regeneration, gem-robe effects, whip-tag slots, and Kraken's Fishron source follow 1.4.5.7. Do not apply later patch changes silently.
+
+## Audit and checks
+
+The September 22 pass corrected gem-staff recipes (7 metal bars), removed the extra wood claim from Hive-Five, fixed Molten Quiver's Flaming Arrow description, corrected verified rarity colors, and removed a shadowed Sanguine Staff catalog entry. Combined accessory validation caught and removed a second Shackle recommendation in the same pre-boss mage build.
+
+Run `node scripts/verify-loadouts.mjs`, `node scripts/verify-acquisition.mjs`, `node scripts/verify-preparation.mjs`, `node scripts/verify.mjs`, `npm run build` and `npm run lint`.
+
+Validation covers every class/stage, exact slots, all combinations of choices and replacements, duplicates, flight dependencies, pairing partners, compatible ammo, source/recipe coverage, progression gates and first-entry constraints. It cannot prove combat rankings.
 
 ## References
 
-The live wiki is still being revised for the newer patches. Cross-check version-specific mechanics against the installed game's **1.4.5.7** changelog section; do not silently adopt later balance changes.
+Item previews link to their individual official wiki pages. Version-sensitive facts are also checked against the installed game's **1.4.5.7** changelog section; live wiki pages may already describe newer patches.
 
-- Slot rules: [Master Mode](https://terraria.wiki.gg/wiki/Master_Mode), [Demon Heart](https://terraria.wiki.gg/wiki/Demon_Heart).
-- Broad progression cross-check: [class setups](https://terraria.wiki.gg/wiki/Guide:Class_setups). Recommendations here are an editorial selection, not a copy of every entry or ranking.
-- Encounter context: [Wall of Flesh](https://terraria.wiki.gg/wiki/Guide:Wall_of_Flesh_strategies), [Destroyer](https://terraria.wiki.gg/wiki/Guide:The_Destroyer_strategies), [Plantera](https://terraria.wiki.gg/wiki/Guide:Plantera_strategies), [Lunatic Cultist](https://terraria.wiki.gg/wiki/Guide:Lunatic_Cultist_strategies), [Moon Lord](https://terraria.wiki.gg/wiki/Guide:Moon_Lord_strategies).
-- Mobility/gates: [Wings](https://terraria.wiki.gg/wiki/Wings/List), [Amphibian Boots](https://terraria.wiki.gg/wiki/Amphibian_Boots), [Magiluminescence](https://terraria.wiki.gg/wiki/Magiluminescence), [Master Ninja Gear](https://terraria.wiki.gg/wiki/Master_Ninja_Gear).
-- Pairings and current crafting: [Ruinous Staff](https://terraria.wiki.gg/wiki/Ruinous_Staff), [Vulgar Display of Flower](https://terraria.wiki.gg/wiki/Vulgar_Display_of_Flower), [Whips](https://terraria.wiki.gg/wiki/Whips), [Magic Yoyo Bag](https://terraria.wiki.gg/wiki/Magic_Yoyo_Bag), [Strung Counterweight](https://terraria.wiki.gg/wiki/Strung_Counterweight), [Molten Quiver](https://terraria.wiki.gg/wiki/Molten_Quiver), [Obsidian Shield](https://terraria.wiki.gg/wiki/Obsidian_Shield).
-- Magic sustain and survival: [Mana Regeneration Band](https://terraria.wiki.gg/wiki/Mana_Regeneration_Band), [Mana Cloak](https://terraria.wiki.gg/wiki/Mana_Cloak), [Black Belt](https://terraria.wiki.gg/wiki/Black_Belt), [Dodge](https://terraria.wiki.gg/wiki/Dodge), [Spectre armor](https://terraria.wiki.gg/wiki/Spectre_armor).
-- Individual item pages are linked from every item preview, including new weapon recipes and shops. Master drop percentages are shared with the existing encounter loot data when available.
-
-## Validation
-
-Run `node scripts/verify-loadouts.mjs`, `node scripts/verify.mjs`, `node scripts/verify-acquisition.mjs`, `npm run build`, and `npm run lint` after editing.
-
-The loadout verifier checks all class/stage combinations, exact slot counts, valid replacements, duplicate/redundant mobility items, flight for Soaring Insignia, bow accessories, crafting-preview coverage, progression gates, and first-entry encounter constraints. These checks protect content rules; they do not simulate boss fights or establish a DPS ranking.
-
-
-Accessory choice groups
------------------------
-
-The exported loadouts include accessoryChoices keyed by equipped slot ID. Each group counts as one slot, regardless of the number of alternatives. Shared world-evil, balloon, and mana-support choices are defined in withAccessoryChoices in src/data/loadouts.js. Keep the baseline accessory in the group. Other situational replacements remain in accessorySwaps.
-
-This pass adds Mystic Bloom and Glacier Fang to pre-boss mage, upgrades balloon slots to Bundle of Horseshoe Balloons with a Cloud in a Balloon fallback, and offers Magnet Flower / Celestial Cuffs choices. Recipes and effects checked against the official Terraria wiki:
-- https://terraria.wiki.gg/wiki/Vine
-- https://terraria.wiki.gg/wiki/Bundle_of_Horseshoe_Balloons
-- https://terraria.wiki.gg/wiki/Magnet_Flower
-- https://terraria.wiki.gg/wiki/Celestial_Cuffs
-
-
-## Equipment labels
-
-All recommended weapons remain visible. Edit src/data/equipmentLinks.js to give matching weapons and accessories the same named, colored badge for a stage/class. Labels always include text; item-name colors continue to indicate Terraria rarity.
-
-Accessories stay in the Accessories column. Yoyo support shares an existing slot: String/Strung Counterweight before Hardmode, Yoyo Bag/Glove before mechanicals, and Magic Yoyo Bag/plain Bag later. A bag includes its components' effects; they are not extra equipped slots. Ranged ammunition has its own section, paired with bows, guns, darts, Star Cannon, Flamethrower or Stynger. No setup selection or accessories in the weapon column are used.
-
-Meteor/gem-set labels connect armor to compatible weapons. Summoner labels distinguish frequent minion hits with flat-tag whips from heavy hits with Firecracker/Vulgar Display of Flower. These are pairing suggestions, not exclusive compatibility rules. Twilight Grasp supports up to three tags; the list does not require cycling through every whip.
-
-The optional-boss stop now uses its own fast-target choices. Earlier event rewards are explicitly optional upgrades, with Dungeon/Golem/craftable fallbacks. Fishron/Empress loot never appears in their first-clear kit. The earlier event stop still assumes none of its own rewards. Cultist ammo avoids Chlorophyte Bullets' penalty; pillars favor crowd coverage, and Moon Lord starts with fragment weapons. Kraken follows its 1.4.5.7 Fishron source rather than its old Dungeon source.
-
-Potions & buffs is a native, initially collapsed disclosure, alongside the existing accessory swaps. It retains all class/stage preparation content.
-
-The September 20 pass covers every stored class/stage entry. The verifiers also require visible yoyo support, compatible ammo for every ranged weapon family, Wooden Arrows for conversion bows, a real partner for each badge, no heavy-hit badge on Blade Staff, and progression gates for the new ammo/weapons. Browser checks cover disclosure behavior, recipe previews, and the rendered pairings.
-
-References: [Strings](https://terraria.wiki.gg/wiki/Strings), [Frostburn Arrow](https://terraria.wiki.gg/wiki/Frostburn_Arrow), [Arms Dealer](https://terraria.wiki.gg/wiki/Arms_Dealer).
-
-Additional item-mechanic checks: [Yoyos](https://terraria.wiki.gg/wiki/Yoyos), [Kraken](https://terraria.wiki.gg/wiki/Kraken), [Electric Eel](https://terraria.wiki.gg/wiki/Electric_Eel), [Nano Bullet](https://terraria.wiki.gg/wiki/Nano_Bullet), [Chlorophyte Bullet](https://terraria.wiki.gg/wiki/Chlorophyte_Bullet), [Wooden Arrow recipes](https://terraria.wiki.gg/wiki/Wooden_Arrow), [Silver Bullet](https://terraria.wiki.gg/wiki/Silver_Bullet), [Tungsten Bullet](https://terraria.wiki.gg/wiki/Tungsten_Bullet). Newly added item rarity colors are checked against the corresponding official wiki item pages.
+- [Class setups](https://terraria.wiki.gg/wiki/Guide:Class_setups), [Master Mode](https://terraria.wiki.gg/wiki/Master_Mode), [Demon Heart](https://terraria.wiki.gg/wiki/Demon_Heart).
+- [Wall of Flesh](https://terraria.wiki.gg/wiki/Guide:Wall_of_Flesh_strategies), [Destroyer](https://terraria.wiki.gg/wiki/Guide:The_Destroyer_strategies), [Plantera](https://terraria.wiki.gg/wiki/Guide:Plantera_strategies), [Cultist](https://terraria.wiki.gg/wiki/Guide:Lunatic_Cultist_strategies), [Moon Lord](https://terraria.wiki.gg/wiki/Guide:Moon_Lord_strategies).
+- [Yoyos](https://terraria.wiki.gg/wiki/Yoyos), [Strung Counterweight](https://terraria.wiki.gg/wiki/Strung_Counterweight), [Kraken](https://terraria.wiki.gg/wiki/Kraken), [Hive-Five](https://terraria.wiki.gg/wiki/Hive-Five), [Molten Quiver](https://terraria.wiki.gg/wiki/Molten_Quiver).
+- [Gem staves](https://terraria.wiki.gg/wiki/Gem_staves), [Mana Cloak](https://terraria.wiki.gg/wiki/Mana_Cloak), [Master Ninja Gear](https://terraria.wiki.gg/wiki/Master_Ninja_Gear), [Whips](https://terraria.wiki.gg/wiki/Whips), [Ruinous Staff](https://terraria.wiki.gg/wiki/Ruinous_Staff).
+- [Nano Bullet](https://terraria.wiki.gg/wiki/Nano_Bullet), [Chlorophyte Bullet](https://terraria.wiki.gg/wiki/Chlorophyte_Bullet), [Wooden Arrow recipes](https://terraria.wiki.gg/wiki/Wooden_Arrow), [rarity 4 catalog](https://terraria.wiki.gg/wiki/Category:Items_of_rarity_4).

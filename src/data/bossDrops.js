@@ -2,8 +2,8 @@ import { hardmodeDrops, hardmodeDropNotes } from './hardmodeDrops.js'
 import { earlyOptionalDrops } from './prehardmodeOptional.js'
 // Curated gear, crafting materials, pets and mounts. Omit routine currency, potions, trophies and relics.
 // Include useful guaranteed equipment and progression rewards, not just rare drops.
-// Rates are per bag; Pet/Mount entries here are direct boss drops.
-const drop = (name, rate, kind, source, note, quantity) => ({ name, rate, kind, source, file: `${source}.png`, note, quantity })
+// Each row records whether its roll comes from a bag or the boss itself.
+const drop = (name, rate, kind, source, note, quantity) => ({ name, rate, kind, source, file: `${source}.png`, note, quantity, method: 'Treasure Bag' })
 export const bossDrops = {
   ...earlyOptionalDrops,
   'evil-boss': [
@@ -37,12 +37,14 @@ export const bossDrops = {
     drop('Binoculars', '3.33%', 'Tool', 'Binoculars'),
     drop('Demonite Ore', '100%', 'Material', 'Demonite_Ore', 'Corruption world only', '30–90'),
     drop('Crimtane Ore', '100%', 'Material', 'Crimtane_Ore', 'Crimson world only', '30–90'),
+    drop('Unholy Arrow', '100%', 'Ammunition', 'Unholy_Arrow', 'Available in either world evil', '20–50'),
+    { ...drop('Suspicious Grinning Eye', '25%', 'Pet', 'Suspicious_Grinning_Eye'), method: 'Master boss drop' },
   ],
   'pre-skeletron': [
     drop('Bone Glove', '100%', 'Accessory', 'Bone_Glove'),
     drop('Book of Skulls', '33.33%', 'Magic weapon', 'Book_of_Skulls'),
     drop('Skeletron Hand', '33.33%', 'Hook', 'Skeletron_Hand'),
-    drop('Possessed Skull', '25%', 'Pet', 'Possessed_Skull'),
+    { ...drop('Possessed Skull', '25%', 'Pet', 'Possessed_Skull'), method: 'Master boss drop' },
   ],
   'pre-wof': [
     drop('Demon Heart', '100%', 'Permanent upgrade', 'Demon_Heart', 'Only before you have consumed one · unlocks your seventh Master Mode accessory slot'),
@@ -52,7 +54,7 @@ export const bossDrops = {
     drop('Clockwork Assault Rifle', '25%', 'Ranged weapon', 'Clockwork_Assault_Rifle'),
     drop('Laser Rifle', '25%', 'Magic weapon', 'Laser_Rifle'),
     drop('Firecracker', '25%', 'Whip', 'Firecracker'),
-    drop('Goat Skull', '25%', 'Mount', 'Goat_Skull'),
+    { ...drop('Goat Skull', '25%', 'Mount', 'Goat_Skull'), method: 'Master boss drop' },
   ],
   ...hardmodeDrops,
 }
@@ -63,7 +65,7 @@ export const dropNotes = {
   'queen-bee': 'Each bag rolls one of the three bee weapons. Bee Wax crafts Bee armor, Hornet Staff and Hive-Five. The Master pet drops directly from the boss.',
   deerclops: 'Each bag rolls one of Pew-matic Horn, Weather Pain, Houndius Shootius or Lucy the Axe. The Master pet drops directly from the boss.',
   ...hardmodeDropNotes,
-  'pre-boss': 'Per Eye of Cthulhu Treasure Bag. The world’s evil determines which ore you receive; you do not receive both in a normal world.',
+  'pre-boss': 'The world’s evil determines the ore in each bag; you do not receive both in a normal world. The Master pet drops directly from the boss.',
   'pre-skeletron': 'The bag rolls one of Book of Skulls, Skeletron Hand or the omitted vanity mask. The pet rolls separately on the boss.',
   'pre-wof': 'Each bag contains one emblem and one weapon. The mount rolls separately on the boss.',
 }

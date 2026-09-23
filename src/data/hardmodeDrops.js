@@ -84,7 +84,6 @@ export const hardmodeDrops = {
       ['Empress Wings', '10%', 'Wings'],
       ['Stellar Tune', '5%', 'Magic weapon'],
       ['Rainbow Cursor', '5%', 'Utility'],
-      ['Prismatic Dye', '25%', 'Dye', '3'],
     ]),
     ...kill('Empress of Light', [
       ['Terraprisma', '100%*', 'Summon weapon', null, 'Only when all damage to Empress is dealt during daytime'],
@@ -112,8 +111,8 @@ export const hardmodeDrops = {
   ],
   'old-ones-army': [
     ...kill('Dark Mage · tier 3', [
-      ["Squire's Shield", '8.33%', 'Accessory'],
-      ["Apprentice's Scarf", '8.33%', 'Accessory'],
+      ["Squire's Shield", '50%', 'Accessory', null, 'One of the two sentry accessories per kill'],
+      ["Apprentice's Scarf", '50%', 'Accessory', null, 'One of the two sentry accessories per kill'],
       ['War Table', '25%', 'Buff station'],
       ['Dragon Egg', '8.33%', 'Pet'],
       ['Gato Egg', '8.33%', 'Pet'],
@@ -134,11 +133,21 @@ export const hardmodeDrops = {
     ]),
     ...kill('Betsy', [["Betsy's Egg", '25%', 'Pet']]),
   ],
-  'martian-madness': kill('Martian Saucer', [
-    ...['Xenopopper', 'Xeno Staff', 'Laser Machinegun', 'Electrosphere Launcher', 'Influx Waver', 'Cosmic Car Key'].map(name => [name, '16.67%', name === 'Cosmic Car Key' ? 'Mount' : 'Weapon', null, 'One of six main rewards per Saucer']),
-    ['Arc Surge', '2%', 'Magic weapon'],
-    ['Cosmic Skateboard', '25%', 'Pet'],
-  ]),
+  'martian-madness': [
+    ...kill('Martian Saucer', [
+      ...['Xenopopper', 'Xeno Staff', 'Laser Machinegun', 'Electrosphere Launcher', 'Influx Waver', 'Cosmic Car Key'].map(name => [name, '16.67%', name === 'Cosmic Car Key' ? 'Mount' : 'Weapon', null, 'One of six main rewards per Saucer']),
+      ['Arc Surge', '2%', 'Magic weapon'],
+      ['Cosmic Skateboard', '25%', 'Pet'],
+    ]),
+    ...kill('Common Martians', [
+      ['Laser Drill', '0.13%', 'Tool'],
+      ['Anti-Gravity Hook', '0.13%', 'Hook'],
+      ['Charged Blaster Cannon', '0.13%', 'Magic weapon'],
+    ]),
+    ...kill('Scutlix Gunner', [
+      ['Brain Scrambler', '3.33%', 'Mount', null, 'Kill the rider before its mount; otherwise it becomes a Ray Gunner'],
+    ]).map(drop => ({ ...drop, source: 'Brain_Scrambler_(item)', file: 'Brain_Scrambler_(item).png' })),
+  ],
   'pumpkin-moon': [
     ...kill('Mourning Wood', [
       ...['Spooky Hook', 'Spooky Twig', 'Stake Launcher', 'Cursed Sapling', 'Necromantic Scroll'].map((name, i) => [name, '5–20%', ['Hook', 'Material', 'Ranged weapon', 'Pet', 'Accessory'][i], null, 'Chance increases with wave']),
@@ -207,5 +216,5 @@ export const hardmodeDropNotes = {
   'pre-moon-lord': 'Moon Lord drops two distinct weapons per bag. These are victory rewards, not equipment for your first clear.',
   'pumpkin-moon': 'Ranges are per enemy kill across waves at neutral luck. Later waves improve the chance; these enemies do not drop Treasure Bags.',
   'frost-moon': 'Ranges depend on the wave at the time of the kill and assume neutral luck. These enemies do not drop Treasure Bags.',
-  'martian-madness': 'These rewards come from the Saucer itself, not from completing the invasion.',
+  'martian-madness': 'Rates are per enemy defeated. Common Martians include Brain Scramblers, Gigazappers, Gray Grunts, Engineers, Officers, Walkers, Ray Gunners and Scutlix Gunners; spawned Tesla Turrets and the Scutlix mount do not share that loot.',
 }

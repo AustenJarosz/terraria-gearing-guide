@@ -9,7 +9,7 @@ export function ChecklistSpawn({ encounterId }) {
     {(spawn.variants || [spawn]).map(info => <div className="checklist-spawn-method" key={info.source}>
       {info.name && <h5>{info.name}</h5>}
       <dl>
-        <div><dt>Summon</dt><dd>{info.icon && <img src={`/items/${info.icon}`} alt="" loading="lazy" />}<SummonText text={info.summon} /></dd></div>
+        <div><dt>{info.actionLabel || 'Summon'}</dt><dd>{info.icon && <img src={`/items/${info.icon}`} alt="" loading="lazy" />}<SummonText text={info.summon} /></dd></div>
         <div><dt>Conditions</dt><dd><SummonText text={info.conditions} /></dd></div>
         {info.natural && <div><dt>Natural spawn</dt><dd><SummonText text={info.natural} /></dd></div>}
       </dl>

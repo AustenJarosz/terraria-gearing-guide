@@ -27,7 +27,7 @@ export function DungeonChests({ stage }) {
       {active === 'gold' && <>
         <p className="gear-hint">Consumes one <WikiLink name="Golden Key" /> per chest. These rewards remain available after Plantera.</p>
         <h4 className="dungeon-loot-group">Primary reward · one per chest</h4>
-        <p className="gear-hint">Seven possible primary items, placed in a cycle when the world is generated. Opening a chest does not reroll its loot.</p>
+        <p className="gear-hint">Seven possible gear rewards, placed in a cycle during world generation alongside wooden chests containing Golden Keys. Opening a chest does not reroll its loot.</p>
         <ChestItems items={goldChestLoot.primary} />
         <h4 className="dungeon-loot-group">Additional treasures</h4>
         <ChestItems items={goldChestLoot.secondary} />

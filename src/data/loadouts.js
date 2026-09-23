@@ -12,9 +12,9 @@ const build = (armor, weapons, accessories, notes, accessorySwaps = [], itemNote
   armor: ids(armor), weapons: ids(weapons), accessories: ids(accessories), notes, accessorySwaps, itemNotes,
 })
 
-const earlySwaps = replaces => [
+const earlySwaps = (replaces, missingSlot = 'shinyBalloon') => [
   swap('magiluminescence', replaces, 'More ground speed and acceleration. Mine evil ore with bombs; a boss kill is not required for the bars.'),
-  swap('shackle', 'shinyBalloon', 'Temporary defense slot if you have not found a balloon. Upgrade when you can.'),
+  swap('shackle', missingSlot, missingSlot === 'bandStarpower' ? 'Temporary defense if you cannot obtain Band of Starpower yet. Only equip one Shackle.' : 'Temporary defense slot if you have not found a balloon. Upgrade when you can.'),
 ]
 const grounded = 'Use Hermes, Flurry, Sailfish, or Dunerider Boots for the running slot. Armor sets and weapons shown are alternatives; choose what you can obtain.'
 const evilRoute = 'This shared kit assumes Eye of Cthulhu and the evil-biome boss are defeated, but does not require Queen Bee or Deerclops loot. For an earlier King Slime, use the Pre-Boss kit.'
@@ -34,7 +34,7 @@ const preBoss = {
     }),
   mage: build('jungleArmor diamondRobe', 'mysticBloom glacierFang diamondStaff rubyStaff thunderZapper', 'hermesBoots cloudBottle shinyBalloon regenBand bandStarpower sharkTooth',
     `${grounded} Increase maximum mana with Mana Crystals. Jungle armor is the full-set target; a gem robe is an alternative, not a complete armor set.`, [
-      ...earlySwaps('sharkTooth'), swap('shackle', 'bandStarpower', 'Temporary Crimson-world option if you cannot obtain the mana accessory yet.'),
+      ...earlySwaps('sharkTooth', 'bandStarpower'),
     ], {
       mysticBloom: note('Jungle craft', 'Homing petals help track the Eye. Gather its materials before any boss; Jungle exploration is the challenge.'),
       glacierFang: note('Ice alternative', 'Use if found in a Frozen Chest or fishing crate; it is not a required farm.'),
@@ -201,7 +201,7 @@ const dungeonLate = {
   ranged: build('shroomiteArmor hallowedArmor', 'megashark shotbow flamethrower', 'leafWings amphibianBoots shieldCthulhu rangerEmblem avengerEmblem wormScarf charmMyths',
     'Shroomite is available from the Truffle’s Autohammer after Plantera, before collecting any Dungeon loot. Use Hallowed armor if you have not set up that shop. Hunt Tactical Shotgun and Rifle Scope inside.', [crimson(), boots(), swap('phoenixQuiver', 'charmMyths', 'For Chlorophyte Shotbow; match Shroomite’s headpiece to arrows.')], {
       megashark: note('Ammo', 'Crystal Bullets; Chlorophyte Bullets are the homing alternative for awkward corridors.'),
-      shotbow: note('Ammo', 'Venom or Ichor Arrows; use Shroomite Headgear and the quiver swap.'),
+      shotbow: note('Ammo', 'Venom or Ichor Arrows; use Shroomite Headgear and the quiver choice.'),
     }),
   mage: build('hallowedArmor chlorophyteArmor', 'venomStaff rainbowRod waspGun goldenShower', 'leafWings amphibianBoots shieldCthulhu celestialEmblem restorationShield manaCloak wormScarf',
     'Enter in your magic Hallowed or Chlorophyte set. Spectre armor requires Ectoplasm from this visit, so it is an upgrade target rather than entry gear.', [crimson(), boots()], {
@@ -255,7 +255,7 @@ const detour = {
     'Match the Shroomite headpiece: Mask for bullets, Helmet for Stynger, Headgear for arrows. The starting kit does not assume weapons dropped by the events or optional bosses.', [boots(), swap('phoenixQuiver', 'destroyerEmblem', 'For Chlorophyte Shotbow. The base accessories support the gun and Stynger options.')], {
       tacticalShotgun: note('Ammo', 'Crystal Bullets for damage; Chlorophyte Bullets for fast targets you struggle to track.'),
       stynger: note('Crowds / large targets', 'Buy Stynger Bolts from the Witch Doctor while carrying the weapon. Use the Shroomite Helmet.'),
-      shotbow: note('Bow alternative', 'Venom or Ichor Arrows with the quiver swap. Works if you have not obtained the Dungeon/Golem weapons.'),
+      shotbow: note('Bow alternative', 'Venom or Ichor Arrows with the quiver choice. Works if you have not obtained the Dungeon/Golem weapons.'),
     }),
   mage: build('spectreArmor', 'heatRay infernoFork magnetSphere', 'steampunkWings amphibianBoots masterNinja celestialEmblem manaCloak mysticArtsSash frozenShield',
     'Use Spectre Mask for damage, with Hood as an optional healing tradeoff. Heat Ray covers single targets; Inferno Fork and Magnet Sphere help with crowds. No optional-event reward is required to start.', [boots(), swap('sorcererEmblem', 'frozenShield', 'A damage-focused swap if you can give up the shield’s protection.')], {

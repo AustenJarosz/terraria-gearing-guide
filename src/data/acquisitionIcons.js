@@ -529,5 +529,6 @@ export const acquisitionIcons = {
   "Empty Bullet": "Empty_Bullet.png",
   "Nanites": "Nanites.png",
   "Any Wood": "Wood.png",
-  "Stone Block": "Stone_Block.png"
+  "Stone Block": "Stone_Block.png",
+  "Flask of Nanites": "Flask_of_Nanites.png"
 }

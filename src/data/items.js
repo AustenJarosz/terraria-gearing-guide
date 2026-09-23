@@ -83,7 +83,7 @@ export const items = {
     "file": "Meteor_Helmet.png",
     "rarity": "blue",
     "stats": "Armor set · Space Gun",
-    "info": "Space Gun costs no mana while this is equipped.",
+    "info": "The full set removes the mana cost of Space Gun and Gray Zapinator. Other magic weapons still consume mana.",
     "obtain": "Meteorite Bars after a meteor lands.",
     "source": "https://terraria.wiki.gg/wiki/Meteor_armor"
   },
@@ -336,7 +336,7 @@ export const items = {
     "rarity": "orange",
     "stats": "Yoyo · bees",
     "info": "A yoyo that releases bees on contact.",
-    "obtain": "Craft with Rich Mahogany and Bee Wax at an anvil; Bee Wax comes from Queen Bee.",
+    "obtain": "Craft 14 Bee Wax at an anvil; Bee Wax comes from Queen Bee.",
     "source": "https://terraria.wiki.gg/wiki/Hive-Five"
   },
   "thornChakram": {
@@ -414,7 +414,7 @@ export const items = {
   "amarok": {
     "name": "Amarok",
     "file": "Amarok.png",
-    "rarity": "pink",
+    "rarity": "light-red",
     "stats": "Yoyo · frostbite",
     "info": "A Frostbite-inflicting yoyo; its base damage was raised to 47 in 1.4.5.7.",
     "obtain": "Hardmode Snow biome enemies.",
@@ -614,7 +614,7 @@ export const items = {
     "file": "Minishark.png",
     "rarity": "blue",
     "stats": "Gun · fast",
-    "info": "Arms Dealer gun. Hungry for ammo, strong with Meteor Shot.",
+    "info": "A rapid, low-damage gun with built-in ammo conservation. Armor penetration helps its small individual hits.",
     "obtain": "Bought from the Arms Dealer.",
     "source": "https://terraria.wiki.gg/wiki/Minishark"
   },
@@ -695,7 +695,7 @@ export const items = {
     "file": "Chlorophyte_Shotbow.png",
     "rarity": "lime",
     "stats": "Bow · multi-arrow",
-    "info": "Plantera-safe bow. Chlorophyte or Holy arrows.",
+    "info": "Fires multiple arrows per shot. Match a bow headpiece and quiver; choose ammunition for the encounter.",
     "obtain": "Chlorophyte Bars.",
     "source": "https://terraria.wiki.gg/wiki/Chlorophyte_Shotbow"
   },
@@ -884,7 +884,7 @@ export const items = {
     "file": "Demon_Scythe.png",
     "rarity": "orange",
     "stats": "Magic scythe",
-    "info": "Underworld demons. Huge close-range arc.",
+    "info": "Fires piercing scythes that linger briefly before accelerating; useful against multiple enemies.",
     "obtain": "Demons in the Underworld.",
     "source": "https://terraria.wiki.gg/wiki/Demon_Scythe"
   },
@@ -1064,7 +1064,7 @@ export const items = {
     "file": "Flinx_Staff.png",
     "rarity": "blue",
     "stats": "Minion",
-    "info": "First real summon. Snow biome craft.",
+    "info": "Summons a jumping Flinx minion. Ground and platform access matter against airborne targets.",
     "obtain": "Flinx Fur plus gold/platinum bars.",
     "source": "https://terraria.wiki.gg/wiki/Flinx_Staff"
   },
@@ -1193,15 +1193,6 @@ export const items = {
     "info": "Whip hits improve attack speed and prime enemies for an additional enchanted hit from minions in 1.4.5.7.",
     "obtain": "Hallowed Bars at a Mythril or Orichalcum Anvil.",
     "source": "https://terraria.wiki.gg/wiki/Durendal"
-  },
-  "sanguineStaff": {
-    "name": "Sanguine Staff",
-    "file": "Sanguine_Staff.png",
-    "rarity": "pink",
-    "stats": "Minion · blood",
-    "info": "Flying bat minions with consistent tracking; an optional difficult fishing reward.",
-    "obtain": "Dreadnautilus, fished during a Hardmode Blood Moon.",
-    "source": "https://terraria.wiki.gg/wiki/Sanguine_Staff"
   },
   "pygmyStaff": {
     "name": "Pygmy Staff",
@@ -1533,7 +1524,7 @@ export const items = {
     "rarity": "lime",
     "stats": "Accessory · arrows",
     "info": "Magic Quiver plus Magma Stone.",
-    "obtain": "Tinker. Arrows gain hellfire.",
+    "obtain": "Combine Magic Quiver and Magma Stone at a Tinkerer's Workshop. It converts Wooden Arrows into Flaming Arrows.",
     "source": "https://terraria.wiki.gg/wiki/Molten_Quiver"
   },
   "magicQuiver": {

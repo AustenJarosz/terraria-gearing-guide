@@ -8,7 +8,7 @@ export const summonAcquisition = {
   'Suspicious Looking Eye': { ...recipe([['Lens', 6]]), note: 'Also found in underground chests.' },
   'Worm Food': recipe([['Vile Powder', 30], ['Rotten Chunk', 15]]),
   'Bloody Spine': recipe([['Vicious Powder', 30], ['Vertebra', 15]]),
-  'Goblin Battle Standard': { ...recipe([['Tattered Cloth', 10], ['Wood', 5]], ['Loom']), note: 'Goblin Scouts drop Tattered Cloth. Any type of wood works.' },
+  'Goblin Battle Standard': { ...recipe([['Tattered Cloth', 10], ['Any Wood', 5]], ['Loom']), note: 'Goblin Scouts drop Tattered Cloth.' },
   'Eternia Crystal': { vendor: 'Tavernkeep', note: 'Find him after defeating Eater of Worlds or Brain of Cthulhu. Price increases with the event tier.' },
   'Eternia Crystal Stand': { vendor: 'Tavernkeep', note: 'Place on solid ground with enough clear space for the event.' },
   'Abeemination': recipe([['Honey Block', 5], ['Hive', 5], ['Stinger', 1], ['Bottled Honey', 1]], ['By Hand']),

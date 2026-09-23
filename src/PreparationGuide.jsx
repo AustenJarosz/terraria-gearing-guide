@@ -3,7 +3,7 @@ import { getPreparation } from './data/preparation'
 
 export function PreparationGuide({ stageId, classId }) {
   const prep = getPreparation(stageId, classId)
-  return <details className="preparation loadout-swaps">
+  return <details className="preparation">
     <summary>Potions & buffs <span>Recovery, class buffs & arena stations</span></summary>
     <p className="preparation-help">A useful selection for this stage. Hover or tap an item for its recipe or source.</p>
     <div className="preparation-columns">

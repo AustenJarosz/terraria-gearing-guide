@@ -1,31 +1,27 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { classes, eras, loadouts, roadmapStages as stages, retiredStageFallbacks } from './data/gear'
 import { BossChecklist } from './BossChecklist'
-import { NpcGuide } from './NpcGuide'
-import { FishingGuide } from './FishingGuide'
 import { ClassIcon } from './icons'
 import './App.css'
 import { ItemGrid } from './ItemChip'
 import { EquipmentGuide } from './EquipmentGuide'
+import { GearLayoutControl } from './GearLayoutControl'
 import { ClassEffects } from './ClassEffects'
 import { BossArt } from './BossArt'
 import { bossArt } from './data/bossArt'
-import { bossDrops, dropNotes } from './data/bossDrops'
-import { lootProgression } from './data/hardmodeDrops'
+import { EncounterPlan } from './EncounterLoot'
+import { usePersistentState } from './hooks/usePersistentState'
+import { getEnvironment } from './data/environments'
 import { DungeonGuide } from './DungeonGuide'
 
+const NpcGuide = lazy(() => import('./NpcGuide').then(module => ({ default: module.NpcGuide })))
+const FishingGuide = lazy(() => import('./FishingGuide').then(module => ({ default: module.FishingGuide })))
+
 function useSavedSelection(key, fallback, allowed, replacements = {}) {
-  const [value, setValue] = useState(() => {
-    try {
-      const stored = localStorage.getItem(key)
-      const saved = replacements[stored] || stored
-      return allowed.includes(saved) ? saved : fallback
-    } catch { return fallback }
-  })
-  useEffect(() => {
-    try { localStorage.setItem(key, value) } catch { /* Continue normally if storage is unavailable. */ }
-  }, [key, value])
-  return [value, setValue]
+  return usePersistentState(key, fallback, { parse: stored => {
+    const saved = replacements[stored] || stored
+    return allowed.includes(saved) ? saved : fallback
+  } })
 }
 
 function ClassEmblem({ classId }) {
@@ -43,64 +39,22 @@ function ClassEmblem({ classId }) {
   </div>
 }
 
-function EncounterPlan({ encounter, inline = false }) {
-  const allDrops = bossDrops[encounter.id] || encounter.drops || bossDrops[encounter.stageId] || []
-  const drops = encounter.enemy ? allDrops.filter(drop => drop.enemy === encounter.enemy) : allDrops
-  const enemies = [...new Set(drops.map(drop => drop.enemy).filter(Boolean))]
-  const [selectedEnemy, setSelectedEnemy] = useState(null)
-  const activeEnemy = enemies.includes(selectedEnemy) ? selectedEnemy : enemies[0]
-  const visibleDrops = enemies.length > 1 ? drops.filter(drop => drop.enemy === activeEnemy) : drops
-  const progression = lootProgression[encounter.id] || {}
-  const gate = progression[activeEnemy]
-  const note = dropNotes[encounter.id] || encounter.note
-  const Container = inline ? 'div' : 'details'
-  return (
-    <Container className="boss-loot">
-      {!inline && <summary>Notable drops <span>Master Mode</span></summary>}
-      <p className="gear-hint">Master Mode loot · gear, materials & rare companions</p>
-      {enemies.length > 1 && <div className="drop-filters" role="group" aria-label="Filter drops by boss or enemy">
-        {enemies.map(enemy => <button type="button" key={enemy} aria-pressed={activeEnemy === enemy} onClick={() => setSelectedEnemy(enemy)}>{enemy}{progression[enemy] && <small className="drop-gate-label">{progression[enemy]}</small>}</button>)}
-      </div>}
-      {gate && <p className="drop-progression"><strong>{gate}</strong><span>{gate === 'Post-Plantera'
-        ? `${activeEnemy} only appears after Plantera is defeated. All drops below require that milestone.`
-        : gate === 'After all 3 mechanical bosses'
-          ? 'Reaper only appears after defeating The Destroyer, The Twins, and Skeletron Prime. Death Sickle requires that milestone.'
-          : 'These drops have no additional boss requirement once a Solar Eclipse is running.'}</span></p>}
-      {drops.length > 0 ? <ul className="drop-list">{visibleDrops.map(drop => <li key={`${drop.enemy || ''}/${drop.name}`}>
-        <span className={`drop-image${/^Soul of (Might|Sight|Fright)$/.test(drop.name) ? ' soul-frame' : ''}`}><img className="drop-icon" src={`/items/${drop.file}`} alt="" loading="lazy" /></span>
-        <div><a href={`https://terraria.wiki.gg/wiki/${drop.source}`} target="_blank" rel="noreferrer">{drop.name}</a>{drop.quantity && <span className="drop-quantity"> × {drop.quantity}</span>}<p>{drop.kind}{drop.method && ` · ${drop.method}`}{drop.note && ` · ${drop.note}`}</p></div>
-        <strong className="drop-rate">{drop.rate}</strong>
-      </li>)}</ul> : <p className="gear-hint">Drop list coming soon.</p>}
-      {note && <p className="gear-hint">{note}</p>}
-      <a href={`https://terraria.wiki.gg/wiki/${encounter.source}`} target="_blank" rel="noreferrer">Full loot list on the Official Wiki ↗</a>
-    </Container>
-  )
-}
-
 export default function App() {
   const [artworkOnly, setArtworkOnly] = useState(false)
   const [artworkDim, setArtworkDim] = useSavedSelection('terraria-guide-artwork-dim', '0', Array.from({ length: 86 }, (_, index) => String(index)))
   const [classId, setClassId] = useSavedSelection('terraria-guide-class', 'melee', classes.map(item => item.id))
   const [stageId, setStageId] = useSavedSelection('terraria-guide-stage', 'pre-boss', stages.map(item => item.id), retiredStageFallbacks)
   const [view, setView] = useSavedSelection('terraria-guide-view', 'gear', ['gear', 'checklist', 'npcs', 'fishing'])
-  const isDungeon = view === 'gear' && stages.find(stage => stage.id === stageId)?.theme === 'dungeon'
-  const isEyeForest = view === 'gear' && stageId === 'pre-boss'
-  const isDungeonEntrance = view === 'gear' && stageId === 'pre-skeletron'
-  const isUnderworld = view === 'gear' && stageId === 'pre-wof'
-  const isMechanicalNight = view === 'gear' && stageId === 'pre-mechanicals'
-  const isJungle = view === 'gear' && stageId === 'pre-plantera'
-  const isTemple = view === 'gear' && stageId === 'pre-golem'
-  const isEventNight = view === 'gear' && stageId === 'event-upgrades'
-  const isOptionalDay = view === 'gear' && stageId === 'optional-bosses'
-  const isCultRitual = view === 'gear' && stageId === 'pre-lunatic'
-  const isCelestial = view === 'gear' && stageId === 'celestial-pillars'
-  const isMoonLord = view === 'gear' && stageId === 'pre-moon-lord'
-  const isTown = view === 'npcs'
-  const isSnowFishing = view === 'fishing'
-  const hasArtwork = isDungeon || isEyeForest || isDungeonEntrance || isUnderworld || isMechanicalNight || isJungle || isTemple || isEventNight || isOptionalDay || isCultRitual || isCelestial || isMoonLord || isTown || isSnowFishing
+  const [gearLayout, setGearLayout] = useSavedSelection('terraria-guide-layout', 'modern', ['modern', 'classic', 'compact'])
+  const environment = getEnvironment(view, stageId)
+  const environmentId = environment?.[0]
+  const hasArtwork = Boolean(environment)
+  // A view change from another tab can remove the artwork and its return button.
+  if (artworkOnly && !hasArtwork) setArtworkOnly(false)
 
   useEffect(() => {
     if (!artworkOnly) return
+    window.dispatchEvent(new CustomEvent('guide-preview-open'))
     const mobileViewport = window.matchMedia('(max-width: 980px)')
     const restoreGuideOnMobile = () => {
       if (mobileViewport.matches) setArtworkOnly(false)
@@ -124,23 +78,10 @@ export default function App() {
   }, [classId])
 
   useEffect(() => {
-    if (isDungeon) document.documentElement.dataset.environment = 'dungeon'
-    else if (isEyeForest) document.documentElement.dataset.environment = 'eye-forest'
-    else if (isDungeonEntrance) document.documentElement.dataset.environment = 'dungeon-entrance'
-    else if (isUnderworld) document.documentElement.dataset.environment = 'underworld'
-    else if (isMechanicalNight) document.documentElement.dataset.environment = 'mechanical-night'
-    else if (isJungle) document.documentElement.dataset.environment = 'jungle'
-    else if (isTemple) document.documentElement.dataset.environment = 'temple'
-    else if (isEventNight) document.documentElement.dataset.environment = 'event-night'
-    else if (isOptionalDay) document.documentElement.dataset.environment = 'optional-day'
-    else if (isCultRitual) document.documentElement.dataset.environment = 'cult-ritual'
-    else if (isCelestial) document.documentElement.dataset.environment = 'celestial'
-    else if (isMoonLord) document.documentElement.dataset.environment = 'moon-lord'
-    else if (isTown) document.documentElement.dataset.environment = 'town'
-    else if (isSnowFishing) document.documentElement.dataset.environment = 'snow-fishing'
+    if (environmentId) document.documentElement.dataset.environment = environmentId
     else delete document.documentElement.dataset.environment
     return () => { delete document.documentElement.dataset.environment }
-  }, [isDungeon, isEyeForest, isDungeonEntrance, isUnderworld, isMechanicalNight, isJungle, isTemple, isEventNight, isOptionalDay, isCultRitual, isCelestial, isMoonLord, isTown, isSnowFishing])
+  }, [environmentId])
 
   const activeClass = classes.find((item) => item.id === classId)
   const activeStage = stages.find((item) => item.id === stageId)
@@ -151,8 +92,10 @@ export default function App() {
   )
 
   return (
-    <div className={`page class-${isDungeon ? 'dungeon' : classId}${isEyeForest ? ' environment-eye' : ''}${isDungeonEntrance ? ' environment-entrance' : ''}${isUnderworld ? ' environment-underworld' : ''}${isMechanicalNight ? ' environment-mechanical' : ''}${isJungle ? ' environment-jungle' : ''}${isTemple ? ' environment-temple' : ''}${isEventNight ? ' environment-events' : ''}${isOptionalDay ? ' environment-optional' : ''}${isCultRitual ? ' environment-cult' : ''}${isCelestial ? ' environment-celestial' : ''}${isMoonLord ? ' environment-moon-lord' : ''}`} style={isDungeon ? { '--dungeon-art': `url("${activeStage.art}")` } : undefined}>
+    <div className={`page class-${classId} ${environment?.[1] || ''}${view === 'gear' && !artworkOnly ? ' has-layout-control' : ''}`}>
       <div className="world-backdrop" aria-hidden="true"><i /><i /><i /><div className="artwork-dimmer" style={{ opacity: Number(artworkDim) / 100 }} /></div>
+
+      {view === 'gear' && !artworkOnly && <GearLayoutControl value={gearLayout} onChange={setGearLayout} />}
 
       <div className="artwork-controls">
         {!artworkOnly && <label className="artwork-dim-control" htmlFor="artwork-dim">
@@ -208,8 +151,10 @@ export default function App() {
         <button aria-pressed={view === 'fishing'} onClick={() => setView('fishing')}><strong>Fishing guide</strong><span>Quest milestones · useful rewards</span></button>
       </nav>
       {view === 'checklist' && <BossChecklist renderLoot={encounter => encounter.kind === 'Dungeon' ? <DungeonGuide stage={encounter} /> : <EncounterPlan encounter={encounter} inline />} onGear={id => { setStageId(id); setView('gear') }} />}
-      {view === 'npcs' && <NpcGuide />}
-      {view === 'fishing' && <FishingGuide />}
+      <Suspense fallback={<section className="panel plaque" role="status">Loading guide…</section>}>
+        {view === 'npcs' && <NpcGuide />}
+        {view === 'fishing' && <FishingGuide />}
+      </Suspense>
       {view === 'gear' && <section className="panel plaque" aria-label="Progression">
         <div className="panel-label">
           <span>02</span>
@@ -237,7 +182,7 @@ export default function App() {
                         >
                           <span className="stage-marker">
                             <span className={`stage-icons${bossArt[stage.id]?.length > 1 ? ' stage-icons-group' : ''}`} aria-hidden="true">
-                              {stage.theme === 'dungeon' ? <img src={`/items/${stage.id === 'dungeon-pre-plantera' ? 'Bone' : 'Ectoplasm'}.png`} alt="" draggable="false" /> : bossArt[stage.id]?.map(id => <img key={id} src={`/bosses/${id}.png`} alt="" draggable="false" />)}
+                              {bossArt[stage.id]?.map(id => <img key={id} src={`/bosses/${id}.png`} alt="" draggable="false" />)}
                             </span>
                             <span className="stage-index">{String(globalIndex + 1).padStart(2, '0')}</span>
                           </span>
@@ -262,19 +207,18 @@ export default function App() {
       {view === 'gear' && loadout && activeClass && activeStage && (
         <section className="loadout plaque" aria-live="polite">
           <div className="loadout-head">
-            {!isDungeon && <BossArt key={stageId} stageId={stageId} />}
+            <BossArt key={stageId} stageId={stageId} />
             <p className="loadout-kicker">
               {activeClass.name} · {eras.find((era) => era.id === activeStage.era)?.name}
             </p>
             <h2>{activeStage.name}</h2>
             <p className="loadout-when">{activeStage.when}</p>
             <p className="next-boss-banner">
-              {isDungeon ? 'Gear · ' : 'Gear up for '}<strong>{activeStage.next}</strong>
+              Gear up for <strong>{activeStage.next}</strong>
             </p>
           </div>
 
-          {isDungeon && <DungeonGuide stage={activeStage} />}
-          {activeStage.unlock && !isDungeon && <EncounterPlan encounter={activeStage} />}
+          {activeStage.unlock && <EncounterPlan encounter={activeStage} />}
           {activeStage.encounters && (
             <section className="encounter-choices" aria-label="Optional encounters">
               <p className="roadmap-hint">{activeStage.prepare}</p>
@@ -282,7 +226,7 @@ export default function App() {
                 <details key={encounter.id} className="encounter-choice">
                   <summary>{encounter.name}<span>{encounter.next}</span></summary>
                   <div className="encounter-portrait"><BossArt stageId={encounter.id} /></div>
-                  <EncounterPlan encounter={encounter} />
+                  <EncounterPlan encounter={encounter} inline />
                   {encounter.rewards?.[classId]?.length > 0 && (
                     <div className="encounter-rewards">
                       <h3 className="gear-section-title">Rewards to chase · {activeClass.name}</h3>
@@ -295,8 +239,8 @@ export default function App() {
             </section>
           )}
 
-          <h3 className="gear-section-title">{isDungeon ? 'Entry gear' : activeStage.encounters ? 'Starter gear for these encounters' : 'Bring to this fight'}</h3>
-          <EquipmentGuide key={`${stageId}/${classId}`} base={loadout} stage={activeStage} />
+          <h3 className="gear-section-title">{activeStage.encounters ? 'Starter gear for these encounters' : 'Bring to this fight'}</h3>
+          <EquipmentGuide key={`${stageId}/${classId}`} base={loadout} stage={activeStage} layout={gearLayout} />
           {activeStage.rewards?.[classId]?.length > 0 && (
             <section className="encounter-rewards">
               <h3 className="gear-section-title">Rewards to chase · {activeClass.name}</h3>
@@ -319,4 +263,3 @@ export default function App() {
     </div>
   )
 }
-

@@ -10,6 +10,9 @@ export const bloodMoonEarlyDrops = [
     ['Shark Tooth Necklace', '1.33%', 'Accessory', 'Adds 5 armor penetration.'],
     ['Bloody Tear', '1%', 'Event summon'],
   ]),
+  ...drops('The Bride & The Groom', [
+    ['Bloody Tear', '20%', 'Event summon'],
+  ]),
   ...drops('Wandering Eye Fish & Zombie Merman', [
     ['Blood Rain Bow', '12.5%', 'Ranged weapon'],
     ['Vampire Frog Staff', '12.5%', 'Summon weapon'],

@@ -2,20 +2,24 @@ import { useState } from 'react'
 import { ChecklistSpawn } from './ChecklistSpawn'
 import { checklistGroups as groups, checklistType } from './data/checklist'
 import { checklistArt } from './data/checklistArt'
+import { usePersistentState } from './hooks/usePersistentState'
+
+const rows = groups.flatMap(group => group.rows)
+const validIds = new Set(rows.map(row => row.id))
+const emptyChecks = []
+const parseChecked = raw => {
+  const value = JSON.parse(raw)
+  return Array.isArray(value) ? [...new Set(value.filter(id => validIds.has(id)))] : []
+}
 
 export function BossChecklist({ renderLoot, onGear }) {
-  const [checked, setChecked] = useState(() => {
-    try { const value = JSON.parse(localStorage.getItem('terraria-boss-checklist') || '[]'); return Array.isArray(value) ? value.filter(id => typeof id === 'string') : [] } catch { return [] }
-  })
+  const [checked, setChecked, saved] = usePersistentState('terraria-boss-checklist', emptyChecks, { parse: parseChecked, serialize: JSON.stringify })
   const [filter, setFilter] = useState('All')
   const [type, setType] = useState('Everything')
-  const [saved, setSaved] = useState(true)
-  const count = groups.flatMap(group => group.rows).filter(row => checked.includes(row.id)).length
-  const total = groups.flatMap(group => group.rows).length
+  const count = rows.filter(row => checked.includes(row.id)).length
+  const total = rows.length
   function toggle(id) {
-    const next = checked.includes(id) ? checked.filter(value => value !== id) : [...checked, id]
-    setChecked(next)
-    try { localStorage.setItem('terraria-boss-checklist', JSON.stringify(next)); setSaved(true) } catch { setSaved(false) }
+    setChecked(previous => previous.includes(id) ? previous.filter(value => value !== id) : [...previous, id])
   }
   return <section className="panel plaque checklist" aria-label="Boss and event checklist">
     <div className="checklist-heading"><div><p className="kicker">Your world · Master Mode</p><h2>Bosses, events & loot</h2><p className="gear-hint">A suggested order, not a required route. Check bosses after a victory, events after clearing them, and Dungeon visits after exploring.</p></div><div className="checklist-count"><strong>{count}<small> / {total}</small></strong><span>completed</span></div></div>

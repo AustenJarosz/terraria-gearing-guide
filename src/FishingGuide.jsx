@@ -1,22 +1,19 @@
-import { useState } from 'react'
-import { fishingMilestones, fishingRewards, fishingCombines, normalizeFishingCount } from './data/fishing'
+import { usePersistentState } from './hooks/usePersistentState'
+import { fishingMilestones, fishingRewards, fishingCombines, normalizeFishingCount, accessoryBaseChance } from './data/fishing'
 
 const wiki = name => `https://terraria.wiki.gg/wiki/${encodeURIComponent(name.replaceAll(' ', '_'))}`
 const storageKey = 'terraria-guide-fishing-quests'
+const formatChance = value => `${(value * 100).toFixed(2)}%`
+const accessoryCount = fishingRewards.filter(item => item.accessoryPool).length
 function ItemLink({ name, id }) {
   return <a className="fishing-item" href={wiki(name)} target="_blank" rel="noreferrer">{id && <img src={`/items/fishing-${id}.png`} alt="" loading="lazy" />}<span>{name}</span></a>
 }
 
 export function FishingGuide() {
-  const [count, setCount] = useState(() => {
-    try { return normalizeFishingCount(localStorage.getItem(storageKey)) } catch { return 0 }
-  })
-  const [saved, setSaved] = useState(true)
+  const [count, setCount, saved] = usePersistentState(storageKey, 0, { parse: normalizeFishingCount })
   const next = fishingMilestones.find(item => item.count > count)
   function updateCount(value) {
-    const nextCount = normalizeFishingCount(value)
-    setCount(nextCount)
-    try { localStorage.setItem(storageKey, String(nextCount)); setSaved(true) } catch { setSaved(false) }
+    setCount(previous => normalizeFishingCount(typeof value === 'function' ? value(previous) : value))
   }
   return <section className="panel plaque fishing-guide" aria-label="Fishing guide">
     <div className="fishing-heading"><div><p className="kicker">The Angler · Quest rewards</p><h2>Make every catch count</h2><p className="gear-hint">The rewards worth working toward, starting with the six guaranteed milestones.</p></div><img src="/npcs/22.png" alt="Angler" width="48" height="48" /></div>
@@ -24,7 +21,7 @@ export function FishingGuide() {
 
     <section className="fishing-tracker" aria-label="Manual fishing quest tracker">
       <div><label htmlFor="fishing-quest-count">Your completed quests</label><p>Optional manual counter · saved on this device. Adjust it when switching characters.</p></div>
-      <div className="fishing-counter"><button type="button" onClick={() => updateCount(count - 1)} disabled={count === 0} aria-label="Subtract one fishing quest">−</button><input id="fishing-quest-count" type="number" min="0" max="9999" step="1" inputMode="numeric" value={count} onChange={event => updateCount(event.target.value)} /><button className="fishing-add" type="button" disabled={count === 9999} onClick={() => updateCount(count + 1)}>+1 quest</button></div>
+      <div className="fishing-counter"><button type="button" onClick={() => updateCount(previous => previous - 1)} disabled={count === 0} aria-label="Subtract one fishing quest">−</button><input id="fishing-quest-count" type="number" min="0" max="9999" step="1" inputMode="numeric" value={count} onChange={event => updateCount(event.target.value)} /><button className="fishing-add" type="button" disabled={count === 9999} onClick={() => updateCount(previous => previous + 1)}>+1 quest</button></div>
       <p className="fishing-next" role="status">{next ? <><strong>Next: {next.name}</strong><span>{next.count - count} more {next.count - count === 1 ? 'turn-in' : 'turn-ins'} · quest {next.count}</span></> : <><strong>All six guaranteed milestones reached</strong><span>Later quests still offer random gear, bait and supplies.</span></>}</p>
       {!saved && <p className="fishing-save-warning" role="alert">Your browser could not save this count. It will only last for this visit.</p>}
     </section>
@@ -34,14 +31,14 @@ export function FishingGuide() {
       <div className="fishing-milestone-top"><span>Quest <strong>{item.count}</strong></span><span>{count >= item.count ? '✓ Reached · 100%' : '100% guaranteed'}</span></div>
       <ItemLink {...item} /><p>{item.benefit}</p>
     </li>)}</ol>
-    <p className="fishing-source">Guaranteed on those specific turn-ins; the bucket can also roll earlier as a random reward. <a href={`${wiki('Angler')}#Quest_rewards`} target="_blank" rel="noreferrer">Reward rules ↗</a></p>
+    <p className="fishing-source">Guaranteed on those specific turn-ins. The bucket can also roll from quest 11 onward (1.43% base roll), and another Golden Fishing Rod can roll from quest 76 onward (0.40% base roll). <a href={`${wiki('Angler')}#Quest_rewards`} target="_blank" rel="noreferrer">Reward rules ↗</a></p>
 
     <div className="fishing-section-title"><h3>Other rewards worth chasing</h3><span>Random rewards · no guaranteed quest number</span></div>
     <p className="gear-hint" id="fishing-rates-note"><strong>Base roll chances, not fixed odds per quest.</strong> These assume the game reaches that reward’s roll: earlier rewards must fail first. Quest count and happiness improve the rolls. Accessory percentages assume all seven are still eligible. The counter above does not recalculate these baselines.</p>
-    <div className="fishing-reward-groups">{['Fishing gear', 'Useful tools', 'Information accessories', 'Hardmode rewards'].map(group => <section className="fishing-reward-group" key={group}><h4>{group}</h4><ul>{fishingRewards.filter(item => item.group === group).map(item => <li key={item.name}><div className="fishing-reward-top"><ItemLink {...item} /><span className="fishing-rate" aria-describedby="fishing-rates-note"><strong>{(item.baseChance * 100).toFixed(2)}%</strong><small>{item.accessoryPool ? 'base · 7 eligible' : 'base roll'}</small></span></div><p>{item.benefit}</p><span className="fishing-unlock">{item.unlock}</span></li>)}</ul></section>)}</div>
+    <div className="fishing-reward-groups">{['Fishing gear', 'Useful tools', 'Information accessories', 'Hardmode rewards'].map(group => <section className="fishing-reward-group" key={group}><h4>{group}</h4><ul>{fishingRewards.filter(item => item.group === group).map(item => <li key={item.name}><div className="fishing-reward-top"><ItemLink {...item} /><span className="fishing-rate" aria-describedby="fishing-rates-note"><strong>{formatChance(item.baseChance)}</strong><small>{item.accessoryPool ? `base · ${accessoryCount} eligible` : 'base roll'}</small></span></div><p>{item.benefit}</p><span className="fishing-unlock">{item.unlock}</span></li>)}</ul></section>)}</div>
     <details className="fishing-odds-help"><summary>How quest count & accessories change the odds</summary><div>
-      <p><strong>More quests improve reward rolls.</strong> The quest-count boost grows until about 150 completed quests, then stops increasing. A happier Angler also helps. The first quest’s actual odds already differ from these unmodified baselines.</p>
-      <p><strong>Accessories share one roll.</strong> Its unmodified chance is about <strong>15.70%</strong>, if earlier rewards failed. Success picks equally from the eligible accessories: seven left means about <strong>2.24% each</strong> at this baseline; three left means about <strong>5.23% each</strong>. Fewer missing items changes the split, not the chance of winning that shared roll.</p>
+      <p><strong>More quests improve reward rolls.</strong> The quest-count boost reaches its limit at 150 completed quests. A happier Angler also helps; Luck does not affect quest rewards. The first quest’s actual odds already differ from these unmodified baselines.</p>
+      <p><strong>Accessories share one roll.</strong> Its unmodified chance is about <strong>{formatChance(accessoryBaseChance)}</strong>, if earlier rewards failed. Success picks equally from the eligible accessories: seven left means about <strong>{formatChance(accessoryBaseChance / accessoryCount)} each</strong> at this baseline; three left means about <strong>{formatChance(accessoryBaseChance / 3)} each</strong>. Fewer missing items changes the split, not the chance of winning that shared roll.</p>
       <p><strong>Keep owned accessories with you.</strong> The game checks inventory, portable storage and all equipped loadouts, including social slots. Upgrades count for their ingredients. Ordinary world chests do not count, and this is not a permanent record of past rewards. Once all seven are owned, all seven can drop again.</p>
       <p><strong>Milestones take priority.</strong> A guaranteed reward uses the main reward slot on that turn-in. Coins, bait and decorations are separate rewards.</p>
       <a href={`${wiki('Angler')}#Accessory_rewards`} target="_blank" rel="noreferrer">Full reward calculations on the Official Wiki ↗</a>

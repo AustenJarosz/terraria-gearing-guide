@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { execFileSync } from 'node:child_process'
 import { unpackToFiles } from 'xnb'
+import { cropInventoryFrame, inventoryFrameHeights } from './sprite-frames.mjs'
 import { loadoutItems } from '../src/data/loadoutItems.js'
 import { preparationItems, preparationSpriteIds } from '../src/data/preparationItems.js'
 import { dungeonChestSpriteIds } from '../src/data/dungeonChests.js'
@@ -51,22 +51,7 @@ for (const [file, id] of Object.entries(additions)) {
   }
   manifest[file] = id
 }
-// Food textures contain inventory / held / plated sprites; Fallen Star animates.
-// Export only their first inventory frame instead of a misleading sprite strip.
-for (const [file, frameHeight] of [['Ale.png', 20], ['Seafood_Dinner.png', 22], ['Fallen_Star.png', 26]]) {
-  const outputPath = path.resolve('public/items', file)
-  if (fs.readFileSync(outputPath).readUInt32BE(20) === frameHeight) continue
-  const literal = outputPath.replaceAll("'", "''")
-  execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', `
-    $ErrorActionPreference = 'Stop'
-    Add-Type -AssemblyName System.Drawing
-    $spriteImage = [System.Drawing.Bitmap]::FromFile('${literal}')
-    try { $spriteFrame = $spriteImage.Clone([System.Drawing.Rectangle]::new(0, 0, $spriteImage.Width, ${frameHeight}), $spriteImage.PixelFormat) }
-    finally { $spriteImage.Dispose() }
-    try { $spriteFrame.Save('${literal}', [System.Drawing.Imaging.ImageFormat]::Png) }
-    finally { $spriteFrame.Dispose() }
-  `])
-}
+for (const file of Object.keys(inventoryFrameHeights)) cropInventoryFrame(path.join('public/items', file))
 const icons = { ...acquisitionIcons }
 icons['Placed Bottle'] = 'Bottle.png'
 icons['Any Wood'] = 'Wood.png'
